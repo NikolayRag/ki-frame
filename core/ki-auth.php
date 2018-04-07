@@ -82,13 +82,14 @@ class KiAUTH {
 	}
 
 
+
 /*
 fill auth URL's
 */
 	function socialFillURL(){
 		foreach ($this->socialA as $type=>$v){
 			$auth= $this->socialFact->createAuth($type);
-			$url= $auth->getAuthorizeUrl($this->socialOutURL($type));
+			$url= $auth->getAuthorizeUrl($this->socialURL($type));
 
 
 			switch ($type){
@@ -106,7 +107,7 @@ fill auth URL's
 
 
 
-	function socialOutURL($_type){
+	function socialURL($_type){
 		$protocol= $_SERVER['HTTPS']? 'https' : 'http';
 		return "$protocol://{$_SERVER['SERVER_NAME']}/{$this->cbName}?type=$_type";
 	}
@@ -145,7 +146,7 @@ $_req
 	    $auth = $this->socialFact->createAuth($type);
 	    $token = $auth->authenticate(
 	    	$_req->all(),
-	    	$this->socialOutURL($type)
+	    	$this->socialURL($type)
 	    );
 
 	    if (!$token) {
