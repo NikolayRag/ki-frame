@@ -23,7 +23,7 @@ class KiAUTH {
 	var $sessionName, $cbName;
 
 
-	var $socialFac, $socialA=[];
+	var $socialFact, $socialA=[];
 
 	var $socError, $socUser;
 
@@ -69,7 +69,7 @@ class KiAUTH {
 		    ];
 		}
 
-		$this->socialFac = new \Social\Factory($this->socialA);
+		$this->socialFact = new \Social\Factory($this->socialA);
 
 		$this->socialFillURL();
 	}
@@ -80,7 +80,7 @@ fill auth URL's
 */
 	function socialFillURL(){
 		foreach ($this->socialA as $type=>$v){
-			$auth= $this->socialFac->createAuth($type);
+			$auth= $this->socialFact->createAuth($type);
 			$url= $auth->getAuthorizeUrl($this->socialOutURL($type));
 
 
@@ -117,7 +117,7 @@ Init social logon token.
 				return;
 
 
-	    $api = $this->socialFac->createApi($_SESSION[$this->sessionName]);
+	    $api = $this->socialFact->createApi($_SESSION[$this->sessionName]);
 	    $this->socUser = $api->getProfile();
 
 	    if (!$this->socUser) {
@@ -135,7 +135,7 @@ $_req
 */	
 	function socReact($_req){
 	    $type = $_req->type;
-	    $auth = $this->socialFac->createAuth($type);
+	    $auth = $this->socialFact->createAuth($type);
 	    $token = $auth->authenticate(
 	    	$_req->all(),
 	    	$this->socialOutURL($type)
