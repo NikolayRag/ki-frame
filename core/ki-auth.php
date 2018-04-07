@@ -95,7 +95,8 @@ class KiAUTH {
 
 
 	function socialOutURL($_type){
-		return "http://{$_SERVER['SERVER_NAME']}/socialcb?type=$_type";
+		$protocol= $_SERVER['HTTPS']? 'https' : 'http';
+		return "$protocol://{$_SERVER['SERVER_NAME']}/{$this->cbName}?type=$_type";
 	}
 
 
