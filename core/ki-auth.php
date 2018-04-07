@@ -71,9 +71,14 @@ class KiAUTH {
 
 		$this->socialFac = new \Social\Factory($this->socialA);
 
+		$this->socialFillURL();
+	}
 
 
-		//fill auth URL's
+/*
+fill auth URL's
+*/
+	function socialFillURL(){
 		foreach ($this->socialA as $type=>$v){
 			$auth= $this->socialFac->createAuth($type);
 			$url= $auth->getAuthorizeUrl($this->socialOutURL($type));
