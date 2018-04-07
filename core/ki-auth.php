@@ -34,6 +34,15 @@ class KiAUTH {
 
 		session_start();
 
+
+		$this->socialFactory($_settings);
+
+		$this->socialFillURL();
+	}
+
+
+
+	function socialFactory($_settings){
 		if ($_settings->VKID){
 		    $this->socialA[\Social\Type::VK] = [
 		        'app_id' => $_settings->VKID,
@@ -70,8 +79,6 @@ class KiAUTH {
 		}
 
 		$this->socialFact = new \Social\Factory($this->socialA);
-
-		$this->socialFillURL();
 	}
 
 
