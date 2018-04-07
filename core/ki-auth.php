@@ -20,7 +20,7 @@ spl_autoload_register(
 
 
 class KiAUTH {
-	var $sName='socAuth';
+	var $sessionName, $cbName;
 
 
 	var $socialFac, $socialA=[];
@@ -28,7 +28,10 @@ class KiAUTH {
 	var $socError, $socUser;
 
 
-	function __construct($_settings){
+	function __construct($_settings, $_session='socAuth', $_cb='socialcb'){
+		$this->sessionName= $_session;
+		$this->cbName= $_cb;
+
 		session_start();
 
 		if ($_settings->VKID){
@@ -104,11 +107,11 @@ Init social logon token.
 		$this->socError=null;
 		$this->socUser=null;
 
-		if (!isset($_SESSION[$this->sName]) or !$_SESSION[$this->sName])
+		if (!isset($_SESSION[$this->sessionName]) or !$_SESSION[$this->sessionName])
 				return;
 
 
-	    $api = $this->socialFac->createApi($_SESSION[$this->sName]);
+	    $api = $this->socialFac->createApi($_SESSION[$this->sessionName]);
 	    $this->socUser = $api->getProfile();
 
 	    if (!$this->socUser) {
@@ -136,7 +139,7 @@ $_req
 	        return $auth->getError();
 	    }
 
-	    $_SESSION[$this->sName] = $token;
+	    $_SESSION[$this->sessionName] = $token;
 	}
 
 
@@ -144,8 +147,8 @@ $_req
 Logout for social logon
 */
 	function socOut(){
-		if (isset($_SESSION[$this->sName])) {
-    		$_SESSION[$this->sName] = array();
+		if (isset($_SESSION[$this->sessionName])) {
+    		$_SESSION[$this->sessionName] = array();
 		}
 	}
 
