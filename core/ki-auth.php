@@ -28,7 +28,7 @@ class KiAUTH {
 	var $socError, $socUser;
 
 
-	function __construct($_settings, $_session='socAuth', $_cb='socialcb'){
+	function __construct($_settings, $_session='socAuth', $_cb='logoncb'){
 		$this->sessionName= $_session;
 		$this->cbName= $_cb;
 

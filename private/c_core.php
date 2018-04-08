@@ -34,8 +34,7 @@ KiCONST::add('SOCIAL', (object)[
 
 
 KiCONST::add('URI_ALLOW', (object)[ 
-	'LOGON'=> 'api',
-        'SOCIALCB'=> 'api'
+        'LOGONCB'=> 'api'
 ], false);
 
 ?>
