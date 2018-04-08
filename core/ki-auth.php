@@ -3,6 +3,7 @@
 /*
 Deal with user authorization - social and explicit, and rights assignment
 
+Social logon data is fetched as
 */
 
 
@@ -17,22 +18,37 @@ spl_autoload_register(
     }
 );
 
+include(__dir__ .'/../_3rd/uflex/autoload.php');
+include(__dir__ .'/ki-rights.php');
+
 
 
 class KiAUTH {
 	var $sessionName, $cbName;
 
-
 	var $socialFact, $socialA=[];
-
 	var $socError, $socUser;
 
+	var $isSigned=false, $ID=0, $email='';
 
-	function __construct($_settings, $_session='socAuth', $_cb='logoncb'){
+
+	var $user, $rights;
+
+
+	function __construct($_db, $_settings, $_session='socAuth', $_cb='logoncb'){
 		$this->sessionName= $_session;
 		$this->cbName= $_cb;
 
 		session_start();
+
+
+
+		$this->user= new \ptejada\uFlex\User();
+		$this->user->config->database->pdo= $_db;
+		$this->user->start();
+
+		$this->rights= new Rights($this->user->isSigned()? $this->user->GroupID :0);
+
 
 
 		$this->socialFactory($_settings);

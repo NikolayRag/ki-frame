@@ -44,18 +44,8 @@ $ERRR->errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
 $URL= new KiURL($URI_ALLOW);
 
 
-$SOC= new KiAUTH($SOCIAL);
-$SOC->socInit();
-
-include(__dir__ .'/../_3rd/uflex/autoload.php');
-
-$USER= new \ptejada\uFlex\User();
-$USER->config->database->pdo= $DB;
-$USER->start();
-
-include(__dir__ .'/ki-rights.php');
-//user-wide reusable rights object
-$RIGHTS= new Rights($USER->isSigned()? $USER->GroupID :0);
+$USER= new KiAUTH($DB, $SOCIAL);
+$USER->socInit();
 
 
 include(__dir__ .'/../private/errorh.php');
