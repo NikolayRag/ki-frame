@@ -25,19 +25,14 @@ include(__dir__ .'/ki-authSoc.php');
 
 
 class KiAUTH {
-	var $sessionName, $cbName;
+	private $cbName;
+	private $socUser, $flexUser, $rights;
 
-	var $socUser, $flexUser, $rights;
-
-	var $isSigned=false, $ID=0, $email='';
-
-	var $name='';
-
-	var $logoutURL='';
+	var $logoutURL='', $socUrlA;
+	var $isSigned=false, $ID=0, $name='', $email='', $photoUrl='';
 
 
-	function __construct($_db, $_settings, $_session='socAuth', $_cb='logoncb'){
-		$this->sessionName= $_session;
+	function __construct($_db, $_settings, $_cb='logoncb'){
 		$this->cbName= $_cb;
 
 		session_start();
@@ -52,14 +47,17 @@ class KiAUTH {
 
 
 		$this->socUser= new KiSoc($_settings, $this->cbName);
+		$this->socUrlA= $this->socUser->urlA;
 
 		$this->logoutURL= $this->socUser->socialURL(0);
 
 
-        $this->isSigned= $this->flexUser->isSigned() || ($this->socUser->user?true:false);
+        $this->isSigned= $this->flexUser->isSigned() || (bool)$this->socUser->user;
 		
-		if ($this->socUser->user)
+		if ($this->socUser->user){
 			$this->name= $this->socUser->user->firstName;
+			$this->photoUrl= $this->socUser->user->photoUrl;
+		}
 	}
 
 
