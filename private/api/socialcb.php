@@ -6,4 +6,4 @@ if (!$URL->args->type){
     $SOC->socReact($URL->args);
 }
 
-stopAndRedirect('/');
+redirect('/');
