@@ -16,12 +16,6 @@ include(__dir__ .'/ki-const.php');
 include(__dir__ .'/../private/c_core.php');
 include(__dir__ .'/../private/c.php');
 
-if ($DEBUG) {
-	$ERRR->setClean(false);
-
-	$ERRR->errCB(ErrCB\errCBEcho());
-}
-
 
 
 include(__dir__ .'/ki-sql.php');
@@ -30,7 +24,6 @@ include(__dir__ .'/ki-dict.php');
 include(__dir__ .'/ki-url.php');
 include(__dir__ .'/ki-client.php');
 include(__dir__ .'/ki-auth.php');
-
 
 
 
@@ -45,8 +38,4 @@ $URL= new KiURL($URI_ALLOW);
 
 
 $USER= new KiAUTH($DB, $SOCIAL);
-
-
-include(__dir__ .'/../private/errorh.php');
-
 ?>
