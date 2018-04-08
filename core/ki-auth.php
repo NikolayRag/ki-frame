@@ -108,7 +108,7 @@ fill auth URL's
 
 
 	function socialURL($_type){
-		$protocol= $_SERVER['HTTPS']? 'https' : 'http';
+		$protocol= getA($_SERVER, 'HTTPS')? 'https' : 'http';
 		return "$protocol://{$_SERVER['SERVER_NAME']}/{$this->cbName}?type=$_type";
 	}
 
