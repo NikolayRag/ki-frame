@@ -27,12 +27,9 @@ include(__dir__ .'/ki-authSoc.php');
 class KiAUTH {
 	var $sessionName, $cbName;
 
-	var $socUser;
+	var $socUser, $flexUser, $rights;
 
 	var $isSigned=false, $ID=0, $email='';
-
-
-	var $flexUser, $rights;
 
 	var $name='';
 
@@ -54,15 +51,15 @@ class KiAUTH {
 		$this->rights= new Rights($this->flexUser->isSigned()? $this->flexUser->GroupID :0);
 
 
-		$this->socUser= new KiAUTHSoc($_settings, $this->cbName);
+		$this->socUser= new KiSoc($_settings, $this->cbName);
 
 		$this->logoutURL= $this->socUser->socialURL(0);
 
 
-        $this->isSigned= $this->flexUser->isSigned() || ($this->socUser->socUser?true:false);
+        $this->isSigned= $this->flexUser->isSigned() || ($this->socUser->user?true:false);
 		
-		if (!$this->socUser->socError && $this->socUser->socUser)
-			$this->name= $this->socUser->socUser->firstName;
+		if ($this->socUser->user)
+			$this->name= $this->socUser->user->firstName;
 	}
 
 
