@@ -45,7 +45,6 @@ $URL= new KiURL($URI_ALLOW);
 
 
 $USER= new KiAUTH($DB, $SOCIAL);
-$USER->socInit();
 
 
 include(__dir__ .'/../private/errorh.php');

@@ -54,6 +54,7 @@ class KiAUTH {
 		$this->socialFactory($_settings);
 
 		$this->socialFillURL();
+		$this->socInit();
 	}
 
 
