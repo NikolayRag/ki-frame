@@ -57,7 +57,7 @@ class KiAUTH {
 			$this->photoUrl= $this->flexUser->photoURL;
 		}
 
-		$this->rights= new Rights($this->flexUser->isSigned()? $this->flexUser->GroupID :0);
+
 
 
 		$this->socUser= new KiSoc($_settings, $this->cbName);
@@ -76,6 +76,10 @@ class KiAUTH {
 
 		if (!$this->name)
 			$this->name= $this->email;
+
+
+
+		$this->rights= new Rights($this->flexUser->isSigned()? $this->flexUser->GroupID :0);
 	}
 
 
