@@ -3,7 +3,15 @@
 /*
 Deal with user authorization - social and explicit, and rights assignment
 
-Social logon data is fetched as
+Init macro:
+	explicit check
+		logged: stop
+		
+		social check
+			not logged: stop
+			explicit user not assigned:
+				create and assign implicit user
+			fetch assigned user
 */
 
 
@@ -42,6 +50,12 @@ class KiAUTH {
 		$this->flexUser= new \ptejada\uFlex\User();
 		$this->flexUser->config->database->pdo= $_db;
 		$this->flexUser->start();
+		if ($this->flexUser->isSigned()){
+			$this->flexUser->login(); //update from DB
+			$this->name= $this->flexUser->displayName;
+			$this->email= $this->flexUser->Email;
+			$this->photoUrl= $this->flexUser->photoURL;
+		}
 
 		$this->rights= new Rights($this->flexUser->isSigned()? $this->flexUser->GroupID :0);
 
@@ -56,8 +70,12 @@ class KiAUTH {
 		
 		if ($this->socUser->user){
 			$this->name= $this->socUser->user->firstName;
+			$this->email= $this->socUser->user->email;
 			$this->photoUrl= $this->socUser->user->photoUrl;
 		}
+
+		if (!$this->name)
+			$this->name= $this->email;
 	}
 
 

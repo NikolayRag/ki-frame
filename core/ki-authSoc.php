@@ -1,9 +1,6 @@
 <?php
-
 /*
-Deal with user authorization - social and explicit, and rights assignment
-
-Social logon data is fetched as
+Social logon wrap
 */
 
 
