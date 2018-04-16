@@ -24,12 +24,18 @@ class KiSoc {
 	var $urlA, $error=null, $user=null;
 
 
+
 	function __construct($_settings, $_cb='logoncb'){
 		$this->cbName= $_cb;
 
 		$this->packSettings($_settings);
 		$this->factory= new \Social\Factory($this->typesA);
 		$this->urlA= $this->socialFillURL();
+	}
+
+
+
+	function start(){
         if (!isset($_SESSION) && !headers_sent()) {
 			session_start();
 		}
@@ -37,13 +43,14 @@ class KiSoc {
 		if (!getA($_SESSION, $this->sessionName))
 			return;
 
-
 	    $api = $this->factory->createApi($_SESSION[$this->sessionName]);
 	    $this->user = $api->getProfile();
 
 	    if (!$this->user) {
 	        $this->error = $api->getError();
 	    }
+
+	    return true;
 	}
 
 
