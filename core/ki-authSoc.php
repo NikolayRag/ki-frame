@@ -30,6 +30,9 @@ class KiSoc {
 		$this->packSettings($_settings);
 		$this->factory= new \Social\Factory($this->typesA);
 		$this->urlA= $this->socialFillURL();
+        if (!isset($_SESSION) && !headers_sent()) {
+			session_start();
+		}
 
 		if (!getA($_SESSION, $this->sessionName))
 			return;
