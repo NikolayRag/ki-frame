@@ -134,7 +134,7 @@ Callback function for social logons.
 $_req
 	$_REQUEST passed in.
 */	
-	function socReact($_req){
+	function socCB($_req){
 	    $type = $_req->type;
 	    $auth = $this->factory->createAuth($type);
 	    $token = $auth->authenticate(

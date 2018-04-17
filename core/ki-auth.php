@@ -95,8 +95,8 @@ class KiAUTH {
 
 
 
-	function react($_req){
-		$this->socUser->socReact($_req);
+	function socCB($_req){
+		$this->socUser->socCB($_req);
 	}
 
 
