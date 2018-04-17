@@ -66,7 +66,7 @@ class KiAUTH {
 
 
 
-	function initFlexUser(){
+	private function initFlexUser(){
 		if (!$this->flexUser->start()->isSigned())
 			return;
 
@@ -82,7 +82,7 @@ class KiAUTH {
 
 
 
-	function initSocUser(){
+	private function initSocUser(){
 		if (!$this->socUser->start())
 			return;
 
