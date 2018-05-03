@@ -45,12 +45,11 @@ class KiSoc {
 	    $api = $this->factory->createApi($_SESSION[$this->sessionName]);
 	    $this->user = $api->getProfile();
 
-	    if (!$this->user) {
-	        $this->error = $api->getError();
-	        return;
-	    }
+	    if ($this->user)
+		    return true;
 
-	    return true;
+
+        $this->error = $api->getError();
 	}
 
 
