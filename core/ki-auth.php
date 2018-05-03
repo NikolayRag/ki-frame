@@ -5,13 +5,13 @@ Deal with user authorization - social and explicit, and rights assignment
 
 Init macro:
 	explicit check
-		logged: stop
+		if logged: stop
 		
-		social check
-			not logged: stop
-			explicit user not assigned:
-				create and assign implicit user
-			fetch assigned user
+	social check
+		if not logged: stop
+		if explicit user not assigned:
+			create and assign implicit user
+		fetch assigned user
 */
 
 
