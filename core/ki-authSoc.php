@@ -48,6 +48,7 @@ class KiSoc {
 
 	    if (!$this->user) {
 	        $this->error = $api->getError();
+	        return;
 	    }
 
 	    return true;

@@ -4,14 +4,13 @@
 Deal with user authorization - social and explicit, and rights assignment
 
 Init macro:
-	explicit check
-		if logged: stop
-		
-	social check
-		if not logged: stop
-		if explicit user not assigned:
-			create and assign implicit user
-		fetch assigned user
+	init Flex user
+	or
+	init Soc user
+		if logged:
+			if explicit user not assigned:
+				create and assign implicit user
+			fetch assigned user
 */
 
 
@@ -40,39 +39,28 @@ class KiAUTH {
 
 
 	function __construct($_db, $_socialA){
-		$this->flexUser= new \ptejada\uFlex\User();
-		$this->flexUser->config->database->pdo= $_db;
-
-
-		if ($this->initFlexUser($_db)){
+		if ($this->initFlexUser($_db) or $this->initSocUser($_socialA)){
 			$this->isSigned= true;
 			return;
 		}
 
-
-		$this->socUser= new KiSoc($_socialA);
-
-		if (!$this->initSocUser()){
-			$this->socUrlA= $this->socUser->urlA;
-			return;
-		}
-
-///
-		
-		$this->isSigned= true;
-
+		$this->socUrlA= $this->socUser->urlA;
 	}
 
 
 
-	private function initFlexUser(){
+	private function initFlexUser($_db){
+		$this->flexUser= new \ptejada\uFlex\User();
+		$this->flexUser->config->database->pdo= $_db;
+
 		if (!$this->flexUser->start()->isSigned())
 			return;
 
 
 		$this->id= $this->flexUser->ID;
-		$this->name= $this->flexUser->displayName;
 		$this->email= $this->flexUser->Email;
+
+		$this->name= $this->flexUser->displayName;
 		$this->photoUrl= $this->flexUser->photoURL;
 		$this->mask= $this->flexUser->mask;
 
@@ -81,16 +69,20 @@ class KiAUTH {
 
 
 
-	private function initSocUser(){
+	private function initSocUser($_socialA){
+		$this->socUser= new KiSoc($_socialA);
+
 		if (!$this->socUser->start())
 			return;
 
-		$this->email= $this->socUser->user->email;
+
 		$this->name= $this->socUser->user->firstName;
 		$this->photoUrl= $this->socUser->user->photoUrl;
 
 		return true;
 	}
+
+
 
 
 
