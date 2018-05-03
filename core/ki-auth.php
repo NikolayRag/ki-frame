@@ -33,16 +33,13 @@ include(__dir__ .'/ki-authSoc.php');
 
 
 class KiAUTH {
-	var $socUser, $flexUser, $mask=0, $rights;
+	var $socUser=false, $flexUser, $mask=0, $rights;
 
-	var $logoutURL='', $socUrlA=[];
+	var $socUrlA=[];
 	var $isSigned=false, $id=0, $name='', $email='', $photoUrl='';
 
 
 	function __construct($_db, $_socialA){
-		$this->socUser= new KiSoc($_socialA);
-		$this->logoutURL= $this->socUser->socialURL(0);
-
 		$this->flexUser= new \ptejada\uFlex\User();
 		$this->flexUser->config->database->pdo= $_db;
 
@@ -52,6 +49,8 @@ class KiAUTH {
 			return;
 		}
 
+
+		$this->socUser= new KiSoc($_socialA);
 
 		if (!$this->initSocUser()){
 			$this->socUrlA= $this->socUser->urlA;
@@ -102,7 +101,13 @@ class KiAUTH {
 
 
 	function logout(){
-		$this->socUser->socOut();
+		if ($this->socUser){
+			$this->socUser->socOut();
+
+			return;
+		}
+
+        $this->flexUser->logout();
 	}
 
 }
