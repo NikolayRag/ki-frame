@@ -44,7 +44,7 @@ class KiAUTH {
 			return;
 		}
 
-		$this->socUrlA= $this->socUser->urlA;
+		$this->socUrlA= $this->socUser->loginURL();
 	}
 
 

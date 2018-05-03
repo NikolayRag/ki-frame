@@ -21,7 +21,7 @@ class KiSoc {
 	private $sessionName='socAuth', $cbName;
 
 	private $factory, $typesA=[];
-	var $urlA, $error=null, $user=null;
+	var $error=null, $user=null;
 
 
 
@@ -30,7 +30,6 @@ class KiSoc {
 
 		$this->typesA= $this->packSettings($_settings);
 		$this->factory= new \Social\Factory($this->typesA);
-		$this->urlA= $this->socialFillURL();
 	}
 
 
@@ -102,7 +101,7 @@ class KiSoc {
 /*
 fill auth URL's
 */
-	function socialFillURL(){
+	function loginURL(){
 		$urlA= [];
 
 		foreach ($this->typesA as $type=>$v){
