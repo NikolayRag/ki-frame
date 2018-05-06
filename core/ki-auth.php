@@ -85,12 +85,18 @@ Soc user init assumes normal user is not logged, and thus it is overrided.
 		$stmt->execute([$this->socUser->type, $this->socUser->id]);
 		$id_assigned= getA($stmt->fetch(), 'id_users', 0);
 
+		if (!$id_assigned){
+			$stmt= $_db->prepare('INSERT INTO users (displayName,photoURL) VALUES (?,?)');
+			$stmt->execute([$this->socUser->firstName, $this->socUser->photoUrl]);
+			$id_assigned= $_db->lastInsertId();
 
+
+			$stmt= $_db->prepare('INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)');
+			$stmt->execute([$this->socUser->type, $this->socUser->id, $id_assigned]);
+		}
 
 
 		return $this->flexUser->manageUser($id_assigned);
-
-
 	}
 
 
