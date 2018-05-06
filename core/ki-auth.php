@@ -62,6 +62,9 @@ class KiAUTH {
 
 
 
+/*
+Check if log/pass user is signed.
+*/
 	private function initFlexUser(){
 		$this->flexUser= new \ptejada\uFlex\User();
 		$this->flexUser->config->database->pdo= $this->db;
@@ -74,7 +77,8 @@ class KiAUTH {
 
 
 /*
-Soc user init assumes normal user is not logged, and thus it is overrided.
+Check if social user is signed.
+Soc user init assumes normal user is not logged, and thus assigned one will be in place.
 */
 	private function initSocUser($_socialCfg){
 		$this->socUser= new KiSoc($_socialCfg);
@@ -92,6 +96,12 @@ Soc user init assumes normal user is not logged, and thus it is overrided.
 
 
 
+/*
+Fetch assigned user for given social.
+If none is assigned, implicit one is created and assigned.
+
+Return user id.
+*/
 	private function assignedGet(){
 		$stmt= $this->db->prepare('SELECT id_users FROM users_social WHERE type=? AND id=?');
 		$stmt->execute([$this->socUser->type, $this->socUser->id]);
@@ -121,6 +131,11 @@ Soc user init assumes normal user is not logged, and thus it is overrided.
 		$stmt->execute([time(), $_id]);
 	}
 
+
+
+/*
+API cb for social logon.
+*/
 	function socCB($_req){
 		$socErr= $this->socUser->socCB($_req);
 		if ($socErr)
@@ -139,6 +154,9 @@ Soc user init assumes normal user is not logged, and thus it is overrided.
 
 
 
+/*
+Logout either.
+*/
 	function logout(){
 		$this->socUser?
 			$this->socUser->logout() :
