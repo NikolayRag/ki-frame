@@ -82,7 +82,7 @@ Soc user init assumes normal user is not logged, and thus it is overrided.
 		if (!$this->socUser->start())
 			return;
 
-		$xUser= $this->getAssignedUser();
+		$xUser= $this->assignedGet();
 		if (!$xUser)
 			return;
 
@@ -92,41 +92,49 @@ Soc user init assumes normal user is not logged, and thus it is overrided.
 
 
 
-	private function getAssignedUser($_updateLog=False){
+	private function assignedGet(){
 		$stmt= $this->db->prepare('SELECT id_users FROM users_social WHERE type=? AND id=?');
 		$stmt->execute([$this->socUser->type, $this->socUser->id]);
 		$id_assigned= getA($stmt->fetch(), 'id_users', 0);
-
-		if (!$id_assigned){
-			if (!$this->socUser->start())
-				return;
-
-			$stmt= $this->db->prepare('INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)');
-			$stmt->execute([time(),$this->socUser->firstName, $this->socUser->photoUrl]);
-			$id_assigned= $this->db->lastInsertId();
-
-
-			$stmt= $this->db->prepare('INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)');
-			$stmt->execute([$this->socUser->type, $this->socUser->id, $id_assigned]);
-		}
-
-
-		if ($_updateLog){
-			$stmt= $this->db->prepare('UPDATE users SET LastLogin=? WHERE ID=?');
-			$stmt->execute([time(), $id_assigned]);
-		}
-
 
 		return $id_assigned;
 	}
 
 
 
+	private function assignedCreate(){
+		$stmt= $this->db->prepare('INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)');
+		$stmt->execute([time(),$this->socUser->firstName, $this->socUser->photoUrl]);
+		$id_assigned= $this->db->lastInsertId();
+
+
+		$stmt= $this->db->prepare('INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)');
+		$stmt->execute([$this->socUser->type, $this->socUser->id, $id_assigned]);
+
+		return $id_assigned;
+	}
+
+
+
+	private function assignedUpdate($_id){
+		$stmt= $this->db->prepare('UPDATE users SET LastLogin=? WHERE ID=?');
+		$stmt->execute([time(), $_id]);
+	}
 
 	function socCB($_req){
-		$this->socUser->socCB($_req);
+		$socErr= $this->socUser->socCB($_req);
+		if ($socErr)
+			return;
 
-		$this->getAssignedUser(True);
+		$id= $this->assignedGet(True);
+		if (!$id){
+			 if (!$this->socUser->start())
+			 	return;
+
+			$id= $this->assignedCreate();
+		}
+
+		$this->assignedUpdate($id);
 	}
 
 
