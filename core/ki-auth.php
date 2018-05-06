@@ -55,7 +55,7 @@ class KiAUTH {
 		$this->id= $user->ID;
 		$this->email= $user->Email;
 
-		$this->name= $user->displayName;
+		($this->name= $user->displayName) || ($this->name= $user->Email);
 		$this->photo= $user->photoURL;
 		$this->mask= $user->mask;
 	}
