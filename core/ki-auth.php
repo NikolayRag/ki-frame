@@ -76,10 +76,10 @@ class KiAUTH {
 			return;
 
 
-		$this->name= $this->socUser->user->firstName;
-		$this->photoUrl= $this->socUser->user->photoUrl;
 
 		return true;
+		$this->name= $this->socUser->firstName;
+		$this->photoUrl= $this->socUser->photoUrl;
 	}
 
 

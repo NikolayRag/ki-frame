@@ -21,7 +21,7 @@ class KiSoc {
 	private $sessionName='socAuth', $cbName;
 
 	private $factory, $typesA=[];
-	var $error=null, $user=null;
+	var $error=null, $type=0, $id=0, $firstName='', $photoUrl='';
 
 
 
@@ -42,14 +42,20 @@ class KiSoc {
 		if (!getA($_SESSION, $this->sessionName))
 			return;
 
-	    $api = $this->factory->createApi($_SESSION[$this->sessionName]);
-	    $this->user = $api->getProfile();
+	    $api= $this->factory->createApi($_SESSION[$this->sessionName]);
+		$user= $api->getProfile();
 
-	    if ($this->user)
-		    return true;
+	    if (!$user){
+	        $this->error= $api->getError();
+			return;
+		}
 
+		$this->type= $_SESSION[$this->sessionName]->getType();
+		$this->id= $user->id;
+		$this->firstName= $user->firstName;
+		$this->photoUrl= $user->photoUrl;
 
-        $this->error = $api->getError();
+		return true;
 	}
 
 
