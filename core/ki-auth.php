@@ -34,7 +34,7 @@ class KiAUTH {
 	var $socUser=false, $flexUser, $mask=0, $rights;
 
 	var $socUrlA=[];
-	var $isSigned=false, $id=0, $name='', $email='', $photoUrl='';
+	var $isSigned=false, $id=0, $name='', $email='', $photo='';
 
 
 	function __construct($_db, $_socialA){
@@ -54,7 +54,7 @@ class KiAUTH {
 		$this->email= $user->Email;
 
 		$this->name= $user->displayName;
-		$this->photoUrl= $user->photoURL;
+		$this->photo= $user->photoURL;
 		$this->mask= $user->mask;
 	}
 
