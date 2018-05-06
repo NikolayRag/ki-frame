@@ -132,13 +132,9 @@ Soc user init assumes normal user is not logged, and thus it is overrided.
 
 
 	function logout(){
-		if ($this->socUser){
-			$this->socUser->socOut();
-
-			return;
-		}
-
-        $this->flexUser->logout();
+		$this->socUser?
+			$this->socUser->logout() :
+			$this->flexUser->logout();
 	}
 
 }

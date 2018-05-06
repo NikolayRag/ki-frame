@@ -165,7 +165,7 @@ $_req
 /*
 Logout for social logon
 */
-	function socOut(){
+	function logout(){
 		if (isset($_SESSION[$this->sessionName])) {
     		$_SESSION[$this->sessionName] = array();
 		}
