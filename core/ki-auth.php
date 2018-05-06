@@ -83,8 +83,12 @@ Soc user init assumes normal user is not logged, and thus it is overrided.
 		if (!$this->socUser->start())
 			return;
 
+		$xUser= $this->getAssignedUser();
+		if (!$xUser)
+			return;
 
-		return $this->flexUser->manageUser($this->getAssignedUser());
+
+		return $this->flexUser->manageUser($xUser);
 	}
 
 
