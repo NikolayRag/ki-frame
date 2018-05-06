@@ -39,10 +39,10 @@ class KiAUTH {
 	var $isSigned=false, $id=0, $name='', $email='', $photo='';
 
 
-	function __construct($_db, $_socialA){
+	function __construct($_db, $_socialCfg){
 		$this->db= $_db;
 
-		($user= $this->initFlexUser()) || ($user= $this->initSocUser($_socialA));
+		($user= $this->initFlexUser()) || ($user= $this->initSocUser($_socialCfg));
 
 		if (!$user){
 			$this->socUrlA= $this->socUser->loginURL();
@@ -76,8 +76,8 @@ class KiAUTH {
 /*
 Soc user init assumes normal user is not logged, and thus it is overrided.
 */
-	private function initSocUser($_socialA){
-		$this->socUser= new KiSoc($_socialA);
+	private function initSocUser($_socialCfg){
+		$this->socUser= new KiSoc($_socialCfg);
 
 		if (!$this->socUser->start())
 			return;
