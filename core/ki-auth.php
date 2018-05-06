@@ -7,10 +7,9 @@ Init macro:
 	init Flex user
 	or
 	init Soc user
-		if logged:
-			if explicit user not assigned:
-				create and assign implicit user
-			fetch assigned user
+		if user not assigned:
+			create and assign implicit user
+		fetch assigned user
 */
 
 
@@ -39,12 +38,24 @@ class KiAUTH {
 
 
 	function __construct($_db, $_socialA){
-		if ($this->initFlexUser($_db) or $this->initSocUser($_socialA)){
-			$this->isSigned= true;
+		$user= $this->initFlexUser($_db);
+		if (!$user)
+			$user= $this->initSocUser($_db, $_socialA);
+
+		if (!$user){
+			$this->socUrlA= $this->socUser->loginURL();
 			return;
 		}
 
-		$this->socUrlA= $this->socUser->loginURL();
+
+		$this->isSigned= true;
+
+		$this->id= $user->ID;
+		$this->email= $user->Email;
+
+		$this->name= $user->displayName;
+		$this->photoUrl= $user->photoURL;
+		$this->mask= $user->mask;
 	}
 
 
@@ -56,30 +67,30 @@ class KiAUTH {
 		if (!$this->flexUser->start()->isSigned())
 			return;
 
-
-		$this->id= $this->flexUser->ID;
-		$this->email= $this->flexUser->Email;
-
-		$this->name= $this->flexUser->displayName;
-		$this->photoUrl= $this->flexUser->photoURL;
-		$this->mask= $this->flexUser->mask;
-
-		return true;
+		return $this->flexUser;
 	}
 
 
-
-	private function initSocUser($_socialA){
+/*
+Soc user init assumes normal user is not logged, and thus it is overrided.
+*/
+	private function initSocUser($_db, $_socialA){
 		$this->socUser= new KiSoc($_socialA);
 
 		if (!$this->socUser->start())
 			return;
 
 
+		$stmt= $_db->prepare('SELECT id_users FROM users_social WHERE type=? AND id=?');
+		$stmt->execute([$this->socUser->type, $this->socUser->id]);
+		$id_assigned= getA($stmt->fetch(), 'id_users', 0);
 
-		return true;
-		$this->name= $this->socUser->firstName;
-		$this->photoUrl= $this->socUser->photoUrl;
+
+
+
+		return $this->flexUser->manageUser($id_assigned);
+
+
 	}
 
 
