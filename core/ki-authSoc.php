@@ -25,8 +25,8 @@ class KiSoc {
 
 
 
-	function __construct($_settings, $_cb='logoncb'){
-		$this->cbName= $_cb;
+	function __construct($_settings){
+		$this->cbName= getA($_settings,'CB');
 
 		$this->typesA= $this->packSettings($_settings);
 		$this->factory= new \Social\Factory($this->typesA);
