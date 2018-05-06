@@ -156,6 +156,9 @@ $_req
 	    }
 
 	    $_SESSION[$this->sessionName] = $token;
+
+		$this->type= $token->getType();
+		$this->id= $token->getIdentifier();
 	}
 
 

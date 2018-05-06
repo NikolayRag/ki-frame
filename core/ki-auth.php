@@ -31,6 +31,8 @@ include(__dir__ .'/ki-authSoc.php');
 
 
 class KiAUTH {
+	private $db;
+
 	var $socUser=false, $flexUser, $mask=0, $rights;
 
 	var $socUrlA=[];
@@ -38,9 +40,10 @@ class KiAUTH {
 
 
 	function __construct($_db, $_socialA){
-		$user= $this->initFlexUser($_db);
-		if (!$user)
-			$user= $this->initSocUser($_db, $_socialA);
+		$this->db= $_db;
+
+		$user= $this->initFlexUser();
+		$user= $user? $user: $this->initSocUser($_socialA);
 
 		if (!$user){
 			$this->socUrlA= $this->socUser->loginURL();
@@ -60,9 +63,9 @@ class KiAUTH {
 
 
 
-	private function initFlexUser($_db){
+	private function initFlexUser(){
 		$this->flexUser= new \ptejada\uFlex\User();
-		$this->flexUser->config->database->pdo= $_db;
+		$this->flexUser->config->database->pdo= $this->db;
 
 		if (!$this->flexUser->start()->isSigned())
 			return;
@@ -74,37 +77,53 @@ class KiAUTH {
 /*
 Soc user init assumes normal user is not logged, and thus it is overrided.
 */
-	private function initSocUser($_db, $_socialA){
+	private function initSocUser($_socialA){
 		$this->socUser= new KiSoc($_socialA);
 
 		if (!$this->socUser->start())
 			return;
 
 
-		$stmt= $_db->prepare('SELECT id_users FROM users_social WHERE type=? AND id=?');
+		return $this->flexUser->manageUser($this->getAssignedUser());
+	}
+
+
+
+	private function getAssignedUser($_updateLog=False){
+		$stmt= $this->db->prepare('SELECT id_users FROM users_social WHERE type=? AND id=?');
 		$stmt->execute([$this->socUser->type, $this->socUser->id]);
 		$id_assigned= getA($stmt->fetch(), 'id_users', 0);
 
 		if (!$id_assigned){
-			$stmt= $_db->prepare('INSERT INTO users (displayName,photoURL) VALUES (?,?)');
-			$stmt->execute([$this->socUser->firstName, $this->socUser->photoUrl]);
-			$id_assigned= $_db->lastInsertId();
+			if (!$this->socUser->start())
+				return;
+
+			$stmt= $this->db->prepare('INSERT INTO users (RegDate,displayName,photoURL) VALUES (?,?,?)');
+			$stmt->execute([time(),$this->socUser->firstName, $this->socUser->photoUrl]);
+			$id_assigned= $this->db->lastInsertId();
 
 
-			$stmt= $_db->prepare('INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)');
+			$stmt= $this->db->prepare('INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)');
 			$stmt->execute([$this->socUser->type, $this->socUser->id, $id_assigned]);
 		}
 
 
-		return $this->flexUser->manageUser($id_assigned);
-	}
+		if ($_updateLog){
+			$stmt= $this->db->prepare('UPDATE users SET LastLogin=? WHERE ID=?');
+			$stmt->execute([time(), $id_assigned]);
+		}
 
+
+		return $id_assigned;
+	}
 
 
 
 
 	function socCB($_req){
 		$this->socUser->socCB($_req);
+
+		$this->getAssignedUser(True);
 	}
 
 
