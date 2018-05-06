@@ -25,6 +25,12 @@ class KiSoc {
 
 
 
+/*
+Init fabric for social logon.
+
+_settings: 
+	List of available services.
+*/
 	function __construct($_settings){
 		$this->cbName= getA($_settings,'CB');
 
@@ -34,6 +40,9 @@ class KiSoc {
 
 
 
+/*
+Check if logged in any available service.
+*/
 	function start(){
         if (!isset($_SESSION) && !headers_sent()) {
 			session_start();
@@ -59,7 +68,9 @@ class KiSoc {
 	}
 
 
-
+/*
+Parse settings, excluding blank ones.
+*/
 	function packSettings($_settings){
 		$typesA= [];
 
@@ -104,7 +115,7 @@ class KiSoc {
 
 
 /*
-fill auth URL's
+Fill authorisation URL's list for available services.
 */
 	function loginURL(){
 		$urlA= [];
@@ -129,7 +140,9 @@ fill auth URL's
 
 
 
-
+/*
+Form auth URL for given type.
+*/
 	function socialURL($_type){
 		$protocol= getA($_SERVER, 'HTTPS')? 'https' : 'http';
 		return "$protocol://{$_SERVER['SERVER_NAME']}/{$this->cbName}?type=$_type";
@@ -160,6 +173,7 @@ $_req
 		$this->type= $token->getType();
 		$this->id= $token->getIdentifier();
 	}
+
 
 
 /*
