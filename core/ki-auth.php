@@ -42,7 +42,7 @@ class KiAUTH {
 	function __construct($_db, $_socialA){
 		$this->db= $_db;
 
-		($user= $this->initFlexUser()) or ($user= $this->initSocUser($_socialA));
+		($user= $this->initFlexUser()) || ($user= $this->initSocUser($_socialA));
 
 		if (!$user){
 			$this->socUrlA= $this->socUser->loginURL();
