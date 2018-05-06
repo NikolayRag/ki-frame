@@ -102,7 +102,7 @@ Soc user init assumes normal user is not logged, and thus it is overrided.
 			if (!$this->socUser->start())
 				return;
 
-			$stmt= $this->db->prepare('INSERT INTO users (RegDate,displayName,photoURL) VALUES (?,?,?)');
+			$stmt= $this->db->prepare('INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)');
 			$stmt->execute([time(),$this->socUser->firstName, $this->socUser->photoUrl]);
 			$id_assigned= $this->db->lastInsertId();
 
