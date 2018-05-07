@@ -144,8 +144,10 @@ Fill authorisation URL's list for available services.
 Form auth URL for given type.
 */
 	function socialURL($_type){
-		$protocol= getA($_SERVER, 'HTTPS')? 'https' : 'http';
-		return "$protocol://{$_SERVER['SERVER_NAME']}/{$this->cbName}?type=$_type";
+		$https= getA($_SERVER, 'HTTPS') ||
+		  getA(json_decode(getA($_SERVER, 'HTTP_CF_VISITOR')),'scheme')=='https';
+ 
+		return ($https?'https':'http') ."://{$_SERVER['SERVER_NAME']}/{$this->cbName}?type=$_type";
 	}
 
 
