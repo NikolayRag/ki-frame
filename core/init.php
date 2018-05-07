@@ -37,5 +37,5 @@ $ERRR->errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
 $URL= new KiURL($URI_ALLOW);
 
 
-$USER= new KiAUTH($DB, $SOCIAL);
+$USER= new KiAUTH($DB, $SOCIAL, $URL);
 ?>

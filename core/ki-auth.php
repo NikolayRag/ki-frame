@@ -39,13 +39,13 @@ class KiAUTH {
 	var $isSigned=false, $id=0, $name='', $email='', $photo='';
 
 
-	function __construct($_db, $_socialCfg){
+	function __construct($_db, $_socialCfg, $_url){
 		$this->db= $_db;
 
 		($user= $this->initFlexUser()) || ($user= $this->initSocUser($_socialCfg));
 
 		if (!$user){
-			$this->socUrlA= $this->socUser->loginURL();
+			$this->socUrlA= $this->socUser->loginURL($_url);
 			return;
 		}
 

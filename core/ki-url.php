@@ -22,6 +22,14 @@ class KiURL {
 	var $type='', $path=[], $args;
 
 	function __construct($_filterA){
+		$this->https=
+			getA($_SERVER, 'HTTPS') ||
+			getA(json_decode(getA($_SERVER, 'HTTP_CF_VISITOR')),'scheme')=='https';
+	
+
+		$this->server= $_SERVER['SERVER_NAME'];
+
+
 		$this->args= new LooseObject();
 
 		foreach ($_POST as $pName=>$pVal)

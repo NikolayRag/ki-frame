@@ -117,12 +117,12 @@ Parse settings, excluding blank ones.
 /*
 Fill authorisation URL's list for available services.
 */
-	function loginURL(){
+	function loginURL($_url){
 		$urlA= [];
 
 		foreach ($this->typesA as $type=>$v){
 			$auth= $this->factory->createAuth($type);
-			$url= $auth->getAuthorizeUrl($this->socialURL($type));
+			$url= $auth->getAuthorizeUrl($this->socialURL($type, $_url));
 
 
 			switch ($type){
@@ -143,11 +143,8 @@ Fill authorisation URL's list for available services.
 /*
 Form auth URL for given type.
 */
-	function socialURL($_type){
-		$https= getA($_SERVER, 'HTTPS') ||
-		  getA(json_decode(getA($_SERVER, 'HTTP_CF_VISITOR')),'scheme')=='https';
- 
-		return ($https?'https':'http') ."://{$_SERVER['SERVER_NAME']}/{$this->cbName}?type=$_type";
+	function socialURL($_type, $_url){
+		return ($_url->https?'https':'http') ."://{$_url->server}/{$this->cbName}?type=$_type";
 	}
 
 
@@ -158,12 +155,12 @@ Callback function for social logons.
 $_req
 	$_REQUEST passed in.
 */	
-	function socCB($_req){
-	    $type = $_req->type;
+	function socCB($_url){
+	    $type = $_url->args->type;
 	    $auth = $this->factory->createAuth($type);
 	    $token = $auth->authenticate(
-	    	$_req->all(),
-	    	$this->socialURL($type)
+	    	$_url->args->all(),
+	    	$this->socialURL($type, $_url)
 	    );
 
 	    if (!$token) {
