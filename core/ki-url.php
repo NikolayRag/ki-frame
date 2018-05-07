@@ -21,7 +21,7 @@ __construct($_modeA, $_modeDefault, $_modeWrong)
 class KiURL {
 	var $type='', $path=[], $args;
 
-	function __construct($_pathA){
+	function __construct($_filterA){
 		$this->args= new LooseObject();
 
 		foreach ($_POST as $pName=>$pVal)
@@ -52,7 +52,7 @@ class KiURL {
 		$path0= strtoupper($this->path[0]);
 
 		if ($path0!==''){
-			$this->type= getA($_pathA, $path0);
+			$this->type= getA($_filterA, $path0);
 		}
 		
 	}
