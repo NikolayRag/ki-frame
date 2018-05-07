@@ -27,12 +27,12 @@ class KiURL {
 		foreach ($_POST as $pName=>$pVal)
 			$this->args->$pName= $pVal;
 
-		$_uriA= explode("?", $_SERVER["REQUEST_URI"]);
+		$uriA= explode("?", $_SERVER["REQUEST_URI"]);
 
 
 		//Fill args
-		if (isset($_uriA[1]))
-		  foreach(explode("&",$_uriA[1]) as $x){
+		if (isset($uriA[1]))
+		  foreach(explode("&",$uriA[1]) as $x){
 			$xSpl= explode("=",$x);
 			$get= isset($xSpl[1])? urldecode($xSpl[1]) :False;
 
@@ -44,7 +44,7 @@ class KiURL {
 
 
 		$this->path= array_slice(
-			explode("/", preg_replace('[/+]', '/', $_uriA[0])), 1
+			explode("/", preg_replace('[/+]', '/', $uriA[0])), 1
 		);
 
 
