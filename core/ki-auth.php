@@ -63,6 +63,38 @@ class KiAUTH {
 
 
 /*
+API cb for social logon.
+*/
+	function socCB($_req){
+		$socErr= $this->socUser->socCB($_req);
+		if ($socErr)
+			return;
+
+		$id= $this->assignedGet(True);
+		if (!$id){
+			 if (!$this->socUser->start())
+			 	return;
+
+			$id= $this->assignedCreate();
+		}
+
+		$this->assignedUpdate($id);
+	}
+
+
+
+/*
+Logout either.
+*/
+	function logout(){
+		$this->socUser?
+			$this->socUser->logout() :
+			$this->flexUser->logout();
+	}
+
+
+
+/*
 Check if log/pass user is signed.
 */
 	private function initFlexUser(){
@@ -129,38 +161,6 @@ Return user id.
 	private function assignedUpdate($_id){
 		$stmt= $this->db->prepare('UPDATE users SET LastLogin=? WHERE ID=?');
 		$stmt->execute([time(), $_id]);
-	}
-
-
-
-/*
-API cb for social logon.
-*/
-	function socCB($_req){
-		$socErr= $this->socUser->socCB($_req);
-		if ($socErr)
-			return;
-
-		$id= $this->assignedGet(True);
-		if (!$id){
-			 if (!$this->socUser->start())
-			 	return;
-
-			$id= $this->assignedCreate();
-		}
-
-		$this->assignedUpdate($id);
-	}
-
-
-
-/*
-Logout either.
-*/
-	function logout(){
-		$this->socUser?
-			$this->socUser->logout() :
-			$this->flexUser->logout();
 	}
 
 }
