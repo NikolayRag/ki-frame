@@ -18,6 +18,14 @@ spl_autoload_register(
 
 
 class KiSoc {
+	static $socIconsA= [
+		\Social\Type::VK=> 'https://vk.com/images/safari_152.png',
+		\Social\Type::MR=>	'',
+		\Social\Type::FB=>	'',
+		\Social\Type::GITHUB=>	'',
+		\Social\Type::TWITTER=>	''
+	];
+
 	private $sessionName='socAuth', $cbName;
 
 	private $factory, $typesA=[];
@@ -132,7 +140,10 @@ Fill authorisation URL's list for available services.
 				}
 			}
 
-			$urlA[$type]['url']= $url;
+			$urlA[$type]= [
+				'url'=>	$url,
+				'icon'=>	KiSoc::$socIconsA[$type]
+			];
 		}
 	
 		return $urlA;
