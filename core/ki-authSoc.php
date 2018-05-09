@@ -49,7 +49,8 @@ _settings:
 
 
 /*
-Check if logged in any available service.
+Check if social session is valid. 
+! False-positive logon may occure, if user was forced to be logged off at the social side.
 */
 	function start(){
         if (!isset($_SESSION) && !headers_sent()) {
@@ -60,7 +61,18 @@ Check if logged in any available service.
 		if (!$this->token)
 			return;
 
+		$this->type= $this->token->getType();
+		$this->id= $this->token->getIdentifier();
 
+		return True;
+	}
+
+
+
+/*
+Actually fetch user data from social.
+*/
+	function fetch(){
 	    $api= $this->factory->createApi($this->token);
 		$user= $api->getProfile();
 
@@ -69,8 +81,6 @@ Check if logged in any available service.
 			return;
 		}
 
-		$this->type= $this->token->getType();
-		$this->id= $this->token->getIdentifier();
 		$this->firstName= $user->firstName;
 		$this->photoUrl= $user->photoUrl;
 

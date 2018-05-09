@@ -72,10 +72,11 @@ API cb for social logon.
 
 		$id= $this->assignedGet(True);
 		if (!$id){
-			 if (!$this->socUser->start())
+			$userData= $this->socUser->fetch();
+			if (!$userData)
 			 	return;
 
-			$id= $this->assignedCreate();
+			$id= $this->assignedCreate($userData);
 		}
 
 		$this->assignedUpdate($id);
@@ -144,9 +145,9 @@ Return user id.
 
 
 
-	private function assignedCreate(){
+	private function assignedCreate($_userData){
 		$stmt= $this->db->prepare('INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)');
-		$stmt->execute([time(),$this->socUser->firstName, $this->socUser->photoUrl]);
+		$stmt->execute([time(),$_userData->firstName, $_userData->photoUrl]);
 		$id_assigned= $this->db->lastInsertId();
 
 
