@@ -28,7 +28,7 @@ class KiSoc {
 
 	private $sessionName='socAuth', $cbName;
 
-	private $factory, $typesA=[];
+	private $token, $factory, $typesA=[];
 	var $error=null, $type=0, $id=0, $firstName='', $photoUrl='';
 
 
@@ -56,10 +56,12 @@ Check if logged in any available service.
 			session_start();
 		}
 
-		if (!getA($_SESSION, $this->sessionName))
+		$this->token= getA($_SESSION, $this->sessionName);
+		if (!$this->token)
 			return;
 
-	    $api= $this->factory->createApi($_SESSION[$this->sessionName]);
+
+	    $api= $this->factory->createApi($this->token);
 		$user= $api->getProfile();
 
 	    if (!$user){
@@ -67,8 +69,8 @@ Check if logged in any available service.
 			return;
 		}
 
-		$this->type= $_SESSION[$this->sessionName]->getType();
-		$this->id= $user->id;
+		$this->type= $this->token->getType();
+		$this->id= $this->token->getIdentifier();
 		$this->firstName= $user->firstName;
 		$this->photoUrl= $user->photoUrl;
 
@@ -169,19 +171,19 @@ $_req
 	function socCB($_url){
 	    $type = $_url->args->type;
 	    $auth = $this->factory->createAuth($type);
-	    $token = $auth->authenticate(
+	    $this->token = $auth->authenticate(
 	    	$_url->args->all(),
 	    	$this->socialURL($type, $_url)
 	    );
 
-	    if (!$token) {
+	    if (!$this->token) {
 	        return $auth->getError();
 	    }
 
-	    $_SESSION[$this->sessionName] = $token;
+	    $_SESSION[$this->sessionName] = $this->token;
 
-		$this->type= $token->getType();
-		$this->id= $token->getIdentifier();
+		$this->type= $this->token->getType();
+		$this->id= $this->token->getIdentifier();
 	}
 
 
