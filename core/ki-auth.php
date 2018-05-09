@@ -43,7 +43,6 @@ class KiAUTH {
 		$this->db= $_db;
 
 		($user= $this->initFlexUser()) || ($user= $this->initSocUser($_socialCfg));
-
 		if (!$user){
 			$this->socUrlA= $this->socUser->loginURL($_url);
 			return;
@@ -70,7 +69,7 @@ API cb for social logon.
 		if ($socErr)
 			return;
 
-		$id= $this->assignedGet(True);
+		$id= $this->assignedGet();
 		if (!$id){
 			$userData= $this->socUser->fetch();
 			if (!$userData)
