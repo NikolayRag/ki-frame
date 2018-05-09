@@ -142,7 +142,7 @@ Fill authorisation URL's list for available services.
 
 			$urlA[$type]= [
 				'url'=>	$url,
-				'icon'=>	KiSoc::$socIconsA[$type]
+				'icon'=>	self::$socIconsA[$type]
 			];
 		}
 	
