@@ -47,16 +47,8 @@ class KiAUTH {
 			$this->socUrlA= $this->socUser->loginURL($_url);
 			return;
 		}
-
-
-		$this->isSigned= true;
-
-		$this->id= $user->ID;
-		$this->email= $user->Email;
-
-		($this->name= $user->displayName) || ($this->name= $user->Email);
-		$this->photo= $user->photoURL;
-		$this->mask= $user->mask;
+	
+		$this->applyUser($user);
 	}
 
 
@@ -79,6 +71,9 @@ API cb for social logon.
 		}
 
 		$this->assignedUpdate($id);
+
+
+		$this->applyUser($this->flexUser->manageUser($id));
 	}
 
 
@@ -90,6 +85,22 @@ Logout either.
 		$this->socUser?
 			$this->socUser->logout() :
 			$this->flexUser->logout();
+	}
+
+
+
+/*
+Stores uFlex user data locally
+*/
+	private function applyUser($_user){
+		$this->isSigned= true;
+
+		$this->id= $_user->ID;
+		$this->email= $_user->Email;
+
+		($this->name= $_user->displayName) || ($this->name= $_user->Email);
+		$this->photo= $_user->photoURL;
+		$this->mask= $_user->mask;
 	}
 
 
