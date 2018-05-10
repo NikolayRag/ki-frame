@@ -53,10 +53,6 @@ Check if social session is valid.
 ! False-positive logon may occure, if user was forced to be logged off at the social side.
 */
 	function start(){
-        if (!isset($_SESSION) && !headers_sent()) {
-			session_start();
-		}
-
 		$this->token= getA($_SESSION, $this->sessionName);
 		if (!$this->token)
 			return;
@@ -202,9 +198,7 @@ $_req
 Logout for social logon
 */
 	function logout(){
-		if (isset($_SESSION[$this->sessionName])) {
-    		$_SESSION[$this->sessionName] = array();
-		}
+   		$_SESSION[$this->sessionName] = array();
 	}
 
 }

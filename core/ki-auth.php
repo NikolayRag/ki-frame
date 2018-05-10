@@ -133,7 +133,6 @@ Soc user init assumes normal user is not logged, and thus assigned one will be i
 		if (!$xUser)
 			return;
 
-
 		return $this->flexUser->manageUser($xUser);
 	}
 
