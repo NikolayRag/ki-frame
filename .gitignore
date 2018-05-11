@@ -4,6 +4,12 @@ uFlex
 ZipStream-PHP
 
 
+.gitignore
+.gitattributes
+*.sublime-*
+*.do.*
+
+
 
 # Windows image file caches
 Thumbs.db
