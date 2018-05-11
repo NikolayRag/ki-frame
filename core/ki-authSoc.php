@@ -26,7 +26,7 @@ class KiSoc {
 		\Social\Type::TWITTER=>	''
 	];
 
-	private $sessionName='socAuth', $cbName;
+	static $sessionName='socAuth', $sessionStamp='socAuth_stamp', $stampTimeout=10, $cbName;
 
 	private $token, $factory, $typesA=[];
 	var $error=null, $type=0, $id=0, $firstName='', $photoUrl='';
@@ -40,7 +40,7 @@ _settings:
 	List of available services.
 */
 	function __construct($_settings){
-		$this->cbName= getA($_settings,'CB');
+		self::$cbName= getA($_settings,'CB');
 
 		$this->typesA= $this->packSettings($_settings);
 		$this->factory= new \Social\Factory($this->typesA);
@@ -53,19 +53,19 @@ Check if social session is valid.
 ! False-positive logon may occure, if user was forced to be logged off at the social side.
 */
 	function start(){
-		$this->token= getA($_SESSION, $this->sessionName);
+		$this->token= getA($_SESSION, self::$sessionName);
 		if (!$this->token)
 			return;
 
 		$this->type= $this->token->getType();
 		$this->id= $this->token->getIdentifier();
 
-		$stamp= getA($_SESSION, "{$this->sessionName}_stamp", 0);
-		if (time()-$stamp>10){
+		$stamp= getA($_SESSION, self::$sessionStamp, 0);
+		if (time()-$stamp>self::$stampTimeout){
 			if (!$this->fetch())
 				return;
 
-	   		$_SESSION["{$this->sessionName}_stamp"]= time();
+	   		$_SESSION[self::$sessionStamp]= time();
 		}
 
 		return True;
@@ -171,7 +171,7 @@ Fill authorisation URL's list for available services.
 Form auth URL for given type.
 */
 	function socialURL($_type, $_url){
-		return ($_url->https?'https':'http') ."://{$_url->server}/{$this->cbName}?type=$_type";
+		return ($_url->https?'https':'http') .'://'. $_url->server .'/'. self::$cbName ."?type=$_type";
 	}
 
 
@@ -194,7 +194,7 @@ $_req
 	        return $auth->getError();
 	    }
 
-	    $_SESSION[$this->sessionName] = $this->token;
+	    $_SESSION[self::$sessionName] = $this->token;
 
 		$this->type= $this->token->getType();
 		$this->id= $this->token->getIdentifier();
@@ -206,8 +206,8 @@ $_req
 Logout for social logon
 */
 	function logout(){
-   		$_SESSION[$this->sessionName] = array();
-   		$_SESSION["{$this->sessionName}_stamp"] = 0;
+   		$_SESSION[self::$sessionName] = array();
+   		$_SESSION[self::$sessionStamp] = 0;
 	}
 
 }
