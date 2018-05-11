@@ -60,6 +60,14 @@ Check if social session is valid.
 		$this->type= $this->token->getType();
 		$this->id= $this->token->getIdentifier();
 
+		$stamp= getA($_SESSION, "{$this->sessionName}_stamp", 0);
+		if (time()-$stamp>10){
+			if (!$this->fetch())
+				return;
+
+	   		$_SESSION["{$this->sessionName}_stamp"]= time();
+		}
+
 		return True;
 	}
 
@@ -199,6 +207,7 @@ Logout for social logon
 */
 	function logout(){
    		$_SESSION[$this->sessionName] = array();
+   		$_SESSION["{$this->sessionName}_stamp"] = 0;
 	}
 
 }
