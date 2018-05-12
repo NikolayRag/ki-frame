@@ -1,7 +1,4 @@
-php-social
-PHPMailer
-uFlex
-ZipStream-PHP
+_3rd/
 
 
 .gitignore
