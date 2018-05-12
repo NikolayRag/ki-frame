@@ -4,20 +4,25 @@ require (__dir__ .'/../../_3rd/PHPMailer/PHPMailerAutoload.php');
 $errors= false;
 
 switch (strtolower(first($URL->path[1], ''))) {
+    case 'social': {
+        $USER->socCB($URL);
+        redirect('/');
+
+        break;
+    }
+
     case 'logout': {
         $USER->logout();
 
-        $errors= $USER->log->getAllErrors();
-        if (!count( getA($errors,'User::registration',[]) ))
-            $errors= ['User::logout'=> []];
+        $errors= ['User::logout'=> []];
 
         break;
     }
 
     case 'login': {
-        $USER->login($URL->args->Email, $URL->args->Password, true);
+        $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
 
-        $errors= $USER->log->getAllErrors();
+        $errors= $USER->flexUser->log->getAllErrors();
 
         break;
     }
@@ -25,9 +30,9 @@ switch (strtolower(first($URL->path[1], ''))) {
     case 'restore': {
         $email= first($URL->args->Email, '');
 
-        $resReset= $USER->resetPassword($email);
+        $resReset= $USER->flexUser->resetPassword($email);
         if (!$resReset){
-            $errors= $USER->log->getAllErrors();
+            $errors= $USER->flexUser->log->getAllErrors();
             break;
         }
 
@@ -57,45 +62,30 @@ switch (strtolower(first($URL->path[1], ''))) {
     }
 
     case 'newpass': {
-        $resReset= $USER->newPassword($URL->args->hash,Array('Password'=>$URL->args->newPass));
+        $resReset= $USER->flexUser->newPassword($URL->args->hash,Array('Password'=>$URL->args->newPass));
 
-        $errors= $USER->log->getAllErrors();
+        $errors= $USER->flexUser->log->getAllErrors();
         if (!count($errors['User::newPassword']))
-          $USER->login($URL->args->Email, $URL->args->newPass, true);
+          $USER->flexUser->login($URL->args->Email, $URL->args->newPass, true);
         break;
     }
 
     case 'register': {
-        //make fake username
-        $stmt= $DB->prepare('SELECT count(*) FROM Users');
-        $stmt->execute();
-        $arr= $stmt->fetch();
-
-        $USER->register([
-            'Username'=> "User{$arr[0]}",
+        $USER->flexUser->register([
+            'Username'=> preg_replace('/[@\.]/',"_", $URL->args->Email),
             'Email'=>$URL->args->Email,
             'Password'=>$URL->args->Password
         ]);
 
-        $errors= $USER->log->getAllErrors();
+        $errors= $USER->flexUser->log->getAllErrors();
         if (!count($errors['User::registration']))
-          $USER->login($URL->args->Email, $URL->args->Password, true);
-        break;
-    }
-
-    case 'edit': {
-      try{
-            $stmt= $DB->prepare('REPLACE INTO users_accounts (id_user, name1, name2, name3, position, phone) VALUES (?,?,?,?,?,?)');
-            $stmt->execute([$USER->ID, $URL->args->fio1E, $URL->args->fio2E, $URL->args->fio3E, $URL->args->positionE, $URL->args->phoneE]);
-
-            $errors= ['User::edit'=> []];
-        } catch ( PDOException $Exception ){
-            $errors= ['User::edit'=> [$Exception]];
-        }
+          $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
         break;
     }
 }
 
-echo json_encode($errors);
+if ($errors)
+    echo json_encode($errors);
+
 
 ?>

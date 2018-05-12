@@ -16,6 +16,7 @@ KiCONST::add('MAILCFG', (object)[
 
 
 KiCONST::add('SOCIAL', (object)[ 
+        'CB' => 'logon/social',
         'VKID' => 0,
         'VKKEY' => '',
         'VKSCOPE' => '',
@@ -34,7 +35,7 @@ KiCONST::add('SOCIAL', (object)[
 
 
 KiCONST::add('URI_ALLOW', (object)[ 
-        'LOGONCB'=> 'api'
+        'LOGON'=> 'api'
 ], false);
 
 ?>

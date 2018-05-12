@@ -68,4 +68,13 @@ errCBApiError($_message)
 		};
 	}
 
+
+
+$ERRR->okCB(okCBProfile($__startTime));
+$ERRR->errCB(errCBDisplayBadge());
+//debug error callback
+if ($DEBUG)
+	$ERRR->errCB(errCBDisplayVerbose());
+
+
 ?>
