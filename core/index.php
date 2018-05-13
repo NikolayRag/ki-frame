@@ -18,7 +18,8 @@ if ($URL->type=='api'){
 
 
 if ($URL->type!==''){
-	header("HTTP/1.1 404 Not Found");
+// -todo 2 (http, fix) +0: 404 sending default page
+	http_response_code(404);
 	exit;
 }
 
