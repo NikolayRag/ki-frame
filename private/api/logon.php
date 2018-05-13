@@ -71,8 +71,12 @@ switch (strtolower(first($URL->path[1], ''))) {
     }
 
     case 'register': {
+        $stmt= $DB->prepare('SELECT count(*) FROM Users');
+        $stmt->execute();
+        $arr= $stmt->fetch();
+
         $USER->flexUser->register([
-            'Username'=> preg_replace('/[@\.]/',"_", $URL->args->Email),
+            'Username'=> "u_{$arr[0]}",
             'Email'=>$URL->args->Email,
             'Password'=>$URL->args->Password
         ]);
