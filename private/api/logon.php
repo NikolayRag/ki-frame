@@ -88,8 +88,7 @@ switch (strtolower(first($URL->path[1], ''))) {
     }
 }
 
-if ($errors)
-    echo json_encode($errors);
+echo json_encode($errors);
 
 
 ?>
