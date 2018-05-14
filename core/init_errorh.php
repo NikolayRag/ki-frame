@@ -65,7 +65,7 @@ errCBDB($_db, $_table)
 				$eType= (array_key_exists('etype', $cVal) && $cVal['etype']==2)?2:1;
 				if (!$cKey){
 					$stmt= $_db->prepare("INSERT INTO $_table (type, code, `desc`, file, line, id_user, url, agent) VALUES (?,?,?,?,?,?,?,?)");
-					$stmt->execute([$eType, $cVal['type'], $cVal['message'], $cVal['file'], $cVal['line'], (isset($USER)?$USER->ID:0), $_SERVER["REQUEST_URI"], getA($_SERVER,'HTTP_USER_AGENT','fake')]);
+					$stmt->execute([$eType, $cVal['type'], $cVal['message'], $cVal['file'], $cVal['line'], $USER->id, $_SERVER["REQUEST_URI"], getA($_SERVER,'HTTP_USER_AGENT','fake')]);
 				} else {
 					$stmt= $_db->prepare("SELECT max(id) maxid FROM $_table");
 					$stmt->execute();
