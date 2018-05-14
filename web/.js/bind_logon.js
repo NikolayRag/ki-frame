@@ -67,3 +67,5 @@ $('#modalNewPass').on('shown.bs.modal', function () {
     $('#pswNew').focus();
 })
 
+if (ARGS['']=='reset')
+    $("#modalNewPass").modal('show');
