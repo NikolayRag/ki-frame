@@ -18,8 +18,10 @@
 
 
         <script>
-        <? foreach (KiCONST::dump() as $cName=>$cCont)
-            echo "var {$cName}= " .json_encode($cCont) .";\n";
+        <?
+            echo "var ARGS= " .json_encode($URL->args->all()) .";\n";
+            foreach (KiCONST::dump() as $cName=>$cCont)
+                echo "var {$cName}= " .json_encode($cCont) .";\n";
         ?>
 
 
