@@ -14,7 +14,7 @@ switch (strtolower(first($URL->path[1], ''))) {
     case 'logout': {
         $USER->logout();
 
-        $errors= ['User::logout'=> []];
+        $errors= ['1'=> [0]];
 
         break;
     }
@@ -22,7 +22,7 @@ switch (strtolower(first($URL->path[1], ''))) {
     case 'login': {
         $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
 
-        $errors= $USER->flexUser->log->getAllErrors();
+        $errors= ["1"=>[$USER->errorGetLast()]];
 
         break;
     }
@@ -32,7 +32,7 @@ switch (strtolower(first($URL->path[1], ''))) {
 
         $resReset= $USER->flexUser->resetPassword($email);
         if (!$resReset){
-            $errors= $USER->flexUser->log->getAllErrors();
+            $errors= ["1"=>[$USER->errorGetLast()]];
             break;
         }
 
@@ -56,7 +56,7 @@ switch (strtolower(first($URL->path[1], ''))) {
         $mail->msgHTML($mailMessage);
 
         if (! $mail->send())
-            $errors= ['User::restore'=> ['Ошибка восстановления']];
+            $errors= ['1'=> ['Ошибка восстановления']];
 
         break;
     }
@@ -64,8 +64,8 @@ switch (strtolower(first($URL->path[1], ''))) {
     case 'newpass': {
         $resReset= $USER->flexUser->newPassword($URL->args->hash,Array('Password'=>$URL->args->newPass));
 
-        $errors= $USER->flexUser->log->getAllErrors();
-        if (!count($errors['User::newPassword']))
+        $errors= ["1"=>[$USER->errorGetLast()]];
+        if (!$errors['1'][0])
           $USER->flexUser->login($URL->args->Email, $URL->args->newPass, true);
         break;
     }
@@ -81,13 +81,15 @@ switch (strtolower(first($URL->path[1], ''))) {
             'Password'=>$URL->args->Password
         ]);
 
-        $errors= $USER->flexUser->log->getAllErrors();
-        if (!count($errors['User::registration']))
+        $errors= ["1"=>[$USER->errorGetLast()]];
+        if (!$errors['1'][0])
           $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
         break;
     }
 }
 
+if (!$errors['1'][0])
+    $errors['1']= [];
 echo json_encode($errors);
 
 
