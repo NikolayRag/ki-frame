@@ -205,7 +205,7 @@ Return user id.
 
 
 
-	function errorGetLast(){
+	function flexErrorGetLast(){
 		$err= Null;
 		foreach ($this->flexUser->log->getAllErrors() as $err);
 
@@ -213,12 +213,12 @@ Return user id.
 		if ($err)
 			foreach ($err as $cErr);
 
-		return $this->errorDeref($cErr);
+		return $this->flexErrorDeref($cErr);
 	}
 
 
 
-	private function errorDeref($_err){
+	private function flexErrorDeref($_err){
 		if (!$_err)
 			return;
 

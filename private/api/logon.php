@@ -1,7 +1,7 @@
 <?php
 require (__dir__ .'/../../_3rd/PHPMailer/PHPMailerAutoload.php');
 
-$errors= false;
+$errors= ['1'=> [0]];
 
 switch (strtolower(first($URL->path[1], ''))) {
     case 'social': {
@@ -14,15 +14,13 @@ switch (strtolower(first($URL->path[1], ''))) {
     case 'logout': {
         $USER->logout();
 
-        $errors= ['1'=> [0]];
-
         break;
     }
 
     case 'login': {
         $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
 
-        $errors= ["1"=>[$USER->errorGetLast()]];
+        $errors= ["1"=>[$USER->flexErrorGetLast()]];
 
         break;
     }
@@ -32,7 +30,7 @@ switch (strtolower(first($URL->path[1], ''))) {
 
         $resReset= $USER->flexUser->resetPassword($email);
         if (!$resReset){
-            $errors= ["1"=>[$USER->errorGetLast()]];
+            $errors= ["1"=>[$USER->flexErrorGetLast()]];
             break;
         }
 
@@ -64,7 +62,7 @@ switch (strtolower(first($URL->path[1], ''))) {
     case 'newpass': {
         $resReset= $USER->flexUser->newPassword($URL->args->hash,Array('Password'=>$URL->args->newPass));
 
-        $errors= ["1"=>[$USER->errorGetLast()]];
+        $errors= ["1"=>[$USER->flexErrorGetLast()]];
         if (!$errors['1'][0])
           $USER->flexUser->login($URL->args->Email, $URL->args->newPass, true);
         break;
@@ -81,7 +79,7 @@ switch (strtolower(first($URL->path[1], ''))) {
             'Password'=>$URL->args->Password
         ]);
 
-        $errors= ["1"=>[$USER->errorGetLast()]];
+        $errors= ["1"=>[$USER->flexErrorGetLast()]];
         if (!$errors['1'][0])
           $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
         break;
