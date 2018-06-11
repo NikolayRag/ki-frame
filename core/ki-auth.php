@@ -56,24 +56,24 @@ class KiAUTH {
 /*
 API cb for social logon.
 */
-	function socCB($_req){
-		$socErr= $this->socUser->socCB($_req);
+	function socCB($_url){
+		$socErr= $this->socUser->socCB($_url);
 		if ($socErr)
 			return;
 
-		$id= $this->assignedGet();
-		if (!$id){
+		$xId= $this->assignedGet($this->socUser);
+		if (!$xId){
 			$userData= $this->socUser->fetch();
 			if (!$userData)
 			 	return;
 
-			$id= $this->assignedCreate($userData);
+			$xId= $this->assignedCreate($userData);
 		}
 
-		$this->assignedUpdate($id);
+		$this->assignedUpdate($xId);
 
 
-		$this->applyUser($this->flexUser->manageUser($id));
+		$this->applyUser($this->flexUser->manageUser($xId));
 	}
 
 
@@ -129,11 +129,11 @@ Soc user init assumes normal user is not logged, and thus assigned one will be i
 		if (!$this->socUser->start())
 			return;
 
-		$xUser= $this->assignedGet();
-		if (!$xUser)
+		$xId= $this->assignedGet($this->socUser);
+		if (!$xId)
 			return;
 
-		return $this->flexUser->manageUser($xUser);
+		return $this->flexUser->manageUser($xId);
 	}
 
 
@@ -144,9 +144,9 @@ If none is assigned, implicit one is created and assigned.
 
 Return user id.
 */
-	private function assignedGet(){
+	private function assignedGet($_soc){
 		$stmt= $this->db->prepare('SELECT id_users FROM users_social WHERE type=? AND id=?');
-		$stmt->execute([$this->socUser->type, $this->socUser->id]);
+		$stmt->execute([$_soc->type, $_soc->id]);
 		$id_assigned= getA($stmt->fetch(), 'id_users', 0);
 
 		return $id_assigned;
