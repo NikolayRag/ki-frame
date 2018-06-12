@@ -1,7 +1,13 @@
 <?php
 
 /*
-Deal with user authorization - social and explicit, and rights assignment
+Deal with user authorization - social and explicit, and rights assignment.
+Actual user data is stored in logpass (uFlex) account.
+Each soc user is assigned to logpass account.
+Blank logpass account is assigned implicitely to new successfull soc login, and is not valid to log in with loginn/password actually.
+
+! No implicit check is applied to restrict interference of soc/logpass user,
+if one calls authorization methods outside this class.	
 
 Init macro:
 	init Flex user
@@ -55,6 +61,9 @@ class KiAUTH {
 
 /*
 API cb for social logon.
+
+$_url
+	$KiURL passed in with GET arguments filled.
 */
 	function socCB($_url){
 		$socErr= $this->socUser->socCB($_url);
@@ -65,6 +74,7 @@ API cb for social logon.
 		if (!$xId) //  todo 6 (error) +0: deal with error
 		 	return;
 
+		$this->assignedUpdate($xId); //update last logon state
 
 		$this->applyUser($this->flexUser->manageUser($xId));
 	}
@@ -82,8 +92,11 @@ Logout either.
 
 
 
+
+/* PRIVATE */
+
 /*
-Stores uFlex user data locally
+Apply data from fetched uFlex user.
 */
 	private function applyUser($_user){
 		$this->isSigned= true;
@@ -99,7 +112,7 @@ Stores uFlex user data locally
 
 
 /*
-Check if log/pass user is signed.
+Check if logpass user is signed.
 */
 	private function initFlexUser(){
 		$this->flexUser= new \ptejada\uFlex\User();
@@ -112,9 +125,10 @@ Check if log/pass user is signed.
 	}
 
 
+
 /*
 Check if social user is signed.
-Soc user init assumes normal user is not logged, and thus assigned one will be in place.
+Soc user init assumes normal user is not logged, and thus user data from assigned one will be fetched, including local userID (differed from social userID's).
 */
 	private function initSocUser($_socialCfg){
 		$this->socUser= new KiSoc($_socialCfg);
@@ -123,7 +137,7 @@ Soc user init assumes normal user is not logged, and thus assigned one will be i
 			return;
 
 		$xId= $this->assignedGet($this->socUser);
-		if (!$xId)
+		if (!$xId) //  todo 5 (error) +0: deal with error
 			return;
 
 		return $this->flexUser->manageUser($xId);
@@ -132,8 +146,8 @@ Soc user init assumes normal user is not logged, and thus assigned one will be i
 
 
 /*
-Fetch assigned user for given social.
-If none is assigned, implicit one is created and assigned.
+Fetch assigned logpass user for given social.
+If none logpass user is assigned, implicit one is created and assigned.
 
 Return user id.
 */
@@ -156,6 +170,9 @@ Return user id.
 
 
 
+/*
+Create implicit logpass user for given social one.
+*/
 	private function assignedCreate($_userData){
 		$stmt= $this->db->prepare('INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)');
 		$stmt->execute([time(),$_userData->firstName, $_userData->photoUrl]);
@@ -170,6 +187,9 @@ Return user id.
 
 
 
+/*
+Update last logon state.
+*/
 	private function assignedUpdate($_id){
 		$stmt= $this->db->prepare('UPDATE users SET LastLogin=? WHERE ID=?');
 		$stmt->execute([time(), $_id]);
@@ -180,7 +200,9 @@ Return user id.
 
 
 
-	//since uFlex dont return error codes, we must catch them
+/*
+Since uFlex dont return error codes, we must assign them based on error message.
+*/
 	static $flexErrA= [
 		1=> '/New User Registration Failed/',
 		2=> '/The Changes Could not be made/',
@@ -211,6 +233,11 @@ Return user id.
 
 
 
+/*
+Get code for last (and only) uFlex error, if any.
+
+Return: code id
+*/
 	function flexErrorGetLast(){
 		$err= Null;
 		foreach ($this->flexUser->log->getAllErrors() as $err);
@@ -224,6 +251,9 @@ Return user id.
 
 
 
+/*
+Restore error id from text message.
+*/
 	private function flexErrorDeref($_err){
 		if (!$_err)
 			return;

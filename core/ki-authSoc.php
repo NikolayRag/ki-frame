@@ -179,8 +179,8 @@ Form auth URL for given type.
 /*
 Callback function for social logons.
 
-$_req
-	$_REQUEST passed in.
+$_url
+	$KiURL passed in.
 */	
 	function socCB($_url){
 	    $type = $_url->args->type;
