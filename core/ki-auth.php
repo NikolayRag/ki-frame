@@ -162,7 +162,7 @@ Return user id.
 			if (!$userData) //  todo 6 (error) +0: deal with error
 			 	return;
 
-			$id_assigned= $this->assignedCreate($userData);
+			$id_assigned= $this->assignedCreate($_soc);
 		}
 
 		return $id_assigned;
