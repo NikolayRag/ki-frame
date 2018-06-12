@@ -62,15 +62,8 @@ API cb for social logon.
 			return;
 
 		$xId= $this->assignedGet($this->socUser);
-		if (!$xId){
-			$userData= $this->socUser->fetch();
-			if (!$userData)
-			 	return;
-
-			$xId= $this->assignedCreate($userData);
-		}
-
-		$this->assignedUpdate($xId);
+		if (!$xId) //  todo 6 (error) +0: deal with error
+		 	return;
 
 
 		$this->applyUser($this->flexUser->manageUser($xId));
@@ -148,6 +141,15 @@ Return user id.
 		$stmt= $this->db->prepare('SELECT id_users FROM users_social WHERE type=? AND id=?');
 		$stmt->execute([$_soc->type, $_soc->id]);
 		$id_assigned= getA($stmt->fetch(), 'id_users', 0);
+
+
+		if (!$id_assigned){
+			$userData= $_soc->fetch();
+			if (!$userData) //  todo 6 (error) +0: deal with error
+			 	return;
+
+			$id_assigned= $this->assignedCreate($userData);
+		}
 
 		return $id_assigned;
 	}
