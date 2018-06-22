@@ -83,13 +83,12 @@ this.async= function(_saveURL, _saveData, _cbOk, _cbError, _sync, _headersA) {
 	for (var dName in _saveData)
 	  dName && saveData.push([dName,encodeURIComponent(_saveData[dName])].join('='));
 
-	this.httpRequest.open('POST', _saveURL+'?'+saveData.join('&'), !_sync);
+	this.httpRequest.open('POST', _saveURL, !_sync);
 	this.httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	for (var iH in _headersA)
 	  this.httpRequest.setRequestHeader(_headersA[iH][0], encodeURIComponent(_headersA[iH][1]));
-	  
-	this.httpRequest.send();
 
+	this.httpRequest.send(saveData.join('&'));
 
 	return this.httpRequest;
 }
