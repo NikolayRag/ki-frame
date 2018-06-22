@@ -156,6 +156,7 @@ Return user id.
 		$stmt->execute([$_soc->type, $_soc->id]);
 		$id_assigned= getA($stmt->fetch(), 'id_users', 0);
 
+//  todo 7 (ux, socal) -1: probably update user data from social
 
 		if (!$id_assigned){
 			$userData= $_soc->fetch();
@@ -202,6 +203,7 @@ Update last logon state.
 
 /*
 Since uFlex dont return error codes, we must assign them based on error message.
+Suitable for uFlex v1.0.7.
 */
 	static $flexErrA= [
 		1=> '/New User Registration Failed/',

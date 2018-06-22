@@ -49,8 +49,9 @@ _settings:
 
 
 /*
-Check if social session is valid. 
-! False-positive logon may occure, if user was forced to be logged off at the social side.
+Check if social session is valid.
+While logged, calls within Timeout are treated as successfull. That should remove unneccessary freezing for frequent calls.
+! False-positive logon will occur within Timeout, if user was forced to be logged off at different place.
 */
 	function start(){
 		$this->token= getA($_SESSION, self::$sessionName);
