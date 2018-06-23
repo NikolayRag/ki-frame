@@ -164,10 +164,9 @@ logonCB: function(_res){
 	this.locked= false;
 
 	var jsonVal= JSON.parse(_res);
-	for(var resultReg in jsonVal) break;
 
-	if (jsonVal[resultReg] && jsonVal[resultReg].length){
-		this.logonCBErr(0, '', jsonVal[resultReg].join('\n\n'));
+	if (jsonVal){
+		this.logonCBErr(0, '', jsonVal);
 		return;
 	}
 

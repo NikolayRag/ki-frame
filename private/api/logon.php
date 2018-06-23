@@ -1,7 +1,7 @@
 <?php
 require (__dir__ .'/../../_3rd/PHPMailer/PHPMailerAutoload.php');
 
-$errors= ['1'=> [0]];
+$error= false;
 
 switch (strtolower(first($URL->path[1], ''))) {
     case 'social': {
@@ -20,7 +20,7 @@ switch (strtolower(first($URL->path[1], ''))) {
     case 'login': {
         $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
 
-        $errors= ["1"=>[$USER->flexErrorGetLast()]];
+        $error= $USER->flexErrorGetLast();
 
         break;
     }
@@ -30,7 +30,7 @@ switch (strtolower(first($URL->path[1], ''))) {
 
         $resReset= $USER->flexUser->resetPassword($email);
         if (!$resReset){
-            $errors= ["1"=>[$USER->flexErrorGetLast()]];
+            $error= $USER->flexErrorGetLast();
             break;
         }
 
@@ -54,7 +54,7 @@ switch (strtolower(first($URL->path[1], ''))) {
         $mail->msgHTML($mailMessage);
 
         if (! $mail->send())
-            $errors= ['1'=> ['Ошибка восстановления']];
+            $error= 'Ошибка восстановления';
 
         break;
     }
@@ -62,8 +62,8 @@ switch (strtolower(first($URL->path[1], ''))) {
     case 'newpass': {
         $resReset= $USER->flexUser->newPassword($URL->args->hash,Array('Password'=>$URL->args->newPass));
 
-        $errors= ["1"=>[$USER->flexErrorGetLast()]];
-        if (!$errors['1'][0])
+        $error= $USER->flexErrorGetLast();
+        if (!$error)
           $USER->flexUser->login($URL->args->Email, $URL->args->newPass, true);
         break;
     }
@@ -79,16 +79,14 @@ switch (strtolower(first($URL->path[1], ''))) {
             'Password'=>$URL->args->Password
         ]);
 
-        $errors= ["1"=>[$USER->flexErrorGetLast()]];
-        if (!$errors['1'][0])
+        $error= $USER->flexErrorGetLast();
+        if (!$error)
           $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
         break;
     }
 }
 
-if (!$errors['1'][0])
-    $errors['1']= [];
-echo json_encode($errors);
+echo json_encode($error);
 
 
 ?>
