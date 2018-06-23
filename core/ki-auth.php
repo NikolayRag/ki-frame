@@ -82,6 +82,17 @@ $_url
 
 
 /*
+Log in with email/pass
+*/
+	function passLogin($_email, $_pass){
+        $this->flexUser->login($_email, $_pass, true);
+
+        return $this->flexErrorGetLast();
+    }
+
+
+
+/*
 Logout either.
 */
 	function logout(){

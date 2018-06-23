@@ -18,9 +18,7 @@ switch (strtolower(first($URL->path[1], ''))) {
     }
 
     case 'login': {
-        $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
-
-        $error= $USER->flexErrorGetLast();
+        $error = $USER->passLogin($URL->args->Email, $URL->args->Password);
 
         break;
     }
