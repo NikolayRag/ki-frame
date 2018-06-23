@@ -67,19 +67,8 @@ switch (strtolower(first($URL->path[1], ''))) {
     }
 
     case 'register': {
-        $stmt= $DB->prepare('SELECT count(*) FROM Users');
-        $stmt->execute();
-        $arr= $stmt->fetch();
+        $error = $USER->passRegister($URL->args->Email, $URL->args->Password);
 
-        $USER->flexUser->register([
-            'Username'=> "u_{$arr[0]}",
-            'Email'=>$URL->args->Email,
-            'Password'=>$URL->args->Password
-        ]);
-
-        $error= $USER->flexErrorGetLast();
-        if (!$error)
-          $USER->flexUser->login($URL->args->Email, $URL->args->Password, true);
         break;
     }
 }

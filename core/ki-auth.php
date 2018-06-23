@@ -82,6 +82,30 @@ $_url
 
 
 /*
+Regster new email/pass user and login.
+*/
+	function passRegister($_email, $_pass){
+		//prepare username, coz uFlex refuse blank usernames
+        $stmt= $this->db->prepare('SELECT count(*) FROM Users');
+        $stmt->execute();
+        $arr= $stmt->fetch();
+
+        $this->flexUser->register([
+            'Username'=> "u_{$arr[0]}",
+            'Email'=>$_email,
+            'Password'=>$_pass
+        ]);
+        $error= $this->flexErrorGetLast();
+
+        if (!$error)
+          $error = $this->passLogin($_email, $_pass);
+
+      	return $error;
+}
+
+
+
+/*
 Log in with email/pass
 */
 	function passLogin($_email, $_pass){
