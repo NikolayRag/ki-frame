@@ -136,13 +136,14 @@ Send pass restoring link to email.
 		require (__dir__ .'/../_3rd/PHPMailer/PHPMailerAutoload.php');
 		global $MAILCFG;
 
-        $resReset= $this->flexUser->resetPassword($_email);
-        if (!$resReset)
+        $res= $this->flexUser->resetPassword($_email);
+        if (!$res)
             return $this->flexErrorGetLast();
 
 
+//  todo 10 (api, clean, dict) +0: use dict messages
         $srv= $_SERVER['SERVER_NAME'];
-        $mailMessage= "<html><body>Добрый день,<br><br>Для вашего аккаунта на $srv запрошено восстановление пароля.<br>Пройдите по <a href=http://{$srv}/?=reset&hash={$resReset->Confirmation}&email=$_email>ЭТОЙ ССЫЛКЕ</a>, чтобы установить новый пароль.<br><br>Если вы не запрашивали изменение пароля, то просто проигнорируйте это письмо.<br><br><a href=http://$srv>$srv</a></body></html>";
+        $mailMessage= "<html><body>Добрый день,<br><br>Для вашего аккаунта на $srv запрошено восстановление пароля.<br>Пройдите по <a href=http://{$srv}/?=reset&hash={$res->Confirmation}&email=$_email>ЭТОЙ ССЫЛКЕ</a>, чтобы установить новый пароль.<br><br>Если вы не запрашивали изменение пароля, то просто проигнорируйте это письмо.<br><br><a href=http://$srv>$srv</a></body></html>";
 
         $mail = new PHPMailer;
         $mail->IsSMTP();

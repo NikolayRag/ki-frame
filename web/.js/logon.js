@@ -112,8 +112,6 @@ logout: function(_cb, _cbErr){
 	SESSION.async('/logon/logout', logoutValue, this.logonCB.bind(this), this.logonCBErr.bind(this));
 },
 
-//todo 3 (lib, login, refactor, code) +0: move 'edit profile' outside of Login
-//todo 5 (lib, login, ux) +0: add optional email validation
 
 edit: function(_fio1E, _fio2E, _fio3E, _positionE, _phoneE, _cb, _cbErr){
 	if (this.checkLocked())
