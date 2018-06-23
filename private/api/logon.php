@@ -28,11 +28,8 @@ switch (strtolower(first($URL->path[1], ''))) {
     }
 
     case 'newpass': {
-        $resReset= $USER->flexUser->newPassword($URL->args->hash,Array('Password'=>$URL->args->newPass));
+        $error = $USER->passNew($URL->args->Email, $URL->args->Password, $URL->args->hash);
 
-        $error= $USER->flexErrorGetLast();
-        if (!$error)
-          $USER->flexUser->login($URL->args->Email, $URL->args->newPass, true);
         break;
     }
 

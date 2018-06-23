@@ -90,17 +90,15 @@ Regster new email/pass user and login.
         $stmt->execute();
         $arr= $stmt->fetch();
 
-        $this->flexUser->register([
+        $res = $this->flexUser->register([
             'Username'=> "u_{$arr[0]}",
             'Email'=>$_email,
             'Password'=>$_pass
         ]);
-        $error= $this->flexErrorGetLast();
+        if (!$res)
+        	return $this->flexErrorGetLast();
 
-        if (!$error)
-          $error = $this->passLogin($_email, $_pass);
-
-      	return $error;
+        return $this->passLogin($_email, $_pass);
 }
 
 
@@ -164,6 +162,19 @@ Send pass restoring link to email.
 
         if (! $mail->send())
             return 'Ошибка восстановления';
+	}
+
+
+
+/*
+Set new password.
+*/
+	function passNew($_email, $_pass, $_hash){
+        $res = $this->flexUser->newPassword($_hash,['Password'=>$_pass]);
+        if (!$res)
+        	return $this->flexErrorGetLast();
+
+        return $this->passLogin($_email, $_pass);
 	}
 
 

@@ -66,7 +66,7 @@ newpass: function(_hash, _email, _pass, _pass2, _cb, _cbErr){
 	}
 
     var logonValue= {
-    	newPass:	_pass,
+    	Password:	_pass,
     	hash:	_hash,
     	Email:	_email
     }
