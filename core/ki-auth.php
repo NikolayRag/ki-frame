@@ -130,6 +130,43 @@ Logout either.
 
 
 
+/*
+Send pass restoring link to email.
+*/
+	function passRestore($_email){
+//  todo 9 (api, clean) -1: make mail be loaded only at actual need
+		require (__dir__ .'/../_3rd/PHPMailer/PHPMailerAutoload.php');
+		global $MAILCFG;
+
+        $resReset= $this->flexUser->resetPassword($_email);
+        if (!$resReset)
+            return $this->flexErrorGetLast();
+
+
+        $srv= $_SERVER['SERVER_NAME'];
+        $mailMessage= "<html><body>Добрый день,<br><br>Для вашего аккаунта на $srv запрошено восстановление пароля.<br>Пройдите по <a href=http://{$srv}/?=reset&hash={$resReset->Confirmation}&email=$_email>ЭТОЙ ССЫЛКЕ</a>, чтобы установить новый пароль.<br><br>Если вы не запрашивали изменение пароля, то просто проигнорируйте это письмо.<br><br><a href=http://$srv>$srv</a></body></html>";
+
+        $mail = new PHPMailer;
+        $mail->IsSMTP();
+        $mail->CharSet = 'UTF-8';
+
+        $mail->Host       = $MAILCFG->SMTP;
+        $mail->SMTPAuth   = true;
+        $mail->SMTPSecure = "ssl";
+        $mail->Port       = 465;
+        $mail->Username   = $MAILCFG->USER;
+        $mail->Password   = $MAILCFG->PASS;
+
+        $mail->setFrom($MAILCFG->USER, 'Красные Кости');
+        $mail->addAddress($_email);
+        $mail->Subject = 'Восстановление пароля';
+        $mail->msgHTML($mailMessage);
+
+        if (! $mail->send())
+            return 'Ошибка восстановления';
+	}
+
+
 
 /* PRIVATE */
 

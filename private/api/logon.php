@@ -1,6 +1,4 @@
 <?php
-require (__dir__ .'/../../_3rd/PHPMailer/PHPMailerAutoload.php');
-
 $error= false;
 
 switch (strtolower(first($URL->path[1], ''))) {
@@ -24,35 +22,7 @@ switch (strtolower(first($URL->path[1], ''))) {
     }
 
     case 'restore': {
-        $email= first($URL->args->Email, '');
-
-        $resReset= $USER->flexUser->resetPassword($email);
-        if (!$resReset){
-            $error= $USER->flexErrorGetLast();
-            break;
-        }
-
-        $srv= $_SERVER['SERVER_NAME'];
-        $mailMessage= "<html><body>Добрый день,<br><br>Для вашего аккаунта на $srv запрошено восстановление пароля.<br>Пройдите по <a href=http://{$srv}/?=reset&hash={$resReset->Confirmation}&email=$email>ЭТОЙ ССЫЛКЕ</a>, чтобы установить новый пароль.<br><br>Если вы не запрашивали изменение пароля, то просто проигнорируйте это письмо.<br><br><a href=http://$srv>$srv</a></body></html>";
-
-        $mail = new PHPMailer;
-        $mail->IsSMTP();
-        $mail->CharSet = 'UTF-8';
-
-        $mail->Host       = $MAILCFG->SMTP;
-        $mail->SMTPAuth   = true;
-        $mail->SMTPSecure = "ssl";
-        $mail->Port       = 465;
-        $mail->Username   = $MAILCFG->USER;
-        $mail->Password   = $MAILCFG->PASS;
-
-        $mail->setFrom($MAILCFG->USER, 'Красные Кости');
-        $mail->addAddress($URL->args->Email);
-        $mail->Subject = 'Восстановление пароля';
-        $mail->msgHTML($mailMessage);
-
-        if (! $mail->send())
-            $error= 'Ошибка восстановления';
+        $error = $USER->passRestore($URL->args->Email);
 
         break;
     }
