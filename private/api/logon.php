@@ -12,7 +12,7 @@ switch (strtolower(first($URL->path[1], ''))) {
     }
 
     case 'logout': {
-        $USER->logout();
+        $error = $USER->logout();
 
         break;
     }

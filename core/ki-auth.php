@@ -88,6 +88,9 @@ Logout either.
 		$this->socUser?
 			$this->socUser->logout() :
 			$this->flexUser->logout();
+
+//  todo 8 (api) -1: vary errors
+		return;
 	}
 
 
