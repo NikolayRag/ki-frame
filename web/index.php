@@ -1,5 +1,5 @@
 <?
-include(__dir__ .'/../core/index.php');
+include(__dir__ .'/../core/init.php');
 
 
 include(__dir__ .'/../private/errorh.php');

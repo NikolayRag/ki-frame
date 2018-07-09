@@ -1,43 +1,43 @@
 <?
-include(__dir__ .'/ki-error.php');
-$ERRR= new KiERR(true);
 
-include(__dir__ .'/init_errorh.php');
-//general error callback (to file)
-$ERRR->errCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
+$__startTime= microtime(true);
 
+include(__dir__ .'/ki-frame.php');
 
-include(__dir__ .'/support.php');
-include(__dir__ .'/support-loose.php');
+//  todo 12 (api, add) +0: fullfeatured routing
+if ($URL->type=='api'){
+	if ($DEBUG) {
+		$ERRR->setClean(false);
 
+		$ERRR->errCB(ErrCB\errCBEcho());
+	}
 
-include(__dir__ .'/ki-const.php');
-
-include(__dir__ .'/../private/c_core.php');
-include(__dir__ .'/../private/c.php');
-
-
-
-include(__dir__ .'/ki-sql.php');
-include(__dir__ .'/ki-dict.php');
-
-include(__dir__ .'/ki-url.php');
-include(__dir__ .'/ki-client.php');
-include(__dir__ .'/ki-auth.php');
+	include(__dir__ ."/../private/api/{$URL->path[0]}.php");
+	exit;
+}
 
 
-if (!isset($_SESSION) && !headers_sent())
-	session_start();
-
-$DB = new PDO("mysql:host={$DBCFG->HOST};dbname={$DBCFG->NAME};charset=utf8", $DBCFG->USER, $DBCFG->PASS, array(PDO::ATTR_PERSISTENT=>true));
-$DB->exec("set names utf8");
-
-//additional error callback (to DB,table)
-$ERRR->errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
+if ($URL->type!==''){
+	http_response_code(404);
+//  todo 11 (api, add) +0: add 404 template
+	echo '404';
+	exit;
+}
 
 
-$URL= new KiURL($URI_ALLOW);
 
 
-$USER= new KiAUTH($DB, $SOCIAL, $URL);
+//if (getA($fetchSite,'maintainance'))
+//	header("HTTP/1.1 503 Service Unavailable");
+
+
+//switch ((new KiCLIENT())->type()){
+//	case $CLIENT_TYPE->BOT: //branch: crawler
+//		include('faceBot.php');
+//		exit;
+//}
+
+
+//normal flow
+$ERRR->setClean(false);
 ?>
