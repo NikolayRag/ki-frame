@@ -40,10 +40,4 @@ if ($URL->type!==''){
 
 //normal flow
 $ERRR->setClean(false);
-
-if (is_file(__dir__ .'/../private/errorh.php'))
-	include(__dir__ .'/../private/errorh.php');
-
-
-include(__dir__ .'/../private/htmpl/face.php');
 ?>
