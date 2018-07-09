@@ -1,0 +1,22 @@
+server {
+	listen *:80;
+
+	server_name redbones.ru *.redbones.ru;
+
+	root /var/www/redbones.ru/web;
+
+
+	location / {
+		index index.php index.html index.htm;
+		try_files $uri /index.php?$query_string;
+	}
+
+	location ~ \.php$ {
+		try_files $uri /index.php?$args;
+		include /etc/nginx/fastcgi_params;
+		fastcgi_pass 127.0.0.1:9096;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_intercept_errors on;
+	}
+}

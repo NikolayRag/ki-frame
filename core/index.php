@@ -18,8 +18,9 @@ if ($URL->type=='api'){
 
 
 if ($URL->type!==''){
-// -todo 2 (http, fix) +0: 404 sending default page
 	http_response_code(404);
+//  todo 11 (api, add) +0: add 404 template
+	echo '404';
 	exit;
 }
 
