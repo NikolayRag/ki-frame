@@ -1,7 +1,7 @@
 <?php
 $error= false;
 
-switch (strtolower(first($URL->path[1], ''))) {
+switch (strtolower(first(getA($URL->path,1,''), ''))) {
     case 'social': {
         $USER->socCB($URL);
         redirect('/');
