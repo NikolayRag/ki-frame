@@ -11,8 +11,6 @@ log*
 rt*
 
 */
-$__startTime= microtime(true);
-
 include(__dir__ .'/ki-frame.php');
 
 //  todo 12 (api, add) +0: fullfeatured routing

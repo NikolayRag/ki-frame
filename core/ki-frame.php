@@ -1,6 +1,6 @@
 <?
 class KiFrame {
-	private static $isInited;
+	private static $isInited, $startTime;
 
 
 
@@ -10,6 +10,9 @@ class KiFrame {
 		self::$isInited= True;
 
 
+		self::$startTime= microtime(true);
+
+/*
 include(__dir__ .'/ki-error.php');
 $ERRR= new KiERR(true);
 
@@ -51,7 +54,17 @@ $URL= new KiURL($URI_ALLOW);
 
 
 $USER= new KiAUTH($DB, $SOCIAL, $URL);
+*/
+	}
 
+
+
+/*
+Return seconds since very start.
+*/
+	function lifetime($_digits=3){
+		$mult= pow(10, $_digits);
+		return round((microtime(true) -self::$startTime)*$mult)/$mult;
 	}
 }
 
