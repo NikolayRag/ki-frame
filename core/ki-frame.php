@@ -56,4 +56,5 @@ $USER= new KiAUTH($DB, $SOCIAL, $URL);
 }
 
 new KiFrame();
+class_alias('KiFrame', 'KF');
 ?>
