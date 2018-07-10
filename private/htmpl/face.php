@@ -19,9 +19,11 @@
 
         <script>
         <?
+/*
             echo "var ARGS= " .json_encode($URL->args->all()) .";\n";
             foreach (KiCONST::dump() as $cName=>$cCont)
                 echo "var {$cName}= " .json_encode($cCont) .";\n";
+*/
         ?>
 
 
@@ -48,9 +50,9 @@ html, body {
 </head>
 <body style='background:#fff'>
 
-<? include('head.php'); ?>
+<? //include('head.php'); ?>
 
-KiFrame
+<h1>&nbsp;KiFrame</h1>
 </body>
 </html>
 

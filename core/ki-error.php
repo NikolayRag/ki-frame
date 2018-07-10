@@ -134,6 +134,7 @@ class KiERR {
 		if (!$this->doClean){
 			echo $bufferSoFar;
 		}
+//  todo 13 (api, add) +0: 500 page
 
 		foreach ($this->CB as $cCB){
 			if (is_callable($cCB)){

@@ -1,5 +1,16 @@
 <?
+/*
+Entry point to KiFrame.
+Used as a singletone class.
 
+Modules:
+db*
+err*
+dic*
+log*
+rt*
+
+*/
 $__startTime= microtime(true);
 
 include(__dir__ .'/ki-frame.php');
