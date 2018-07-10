@@ -1,4 +1,15 @@
 <?
+class KiFrame {
+	private static $isInited;
+
+
+
+	function __construct(){
+		if (self::$isInited)
+			return;
+		self::$isInited= True;
+
+
 include(__dir__ .'/ki-error.php');
 $ERRR= new KiERR(true);
 
@@ -40,4 +51,9 @@ $URL= new KiURL($URI_ALLOW);
 
 
 $USER= new KiAUTH($DB, $SOCIAL, $URL);
+
+	}
+}
+
+new KiFrame();
 ?>
