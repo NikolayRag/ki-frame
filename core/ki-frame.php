@@ -62,7 +62,7 @@ class KiFrame {
 /*
 Return seconds since very start.
 */
-	function lifetime($_digits=3){
+	static function lifetime($_digits=3){
 		$mult= pow(10, $_digits);
 		return round((microtime(true) -self::$startTime)*$mult)/$mult;
 	}
