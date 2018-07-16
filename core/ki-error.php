@@ -69,13 +69,23 @@ class KiERR {
 
 
 	function errCB($_CB){
+		if (!is_callable($_CB))
+			return;
+
 		$this->CB[]= $_CB;
+
+		return True;
 	}
 
 
 
 	function okCB($_CB){
+		if (!is_callable($_CB))
+			return;
+
 		$this->okCB[]= $_CB;
+
+		return True;
 	}
 
 
@@ -118,14 +128,11 @@ class KiERR {
 			echo $bufferSoFar;
 
 			foreach ($this->okCB as $cCB){
-				if (is_callable($cCB)){
-					call_user_func($cCB);
-				}
+				call_user_func($cCB);
 			}
 
 			return;
 		}
-
 
 
 		//have errors case
@@ -137,9 +144,7 @@ class KiERR {
 //  todo 13 (api, add) +0: 500 page
 
 		foreach ($this->CB as $cCB){
-			if (is_callable($cCB)){
-				call_user_func($cCB, $this->errPool);
-			}
+			call_user_func($cCB, $this->errPool);
 		}
 
 	}
