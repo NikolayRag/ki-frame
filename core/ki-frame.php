@@ -21,7 +21,7 @@ class KiFrame {
 		$ERRR->errCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
 
 
-		include(__dir__ .'/support.php');
+		include(__dir__ .'/support/general.php');
 		include(__dir__ .'/support/LooseObject.php');
 
 
