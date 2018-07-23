@@ -12,7 +12,7 @@ class KiFrame {
 
 		self::$startTime= microtime(true);
 
-/*
+
 		include(__dir__ .'/ki-error.php');
 		$ERRR= new KiERR(true);
 
@@ -39,10 +39,9 @@ class KiFrame {
 		include(__dir__ .'/ki-client.php');
 		include(__dir__ .'/ki-auth.php');
 
-
 		if (!isset($_SESSION) && !headers_sent())
 			session_start();
-
+/*
 		$DB = new PDO("mysql:host={$DBCFG->HOST};dbname={$DBCFG->NAME};charset=utf8", $DBCFG->USER, $DBCFG->PASS, array(PDO::ATTR_PERSISTENT=>true));
 		$DB->exec("set names utf8");
 

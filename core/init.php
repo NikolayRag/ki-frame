@@ -11,7 +11,7 @@ log*
 rt*
 
 */
-include(__dir__ .'/ki-frame.php');
+include(__dir__ .'/KiFrame.php');
 
 //  todo 12 (api, add) +0: fullfeatured routing
 if ($URL->type=='api'){
