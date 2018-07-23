@@ -25,7 +25,7 @@ class KiFrame {
 		include(__dir__ .'/support/LooseObject.php');
 
 
-		include(__dir__ .'/ki-const.php');
+		include(__dir__ .'/KiConst.php');
 
 		include(__dir__ .'/../private/c_core.php');
 		include(__dir__ .'/../private/c.php');

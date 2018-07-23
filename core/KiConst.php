@@ -19,7 +19,7 @@ public fields:
 */
 
 
-class KiCONST {
+class KiConst {
 	static $pool= [];
 
 
