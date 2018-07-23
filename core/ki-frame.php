@@ -22,7 +22,7 @@ class KiFrame {
 
 
 		include(__dir__ .'/support.php');
-		include(__dir__ .'/support-loose.php');
+		include(__dir__ .'/support/LooseObject.php');
 
 
 		include(__dir__ .'/ki-const.php');

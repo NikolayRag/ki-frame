@@ -16,7 +16,7 @@ count()
 
 */
 
-class looseObject {
+class LooseObject {
 	private $obj, $default;
 
 	function __construct($_obj=[], $_default=false){
