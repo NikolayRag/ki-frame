@@ -3,7 +3,7 @@ namespace ErrCB;
 
 /*
 Error callbacks class.
-Creates and returns function suitable for KiERR->errCB()
+Creates and returns function suitable for KiError->errCB()
 */
 
 /*

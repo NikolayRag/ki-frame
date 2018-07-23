@@ -2,6 +2,7 @@
 /*
 Error, exception and shutdown handler class.
 Handles runtime and fatal errors.
+Handles actual assigned pages routing: 200, 404 and 500.
 
 __construct($_doClean=true)
 	Assign handlers
@@ -40,7 +41,7 @@ countErrors($_countErrors=true, $_countXcption=true)
 */
 
 
-class KiERR {
+class KiError {
 
 	var $errPool= [];
 
@@ -128,6 +129,7 @@ class KiERR {
 			echo $bufferSoFar;
 
 			foreach ($this->okCB as $cCB){
+//  todo 17 (fix) +0: handle user function error
 				call_user_func($cCB);
 			}
 
@@ -144,6 +146,7 @@ class KiERR {
 //  todo 13 (api, add) +0: 500 page
 
 		foreach ($this->CB as $cCB){
+//  todo 18 (fix) +0: handle user function error
 			call_user_func($cCB, $this->errPool);
 		}
 

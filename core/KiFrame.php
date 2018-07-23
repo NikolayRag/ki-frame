@@ -13,8 +13,8 @@ class KiFrame {
 		self::$startTime= microtime(true);
 
 
-		include(__dir__ .'/ki-error.php');
-		$ERRR= new KiERR(true);
+		include(__dir__ .'/KiError.php');
+		$ERRR= new KiError(true);
 
 		include(__dir__ .'/init_errorh.php');
 		//general error callback (to file)
