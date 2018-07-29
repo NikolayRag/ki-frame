@@ -2,21 +2,6 @@
 /*
 Сonstants supplying class.
 Used as a singletone.
-
-
-
-Methods:
-	add(name, value, context=0)
-		Add new variable into pool.
-		'context' assigns context to variable, used later with dump(context)
-
-	get(name)
-		Return value of variable 'name'
-
-	dump(context=false)
-		Return copy of pool array in form of ['name']=>value
-		If context is other than FALSE, only variables of that context are returned.
-
 */
 
 class KiConst {
@@ -26,6 +11,18 @@ class KiConst {
 
 
 
+/*
+Add new variable into pool.
+
+$_name
+	Variable name to add
+
+$_value
+	Value to assign
+
+$_ctx
+	Assign context to variable, used later with dump($_ctx)
+*/
 	static function add($_name, $_value, $_ctx=0){
 		//check name
 		if (!$_name || !is_string($_name) || is_int($_name))
@@ -41,12 +38,24 @@ class KiConst {
 
 
 
+/*
+Return value of variable.
+
+$_name
+	Variable name to return
+*/
 	static function get($_name){
 		getA(self::$pool, $_name, false);
 	}
 
 
 
+/*
+Return copy of pool array in form of ['name']=>value
+
+$_ctx
+	If context is other than FALSE, only variables of that context are returned.
+*/
 	static function dump($_ctx=false){
 		if (!$_ctx)
 			return self::$pool;
