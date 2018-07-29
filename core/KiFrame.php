@@ -65,6 +65,34 @@ Return seconds since very start.
 		$mult= pow(10, $_digits);
 		return round((microtime(true) -self::$startTime)*$mult)/$mult;
 	}
+
+
+
+//--------constants-------//
+
+
+
+/*
+Set constant variable to given value and context.
+Get constant variable.
+*/
+	static function c($_name, $_val=false, $_ctx=0){
+		if (func_num_args()>1)
+			return KiConst::add($_name, $_val, $_ctx);
+		else
+			return KiConst::get($_name);
+	}
+
+
+
+/*
+Return all constant.
+If ctx specified, only ctx context variables are returned.
+*/
+	static function cDump($_ctx=false){
+		return KiConst::dump($_ctx);
+	}
+
 }
 
 new KiFrame();
