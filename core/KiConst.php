@@ -1,62 +1,57 @@
 <?
 /*
-class for supplying constants.
-Used as a static.
+Сonstants supplying class.
+Used as a singletone.
+
+
 
 Methods:
-	add('name', value, pool=true);
+	add(name, value, context=0)
 		Add new variable into pool.
-		If [pool]==false, new global variable named [name] is only created
+		'context' assigns context to variable, used later with dump(context)
 
-	dump(names=false);
-		return copy of pool array in form of ['name']=>value
-		if [names] array or string is given, only specified values will return.
+	get(name)
+		Return value of variable 'name'
 
+	dump(context=false)
+		Return copy of pool array in form of ['name']=>value
+		If context is other than FALSE, only variables of that context are returned.
 
-public fields:
-	global [name]
-		stored global.
 */
 
-
 class KiConst {
-	static $pool= [];
+	private static
+		$pool=[],
+		$ctx=[];
 
 
-	static function add($_name, $_value, $_pool=true){
+
+	static function add($_name, $_value, $_ctx=0){
 		//check name
 		if (!$_name || !is_string($_name) || is_int($_name))
 			return false;
 
-		//only fill pool
-		if ($_pool){
-			self::$pool[$_name]= $_value;
-		}
-	
-		//add local field
-//		$this->{$name}= $_value;
 
-		//add global
-		global ${$_name};
-		${$_name}= $_value;
+		self::$pool[$_name]= $_value;
+		self::$ctx[$_ctx][$_name]= self::$pool[$_name];
+	
 
 		return true;
 	}
 
 
 
-	static function dump($_names=false){
-		if (!$_names)
+	static function get($_name){
+		getA(self::$pool, $_name, false);
+	}
+
+
+
+	static function dump($_ctx=false){
+		if (!$_ctx)
 			return self::$pool;
 
-
-		//return named
-		$retPool= [];
-		foreach ($_names as $cName) {
-			$retPool[$cName] = self::$pool[$cName];
-		}
-
-		return $retPool;
+		return getA(self::$ctx, $_ctx, []);
 	}
 }
 
