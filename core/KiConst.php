@@ -45,7 +45,7 @@ $_name
 	Variable name to return
 */
 	static function get($_name){
-		getA(self::$pool, $_name, false);
+		return getA(self::$pool, $_name, false);
 	}
 
 
