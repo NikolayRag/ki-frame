@@ -68,6 +68,82 @@ Return seconds since very start.
 
 
 
+//-------routing-------//
+
+
+
+/*
+Assign context name or number to some code-generating routine that will be used at the end.
+Several routines may be assigned with same context, that will come out they result will be placed right one at an other.
+
+
+$_ctx
+	String or number for context to be named.
+
+	If omited, '' context is assumed which is output by default. This is useful for light one-page setups.
+
+
+$_src
+	One of three: function, filename, string.
+
+	Function is called to generate content, see KiRoute::context() doc.
+	If existing .php filename is given instead of function, it's imported.
+	Otherwise, provided string is embedded as is.
+
+
+Notice that it is context that may be omited practically, not source!
+Arguments are placed in this order only to be more usefull.
+*/
+	static function rIn($_ctx, $_src=false){
+		if (func_num_args()==1){
+			$_src= $_ctx;
+			$_ctx= '';
+		}
+
+		return KiRoute::context($_ctx, $_src);
+	}
+
+
+
+/*
+Bind context to URL.
+
+Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
+
+
+$_ctx
+	Context assigned to specified URL.
+
+
+$_url
+	URL string to match.
+	If url is True (default), it is assumed to be any URL at all.
+	If url is False, route matches 404.
+
+*/
+	static function r($_ctx, $_url=True){
+		return KiRoute::bind($_ctx, $_url);
+	}
+
+
+
+/*
+Define context order for corresponding matches, when several contets match some URL.
+Every context not ordered explicitely will have it's place after all explicit ones, in order it was declared first time by rIn.
+
+$_ctxA
+	Array of contexts.
+	Default context may be refered as ''.
+*/
+	static function rOut($_ctxA){
+		return KiRoute::order($_ctxA);
+	}
+
+
+
+
+
+
 //--------constants-------//
 
 
