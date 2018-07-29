@@ -58,17 +58,44 @@ class KiFrame {
 
 
 
+
+
+
+//=====================================================================//
+//============================= CONSTANTS =============================//
+//=====================================================================//
+
+
+
 /*
-Return seconds since very start.
+Set constant variable to given value and context.
+Get constant variable.
 */
-	static function lifetime($_digits=3){
-		$mult= pow(10, $_digits);
-		return round((microtime(true) -self::$startTime)*$mult)/$mult;
+	static function c($_name, $_val=false, $_ctx=0){
+		if (func_num_args()>1)
+			return KiConst::add($_name, $_val, $_ctx);
+		else
+			return KiConst::get($_name);
 	}
 
 
 
-//-------routing-------//
+/*
+Return all constant.
+If ctx specified, only ctx context variables are returned.
+*/
+	static function cDump($_ctx=false){
+		return KiConst::dump($_ctx);
+	}
+
+
+
+
+
+
+//===================================================================//
+//============================= ROUTING =============================//
+//===================================================================//
 
 
 
@@ -144,32 +171,23 @@ $_ctxA
 
 
 
-//--------constants-------//
+//===================================================================//
+//============================= SUPPORT =============================//
+//===================================================================//
 
 
 
 /*
-Set constant variable to given value and context.
-Get constant variable.
+Return seconds since very start.
 */
-	static function c($_name, $_val=false, $_ctx=0){
-		if (func_num_args()>1)
-			return KiConst::add($_name, $_val, $_ctx);
-		else
-			return KiConst::get($_name);
-	}
-
-
-
-/*
-Return all constant.
-If ctx specified, only ctx context variables are returned.
-*/
-	static function cDump($_ctx=false){
-		return KiConst::dump($_ctx);
+	static function lifetime($_digits=3){
+		$mult= pow(10, $_digits);
+		return round((microtime(true) -self::$startTime)*$mult)/$mult;
 	}
 
 }
+
+
 
 new KiFrame();
 class_alias('KiFrame', 'KF');
