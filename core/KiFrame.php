@@ -100,28 +100,14 @@ If ctx specified, only ctx context variables are returned.
 
 
 /*
-Assign context name or number to some code-generating routine that will be used at the end.
-Several routines may be assigned with same context, that will come out they result will be placed right one at an other.
+Register routing context, shortcut for KiRoute::context()
 
-
-$_ctx
-	String or number for context to be named.
-
-	If omited, '' context is assumed which is output by default. This is useful for light one-page setups.
-
-
-$_src
-	One of three: function, filename, string.
-
-	Function is called to generate content, see KiRoute::context() doc.
-	If existing .php filename is given instead of function, it's imported.
-	Otherwise, provided string is embedded as is.
-
-
-Notice that it is context that may be omited practically, not source!
-Arguments are placed in this order only to be more usefull.
+Notice!
+If only one argument given, it will be $_src, not $_ctx.
+Context is assumed then to be ''.
+This is useful for light one-page setups.
 */
-	static function rIn($_ctx, $_src=false){
+	static function rReg($_ctx, $_src=false){
 		if (func_num_args()==1){
 			$_src= $_ctx;
 			$_ctx= '';

@@ -10,21 +10,36 @@ The idea is that 'some request' may call 'some code' in 'some order', all of whi
 */
 
 
+
 class KiRoute {
+	private static $contextA=[], $bindA=[], $contextOrder=[];
+
+
 
 /*
-Assign context name or number to code-generating routine.
+Assign context name to some code-generating routines.
+Several routines may be assigned with same context, that will come out they result will be placed right one at an other.
+
 
 $_ctx
 	String or number for context to be named.
 
+
 $_src
 	One of three: function, filename, string.
+
+	Function is called to generate content.
+	If existing .php filename is given instead of function, it's imported.
+	Otherwise, provided string is embedded as is.
 
 	Function provided to context() return response data.
 	Anything other than string returned treated as error and ignored in output.
 */
 	static function context($_ctx, $_src){
+		if (!array_key_exists($_ctx, self::$contextA))
+			self::$contextA[$_ctx] = [];
+
+		self::$contextA[$_ctx][] = $_src;
 	}
 
 
