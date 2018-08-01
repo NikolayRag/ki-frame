@@ -19,9 +19,9 @@ __construct($_modeA, $_modeDefault, $_modeWrong)
 */
 
 class KiURL {
-	var $type='', $path=[], $args;
+	var $path=[], $args;
 
-	function __construct($_filterA){
+	function __construct(){
 		$this->https=
 			getA($_SERVER, 'HTTPS') ||
 			getA(json_decode(getA($_SERVER, 'HTTP_CF_VISITOR')),'scheme')=='https';
@@ -55,14 +55,6 @@ class KiURL {
 			explode("/", preg_replace('[/+]', '/', $uriA[0])), 1
 		);
 
-
-
-		$path0= strtoupper($this->path[0]);
-
-		if ($path0!==''){
-			$this->type= getA($_filterA, $path0);
-		}
-		
 	}
 }
 
