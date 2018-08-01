@@ -37,7 +37,6 @@ class KiFrame {
 		include(__dir__ .'/KiRoute.php');
 
 		include(__dir__ .'/../private/c_core.php');
-		include(__dir__ .'/../private/c.php');
 
 
 
@@ -184,6 +183,7 @@ Return seconds since very start.
 
 
 
-new KiFrame();
 class_alias('KiFrame', 'KF');
+
+new KiFrame();
 ?>

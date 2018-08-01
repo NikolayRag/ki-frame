@@ -1,21 +1,21 @@
 <?
-KiCONST::add('DBCFG', (object)[ 
+KF::c('DBCFG', (object)[ 
 	'HOST'	=>	'127.0.0.1',
 	'USER'	=>	'',
 	'PASS'	=>	'',
 	'NAME'	=>	''
-], false);
+]);
 
 
-KiCONST::add('MAILCFG', (object)[ 
+KF::c('MAILCFG', (object)[ 
 	'PASS'	=>	'',
 	'USER'	=>	'',
 	'SMTP'	=>	'',
 	'KEY'	=>	''
-], false);
+]);
 
 
-KiCONST::add('SOCIAL', (object)[ 
+KF::c('SOCIAL', (object)[ 
         'CB' => 'logon/social',
         'VKID' => 0,
         'VKKEY' => '',
@@ -31,11 +31,7 @@ KiCONST::add('SOCIAL', (object)[
         'GITSCOPE' => '',
         'TWID' => '',
         'TWKEY' => ''
-], false);
+]);
 
-
-KiCONST::add('URI_ALLOW', (object)[ 
-        'LOGON'=> 'api'
-], false);
 
 ?>
