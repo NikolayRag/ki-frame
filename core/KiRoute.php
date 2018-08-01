@@ -1,12 +1,8 @@
 <?
 /*
-Routing matrix. It formed out of three rule definitions:
-Use context(ctx, src) to assign context name to code-generating function.
-Use pin(ctx, URL, ..) to bind named contexts to URLs.
-Finally, order([ctx1, .., ctxX]) arranges order of possible context inclusion.
-If order() is omited, context order is the same the contexts was defined first.
+Routing matrix.
+The idea is that 'some request' results in set of 'some contexts', independently defined.
 
-The idea is that 'some request' may call 'some code' in 'some order', all of which are independently defined.
 */
 
 
@@ -17,8 +13,9 @@ class KiRoute {
 
 
 /*
-Assign context name to some code-generating routines.
+Assign context to some code-generating routines.
 Several routines may be assigned with same context, that will come out they result will be placed right one at an other.
+No order for multiple same-context code is defined.
 
 
 $_ctx
@@ -45,8 +42,8 @@ $_src
 
 
 /*
-Register URL with default return code and headers.
-If concurrent, most prioritized values take place.
+Assign default return code and headers to URL.
+If concurrent URL matches will be found, most prioritized values take place.
 
 
 $_url
@@ -67,6 +64,7 @@ $_headers
 
 
 $_priority
+	When values are concurrent, biggest priority points one.
 */
 	static function bind($_url, $_code=200, $_headersA=[], $_priority=1){
 		checkUrl($_url);
@@ -80,7 +78,7 @@ $_priority
 
 /*
 Add context to URL.
-
+All contexts for all matching URLs will be used without concurrency.
 Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
 
 $_url
@@ -109,7 +107,7 @@ $_ctx
 
 
 /*
-Define context order for corresponding matches, when several contets match some URL.
+Define context order for corresponding matches, when several contents match some URL.
 Every context not ordered explicitely will have it's place after all explicit ones, in order it was declared first time by rIn.
 
 $_ctxA
