@@ -60,7 +60,7 @@ class KiFrame {
 		$URL= new KiURL();
 
 
-		$USER= new KiAUTH($DB, $SOCIAL, $URL);
+		$USER= new KiAUTH($DB, KF::c('SOCIAL'));
 */
 	}
 

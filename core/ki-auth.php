@@ -41,20 +41,29 @@ class KiAUTH {
 
 	var $socUser=false, $flexUser, $mask=0, $rights;
 
-	var $socUrlA=[];
 	var $isSigned=false, $id=0, $name='', $email='', $photo='';
 
 
-	function __construct($_db, $_socialCfg, $_url){
+	function __construct($_db, $_socialCfg){
 		$this->db= $_db;
 
 		($user= $this->initFlexUser()) || ($user= $this->initSocUser($_socialCfg));
-		if (!$user){
-			$this->socUrlA= $this->socUser->loginURL($_url);
+		if (!$user)
 			return;
-		}
 	
 		$this->applyUser($user);
+	}
+
+
+
+/*
+Given current URL, return suitable social login URL's.
+*/
+	function socUrlA($_url){
+		if (!$isSigned)
+			return [];
+
+		return $this->socUser->loginURL($_url);
 	}
 
 
