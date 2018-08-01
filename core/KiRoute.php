@@ -69,9 +69,14 @@ Every context not ordered explicitely will have it's place after all explicit on
 $_ctxA
 	Array of contexts.
 	Default context may be refered as ''.
-*/
-	static function order($_ctxA){
 
+	If omited, only return current order.
+*/
+	static function order($_ctxA=False){
+		if ($_ctxA)
+			self::$contextOrder = $_ctxA;
+
+		return self::$contextOrder;
 	}
 
 

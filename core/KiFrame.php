@@ -141,14 +141,9 @@ $_url
 
 
 /*
-Define context order for corresponding matches, when several contets match some URL.
-Every context not ordered explicitely will have it's place after all explicit ones, in order it was declared first time by rIn.
-
-$_ctxA
-	Array of contexts.
-	Default context may be refered as ''.
+Order contexts, shortcut for KiRoute::order()
 */
-	static function rOut($_ctxA){
+	static function rOut($_ctxA=False){
 		return KiRoute::order($_ctxA);
 	}
 
