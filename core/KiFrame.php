@@ -45,7 +45,7 @@ class KiFrame {
 
 		include(__dir__ .'/ki-url.php');
 		include(__dir__ .'/ki-client.php');
-		include(__dir__ .'/ki-auth.php');
+		include(__dir__ .'/KiAuth.php');
 
 		if (!isset($_SESSION) && !headers_sent())
 			session_start();
@@ -62,7 +62,7 @@ class KiFrame {
 		$URL= new KiURL();
 
 
-		$USER= new KiAUTH($DB, KF::c('SOCIAL'));
+		$USER= new KiAuth($DB, KF::c('SOCIAL'));
 	}
 
 

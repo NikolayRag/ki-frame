@@ -32,11 +32,12 @@ spl_autoload_register(
 
 include(__dir__ .'/../_3rd/uflex/autoload.php');
 include(__dir__ .'/ki-rights.php');
-include(__dir__ .'/ki-authSoc.php');
+include(__dir__ .'/KiAuthSoc.php');
 
 
 
-class KiAUTH {
+//  todo 23 (ux, auth) +0: introduce entire auth cache
+class KiAuth {
 	private $db;
 
 	var $socUser=false, $flexUser, $mask=0, $rights;
@@ -227,7 +228,7 @@ Check if social user is signed.
 Soc user init assumes normal user is not logged, and thus user data from assigned one will be fetched, including local userID (differed from social userID's).
 */
 	private function initSocUser($_socialCfg){
-		$this->socUser= new KiSoc($_socialCfg);
+		$this->socUser= new KiAuthSoc($_socialCfg);
 
 		if (!$this->socUser->start())
 			return;

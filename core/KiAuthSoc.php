@@ -17,7 +17,7 @@ spl_autoload_register(
 
 
 
-class KiSoc {
+class KiAuthSoc {
 	static $socIconsA= [
 		\Social\Type::VK=> 'https://vk.com/images/safari_152.png',
 		\Social\Type::MR=>	'',
