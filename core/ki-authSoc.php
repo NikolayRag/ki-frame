@@ -26,7 +26,7 @@ class KiSoc {
 		\Social\Type::TWITTER=>	''
 	];
 
-	static $sessionName='socAuth', $sessionStamp='socAuth_stamp', $stampTimeout=10, $cbName;
+	private static $sessionToken='socAuth_token', $sessionStamp='socAuth_stamp', $sessionTimeout=10, $cbName;
 
 	private $token, $factory, $typesA=[];
 	var $error=null, $type=0, $id=0, $firstName='', $photoUrl='';
@@ -54,7 +54,7 @@ While logged, calls within Timeout are treated as successfull. That should remov
 ! False-positive logon will occur within Timeout, if user was forced to be logged off at different place.
 */
 	function start(){
-		$this->token= getA($_SESSION, self::$sessionName);
+		$this->token= getA($_SESSION, self::$sessionToken);
 		if (!$this->token)
 			return;
 
@@ -62,7 +62,7 @@ While logged, calls within Timeout are treated as successfull. That should remov
 		$this->id= $this->token->getIdentifier();
 
 		$stamp= getA($_SESSION, self::$sessionStamp, 0);
-		if (time()-$stamp>self::$stampTimeout){
+		if (time()-$stamp>self::$sessionTimeout){
 			if (!$this->fetch())
 				return;
 
@@ -195,7 +195,7 @@ $_url
 	        return $auth->getError();
 	    }
 
-	    $_SESSION[self::$sessionName] = $this->token;
+	    $_SESSION[self::$sessionToken] = $this->token;
 
 		$this->type= $this->token->getType();
 		$this->id= $this->token->getIdentifier();
@@ -207,7 +207,7 @@ $_url
 Logout for social logon
 */
 	function logout(){
-   		$_SESSION[self::$sessionName] = array();
+   		$_SESSION[self::$sessionToken] = array();
    		$_SESSION[self::$sessionStamp] = 0;
 	}
 
