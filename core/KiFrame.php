@@ -49,8 +49,10 @@ class KiFrame {
 
 		if (!isset($_SESSION) && !headers_sent())
 			session_start();
-/*
-		$DB = new PDO("mysql:host={$DBCFG->HOST};dbname={$DBCFG->NAME};charset=utf8", $DBCFG->USER, $DBCFG->PASS, array(PDO::ATTR_PERSISTENT=>true));
+
+
+		$dbCfg= KF::c('DBCFG');
+		$DB = new PDO("mysql:host={$dbCfg->HOST};dbname={$dbCfg->NAME};charset=utf8", $dbCfg->USER, $dbCfg->PASS, array(PDO::ATTR_PERSISTENT=>true));
 		$DB->exec("set names utf8");
 
 		//additional error callback (to DB,table)
@@ -61,7 +63,6 @@ class KiFrame {
 
 
 		$USER= new KiAUTH($DB, KF::c('SOCIAL'));
-*/
 	}
 
 
