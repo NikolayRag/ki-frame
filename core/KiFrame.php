@@ -119,23 +119,28 @@ This is useful for light one-page setups.
 
 
 /*
-Bind context to URL.
-
-Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
-
-
-$_ctx
-	Context assigned to specified URL.
-
-
-$_url
-	URL string to match.
-	If url is True (default), it is assumed to be any URL at all.
-	If url is False, route matches 404.
-
+Register URL default return code and headers, shortcut to KiRoute::bind().
 */
-	static function r($_ctx, $_url=True){
-		return KiRoute::bind($_ctx, $_url);
+	static function rBind($_url, $_code=200, $_headersA=[], $_priority=1){
+		KiRoute::bind($_url, $_code, $_headersA, $_priority);
+	}
+
+
+
+/*
+Add context to URL, shortcut for KiRoute::bindCtx()
+
+
+Notice!
+If only one arument is specified, it is assumed to be $_ctx, while URL matches any.
+*/
+	static function rAdd($_url, $_ctx=False){
+		if (func_num_args()==1){
+			$_ctx= $_url;
+			$_url= '.*';
+		}
+
+		return KiRoute::bindCtx($_url, $_ctx);
 	}
 
 

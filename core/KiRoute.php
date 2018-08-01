@@ -45,19 +45,65 @@ $_src
 
 
 /*
-Bind context to URL.
+Register URL with default return code and headers.
+If concurrent, most prioritized values take place.
+
+
+$_url
+	Regex to match URL against. URL always starts with root '/'.
+	Named capture (?P<name>value) is allowed to scan variables.
+	Tricky regex matches like "^(?!.foo$)" (all but '/foo') are fully allowed.
+
+	Empty string is alias for 'nothing match' special case.
+
+
+$_code
+	Default HTTP return code.
+	May be overrided inside $_src
+
+
+$_headers
+	Default custom return headers array.
+
+
+$_priority
+*/
+	static function bind($_url, $_code=200, $_headersA=[], $_priority=1){
+		checkUrl($_url);
+
+		self::$bindA[$_url]->code = $_code;
+		self::$bindA[$_url]->headersA = $_headersA;
+		self::$bindA[$_url]->priority = $_priority;
+	}
+
+
+
+/*
+Add context to URL.
+
+Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
+
+$_url
+	Same as for bind()
+
 
 $_ctx
 	Context assigned to specified URL.
 
-$_url
-	URL string to match.
-	If url is True, it is assumed to be any URL at all.
-	If url is False, route matches 404.
-
 */
-	static function bind($_ctx, $_url=False){
+	static function bindCtx($_url, $_ctx){
+		checkUrl($_url);
 
+		self::$bindA[$_url]->ctx[] = $_ctx;
+	}
+
+
+
+	private static function checkUrl($_url){
+		if (array_key_exists($_url, self::$bindA))
+			return;
+
+		self::$bindA[$_url] = (object)['ctx'=>[], 'code'=>200, 'headers'=>[], 'priority'=>-100];
 	}
 
 
