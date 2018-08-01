@@ -25,12 +25,13 @@ $_ctx
 */
 	static function add($_name, $_value, $_ctx=0){
 		//check name
-		if (!$_name || !is_string($_name) || is_int($_name))
+		if (!$_name || !is_string($_name))
 			return false;
 
 
-		self::$pool[$_name]= $_value;
-		self::$ctx[$_ctx][$_name]= self::$pool[$_name];
+		self::$pool[$_name] =
+		self::$ctx[$_ctx][$_name] = 
+			$_value;
 	
 
 		return true;
