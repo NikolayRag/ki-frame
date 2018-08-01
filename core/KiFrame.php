@@ -1,4 +1,12 @@
 <?
+/*
+Root framework class.
+It is singletone, so all it's methods are static.
+
+Every framework usable function is accessed from KiFrame shortcut methods.
+
+All functions are divided by function groups, main of which is routing matrix.
+*/
 class KiFrame {
 	private static $isInited, $startTime;
 
