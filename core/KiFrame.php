@@ -34,6 +34,7 @@ class KiFrame {
 
 
 		include(__dir__ .'/KiConst.php');
+		include(__dir__ .'/KiRoute.php');
 
 		include(__dir__ .'/../private/c_core.php');
 		include(__dir__ .'/../private/c.php');
