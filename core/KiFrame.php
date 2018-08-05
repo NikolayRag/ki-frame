@@ -43,7 +43,7 @@ class KiFrame {
 		include(__dir__ .'/ki-sql.php');
 		include(__dir__ .'/ki-dict.php');
 
-		include(__dir__ .'/ki-url.php');
+		include(__dir__ .'/KiUrl.php');
 		include(__dir__ .'/KiAgent.php');
 		include(__dir__ .'/KiAuth.php');
 
@@ -57,9 +57,6 @@ class KiFrame {
 
 		//additional error callback (to DB,table)
 		$ERRR->errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
-
-
-		$URL= new KiURL();
 
 
 		$USER= new KiAuth($DB, KF::c('SOCIAL'));
