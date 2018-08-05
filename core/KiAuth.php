@@ -36,7 +36,7 @@ include(__dir__ .'/KiAuthSoc.php');
 
 
 
-//  todo 23 (ux, auth) +0: introduce entire auth cache
+//  todo 23 (ux, auth) +0: introduce entire auth cached timeout
 class KiAuth {
 	private $db;
 
@@ -58,25 +58,22 @@ class KiAuth {
 
 
 /*
-Given current URL, return suitable social login URL's.
+Return suitable social login URL's.
 */
-	function socUrlA($_url){
+	function socUrlA(){
 		if (!$isSigned)
 			return [];
 
-		return $this->socUser->loginURL($_url);
+		return $this->socUser->loginURL();
 	}
 
 
 
 /*
 API cb for social logon.
-
-$_url
-	$KiURL passed in with GET arguments filled.
 */
-	function socCB($_url){
-		$socErr= $this->socUser->socCB($_url);
+	function socCB(){
+		$socErr= $this->socUser->socCB();
 		if ($socErr)
 			return;
 

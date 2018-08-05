@@ -142,12 +142,12 @@ Parse settings, excluding blank ones.
 /*
 Fill authorisation URL's list for available services.
 */
-	function loginURL($_url){
+	function loginURL(){
 		$urlA= [];
 
 		foreach ($this->typesA as $type=>$v){
 			$auth= $this->factory->createAuth($type);
-			$url= $auth->getAuthorizeUrl($this->socialURL($type, $_url));
+			$url= $auth->getAuthorizeUrl($this->socialURL($type));
 
 
 			switch ($type){
@@ -171,24 +171,21 @@ Fill authorisation URL's list for available services.
 /*
 Form auth URL for given type.
 */
-	function socialURL($_type, $_url){
-		return ($_url->https?'https':'http') .'://'. $_url->server .'/'. self::$cbName ."?type=$_type";
+	function socialURL($_type){
+		return (KiUrl::https()?'https':'http') .'://'. KiUrl::server() .'/'. self::$cbName ."?type=$_type";
 	}
 
 
 
 /*
 Callback function for social logons.
-
-$_url
-	$KiURL passed in.
 */	
-	function socCB($_url){
-	    $type = $_url->args->type;
+	function socCB(){
+	    $type = KiUrl::args()->type;
 	    $auth = $this->factory->createAuth($type);
 	    $this->token = $auth->authenticate(
-	    	$_url->args->all(),
-	    	$this->socialURL($type, $_url)
+	    	KiUrl::args()->all(),
+	    	$this->socialURL($type)
 	    );
 
 	    if (!$this->token) {
