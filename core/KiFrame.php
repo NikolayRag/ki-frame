@@ -51,7 +51,7 @@ class KiFrame {
 			session_start();
 
 
-		$dbCfg= KF::c('DBCFG');
+		$dbCfg= KC::DBCFG();
 		$DB = new PDO("mysql:host={$dbCfg->HOST};dbname={$dbCfg->NAME};charset=utf8", $dbCfg->USER, $dbCfg->PASS, array(PDO::ATTR_PERSISTENT=>true));
 		$DB->exec("set names utf8");
 
@@ -59,7 +59,7 @@ class KiFrame {
 		$ERRR->errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
 
 
-		$USER= new KiAuth($DB, KF::c('SOCIAL'));
+		$USER= new KiAuth($DB, KC::SOCIAL());
 	}
 
 
@@ -74,24 +74,11 @@ class KiFrame {
 
 
 /*
-Set constant variable to given value and context.
-Get constant variable.
-*/
-	static function c($_name, $_val=false, $_ctx=0){
-		if (func_num_args()>1)
-			return KiConst::add($_name, $_val, $_ctx);
-		else
-			return KiConst::get($_name);
-	}
-
-
-
-/*
 Return all constant.
 If ctx specified, only ctx context variables are returned.
 */
 	static function cDump($_ctx=false){
-		return KiConst::dump($_ctx);
+		return KiConst::___dump($_ctx);
 	}
 
 
