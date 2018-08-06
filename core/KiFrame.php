@@ -29,15 +29,16 @@ class KiFrame {
 		$ERRR->errCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
 
 
+		if (!isset($_SESSION) && !headers_sent())
+			session_start();
+
+
 		include(__dir__ .'/support/general.php');
 		include(__dir__ .'/support/LooseObject.php');
 
 
 		include(__dir__ .'/KiConst.php');
 		include(__dir__ .'/KiRoute.php');
-
-		include(__dir__ .'/../private/c_core.php');
-
 
 
 		include(__dir__ .'/ki-sql.php');
@@ -47,10 +48,9 @@ class KiFrame {
 		include(__dir__ .'/KiAgent.php');
 		include(__dir__ .'/KiAuth.php');
 
-		if (!isset($_SESSION) && !headers_sent())
-			session_start();
 
 
+return;
 		$dbCfg= KC::DBCFG();
 		$DB = new PDO("mysql:host={$dbCfg->HOST};dbname={$dbCfg->NAME};charset=utf8", $dbCfg->USER, $dbCfg->PASS, array(PDO::ATTR_PERSISTENT=>true));
 		$DB->exec("set names utf8");
