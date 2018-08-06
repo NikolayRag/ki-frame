@@ -31,10 +31,7 @@ use Sinergi\BrowserDetector\Browser;
 class KiAgent{
 	private static $isInited;
 
-	private static $vBrowser;
-	
-
-	static $vDefault, $vBot;
+	private static $vBrowser, $vDefault, $vBot;
 
 
 
