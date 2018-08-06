@@ -19,7 +19,7 @@ __construct($_modeA, $_modeDefault, $_modeWrong)
 
 class KiUrl {
 	static private $isInited;
-	static $vPath=[], $vArgs, $vServer, $isHttps;
+	static private $vPath=[], $vArgs, $vServer, $isHttps;
 
 
 
