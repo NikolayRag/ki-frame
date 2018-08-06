@@ -1,21 +1,21 @@
 <?
-KF::c('DBCFG', (object)[ 
+KC::DBCFG( (object)[ 
 	'HOST'	=>	'127.0.0.1',
 	'USER'	=>	'',
 	'PASS'	=>	'',
 	'NAME'	=>	''
-]);
+] );
 
 
-KF::c('MAILCFG', (object)[ 
+KC::MAILCFG( (object)[ 
 	'PASS'	=>	'',
 	'USER'	=>	'',
 	'SMTP'	=>	'',
 	'KEY'	=>	''
-]);
+] );
 
 
-KF::c('SOCIAL', (object)[ 
+KC::SOCIAL( (object)[ 
         'CB' => 'logon/social',
         'VKID' => 0,
         'VKKEY' => '',
@@ -31,7 +31,7 @@ KF::c('SOCIAL', (object)[
         'GITSCOPE' => '',
         'TWID' => '',
         'TWKEY' => ''
-]);
+] );
 
 
 ?>
