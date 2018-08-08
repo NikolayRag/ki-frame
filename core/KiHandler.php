@@ -29,9 +29,19 @@ countErrors($_countErrors=true, $_countXcption=true)
 class KiHandler {
 	private static $isInited;
 
-	private static $errPoolA= [], $errCBA= []; //callbacks
+	
+	//callbacks
+	private static
+		$errPoolA= [],
+		$errCBA= [];
 
-	private static $debug, $doClean, $returnCode, $headersA=[], $contentA=[], $orderA=[];
+	private static
+		$debug=True,
+		$doClean=True,
+		$returnCode,
+		$headersA=[],
+		$contentA=[],
+		$orderA=[];
 
 
 
@@ -88,13 +98,16 @@ Capture runtime exception.
 
 /*
 Finalize output and react on errors.
-Gather fatal error if any, override code to 500 and run user defined error handlers if any.
+
+meta:
+- optionally clean all explicit output
+- get fatal error if any
+- optionally allow user-defined error handlers to output errors (debug)
+- override code to 500 and run user-defined error handlers if any
+	It is allowed to define headers and change content context data finally at this point!
+- 
 */
 	static function hShut() {
-		if (self::$doClean)
-			ob_get_clean();
-
-
 		//finalize fatal error (only last one)
 		$lastErr = error_get_last();
 		if ($lastErr)
@@ -106,6 +119,9 @@ Gather fatal error if any, override code to 500 and run user defined error handl
 			ini_set("display_errors", "1");
 			error_reporting(E_ALL);
 		}
+
+		if (self::$doClean)
+			ob_get_clean();
 
 
 		//Have any errors, run custom handlers.
@@ -177,19 +193,12 @@ Set page ruturn code.
 
 
 /*
-Set page ruturn code.
-*/
-	static function setClean($_clean) {
-		self::$doClean = $_clean;
-	}
-
-
-
-/*
 Show errors caused by custom error handlers.
+Clean explicit output.
 */
-	static function setDebug($_debug) {
+	static function setDebug($_debug, $_clean) {
 		self::$debug = $_debug;
+		self::$doClean = $_clean;
 	}
 
 

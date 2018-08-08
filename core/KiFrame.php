@@ -179,11 +179,8 @@ Finalize definition and , shortcut for KiRoute::render()
 	static function hSetReturn($_code){
 		KiHandler::setReturn($_code);
 	}
-	static function hSetClean($_clean){
-		KiHandler::setClean($_clean);
-	}
-	static function hSetDebug($_debug){
-		KiHandler::setDebug($_debug);
+	static function hSetDebug($_debug, $_clean){
+		KiHandler::setDebug($_debug, $_clean);
 	}
 	static function hCountErrors($_countErrors=true, $_countXcption=true){
 		KiHandler::countErrors($_countErrors=true, $_countXcption=true);
