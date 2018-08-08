@@ -147,6 +147,13 @@ Order contexts, shortcut for KiRoute::order()
 
 
 
+/*
+Finalize definition and , shortcut for KiRoute::render()
+*/
+	static function end(){
+		return KiRoute::render();
+	}
+
 
 
 

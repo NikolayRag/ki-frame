@@ -129,9 +129,9 @@ $_ctxA
 
 /*
 Actually run matching route collection.
-This is called at response generation stage for entire http request.
+This is called once for entire http request.
 */
-	static function solve($_url){
+	static function render(){
 	}
 
 }
