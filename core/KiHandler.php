@@ -41,7 +41,7 @@ class KiHandler {
 		self::$isInited= True;
 
 
-		self::setCode(200);
+		self::setReturn(200);
 
 		ob_start();
 
@@ -112,7 +112,7 @@ Gather fatal error if any, override code to 500 and run user defined error handl
 		//Some ov content context may be substituted with contentSet.
 		//Notice response code may be changed very finally!
 		if (count(self::$errPoolA)){
-			self::setCode(500);
+			self::setReturn(500);
 
 			foreach (self::$errCBA as $cCB)
 				call_user_func($cCB, self::$errPoolA);
@@ -170,7 +170,7 @@ Set custom header
 /*
 Set page ruturn code.
 */
-	static function setCode($_code) {
+	static function setReturn($_code) {
 		self::$returnCode = $_code;
 	}
 
