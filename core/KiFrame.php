@@ -25,7 +25,7 @@ class KiFrame {
 
 		include(__dir__ .'/init_errorh.php');
 		//general error callback (to file)
-		KiHandler::errCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
+		self::hErrCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
 
 
 		if (!isset($_SESSION) && !headers_sent())
@@ -55,7 +55,7 @@ return;
 		$DB->exec("set names utf8");
 
 		//additional error callback (to DB,table)
-		KiHandler::errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
+		self::hErrCB(ErrCB\errCBDB($DB, 'site_log_errors'));
 
 
 		$USER= new KiAuth($DB, KC::SOCIAL());
@@ -152,6 +152,44 @@ Finalize definition and , shortcut for KiRoute::render()
 	static function end(){
 		return KiRoute::render();
 	}
+
+
+
+
+
+
+//===================================================================//
+//============================= HANDLER =============================//
+//===================================================================//
+
+
+
+	static function hErrCB($_CB){
+		KiHandler::errCB($_CB);
+	}
+	static function hContentSet($_ctx, $_value){
+		KiHandler::contentSet($_ctx, $_value);
+	}
+	static function hContentOrder($_order){
+		KiHandler::contentOrder($_order);
+	}
+	static function hSetHeader($_name, $_value){
+		KiHandler::setHeader($_name, $_value);
+	}
+	static function hSetReturn($_code){
+		KiHandler::setReturn($_code);
+	}
+	static function hSetClean($_clean){
+		KiHandler::setClean($_clean);
+	}
+	static function hSetDebug($_debug){
+		KiHandler::setDebug($_debug);
+	}
+	static function hCountErrors($_countErrors=true, $_countXcption=true){
+		KiHandler::countErrors($_countErrors=true, $_countXcption=true);
+	}
+
+
 
 
 
