@@ -21,12 +21,11 @@ class KiFrame {
 		self::$startTime= microtime(true);
 
 
-		include(__dir__ .'/KiError.php');
-		$ERRR= new KiError(true);
+		include(__dir__ .'/KiHandler.php');
 
 		include(__dir__ .'/init_errorh.php');
 		//general error callback (to file)
-		$ERRR->errCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
+		KiHandler::errCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
 
 
 		if (!isset($_SESSION) && !headers_sent())
@@ -56,7 +55,7 @@ return;
 		$DB->exec("set names utf8");
 
 		//additional error callback (to DB,table)
-		$ERRR->errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
+		KiHandler::errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
 
 
 		$USER= new KiAuth($DB, KC::SOCIAL());
