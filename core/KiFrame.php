@@ -5,7 +5,10 @@ It is singletone, so all it's methods are static.
 
 Every framework usable function is accessed from KiFrame shortcut methods.
 
-All functions are divided by function groups, main of which is routing matrix.
+All functions are divided by function groups, main of which are:
+	- routing matrix, URL, error handling
+	- authorization, social logon, right
+	- support, constants, db, dictionary, etc.
 */
 class KiFrame {
 	private static $isInited, $startTime;

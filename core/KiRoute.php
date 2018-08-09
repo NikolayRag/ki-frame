@@ -47,11 +47,15 @@ If concurrent URL matches will be found, most prioritized values take place.
 
 
 $_url
-	Regex to match URL against. URL always starts with root '/'.
+	One of:
+
+	- Match function name.
+
+	- Regex to match URL against. URL always starts with root '/'.
 	Named capture (?P<name>value) is allowed to scan variables.
 	Tricky regex matches like "^(?!.foo$)" (all but '/foo') are fully allowed.
 
-	Empty string is alias for 'nothing match' special case.
+	- Empty string is alias for 'nothing match' special case.
 
 
 $_code
@@ -64,7 +68,7 @@ $_headers
 
 
 $_priority
-	When values are concurrent, biggest priority points one.
+	When values are concurrent, biggest priority points the ones.
 */
 	static function bind($_url, $_code=200, $_headersA=[], $_priority=1){
 		checkUrl($_url);

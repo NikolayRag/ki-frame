@@ -32,6 +32,7 @@ errCBFile($_fn)
 	}
 
 
+
 /*
 errCBDB($_db, $_table)
 	Return function that stores error array info specified DB.
@@ -77,6 +78,7 @@ errCBDB($_db, $_table)
 			}
 		};
 	}
+
 
 
 	function errCBEcho(){

@@ -250,7 +250,7 @@ Return user id.
 		$stmt->execute([$_soc->type, $_soc->id]);
 		$id_assigned= getA($stmt->fetch(), 'id_users', 0);
 
-//  todo 7 (ux, socal) -1: probably update user data from social
+//  todo 7 (ux, socal, unsure) -1: probably update user data from social
 
 		if (!$id_assigned){
 			$userData= $_soc->fetch();
