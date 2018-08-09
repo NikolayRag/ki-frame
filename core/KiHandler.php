@@ -168,8 +168,8 @@ Add contents
 /*
 Add contents
 */
-	static function contentOrder($_order){
-		self::$orderA = $_order;
+	static function contentOrder($_orderA){
+		self::$orderA = $_orderA;
 	}
 
 
