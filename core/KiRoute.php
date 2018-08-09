@@ -145,6 +145,9 @@ This is called once for entire http request.
 
 
 
+/*
+Initialize environment: database, user account and rights, etc.
+*/
 	static private function init(){
 		$dbCfg= KC::DBCFG();
 		$DB = new PDO("mysql:host={$dbCfg->HOST};dbname={$dbCfg->NAME};charset=utf8", $dbCfg->USER, $dbCfg->PASS, array(PDO::ATTR_PERSISTENT=>true));
@@ -155,6 +158,24 @@ This is called once for entire http request.
 
 
 		$USER= new KiAuth($DB, KC::SOCIAL());
+	}
+
+
+
+/*
+Build all registered code generators.
+*/
+	static private function runMatrix(){
+
+	}
+
+
+
+/*
+Build actual context order based on registered context list and explicit context order.
+*/
+	static private function buildOrder(){
+
 	}
 }
 ?>
