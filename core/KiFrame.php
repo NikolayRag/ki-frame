@@ -25,7 +25,7 @@ class KiFrame {
 
 		include(__dir__ .'/init_errorh.php');
 		//general error callback (to file)
-		self::hErrCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
+		KiHandler::errCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
 
 
 		if (!isset($_SESSION) && !headers_sent())
@@ -46,19 +46,6 @@ class KiFrame {
 		include(__dir__ .'/KiUrl.php');
 		include(__dir__ .'/KiAgent.php');
 		include(__dir__ .'/KiAuth.php');
-
-
-
-return;
-		$dbCfg= KC::DBCFG();
-		$DB = new PDO("mysql:host={$dbCfg->HOST};dbname={$dbCfg->NAME};charset=utf8", $dbCfg->USER, $dbCfg->PASS, array(PDO::ATTR_PERSISTENT=>true));
-		$DB->exec("set names utf8");
-
-		//additional error callback (to DB,table)
-		self::hErrCB(ErrCB\errCBDB($DB, 'site_log_errors'));
-
-
-		$USER= new KiAuth($DB, KC::SOCIAL());
 	}
 
 
