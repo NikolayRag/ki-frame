@@ -14,8 +14,8 @@ class KiRoute {
 
 /*
 Assign context to some code-generating routines.
-Several routines may be assigned with same context, that will come out they result will be placed right one at an other.
-No order for multiple same-context code is defined.
+Several routines may be assigned with same context, that will come out they result will be placed right one after another.
+Order for multiple same-context code is the same as they were declared.
 
 
 $_ctx
@@ -84,6 +84,8 @@ $_priority
 Add context to URL.
 All contexts for all matching URLs will be used without concurrency.
 Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
+If nothing was bound at all, the only implicit assignment is '/' URL to '' context (root to default).
+
 
 $_url
 	Same as for bind()
@@ -112,7 +114,9 @@ $_ctx
 
 /*
 Define context order for corresponding matches, when several contents match some URL.
-Every context not ordered explicitely will have it's place after all explicit ones, in order it was declared first time by rIn.
+Every context not ordered explicitely will have it's place after all explicit ones, in order it was declared first time by context().
+If particular context don't exist, it is ignored.
+
 
 $_ctxA
 	Array of contexts.
@@ -132,7 +136,7 @@ $_ctxA
 
 
 /*
-Actually run matching route collection.
+Finalize: actually run matching route collection.
 This is called once for entire http request.
 */
 	static function render(){
