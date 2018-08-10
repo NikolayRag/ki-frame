@@ -36,7 +36,7 @@ class KiHandler {
 		$errCBA= [];
 
 	private static
-		$debug=True,
+		$debug,
 		$doClean=True,
 		$returnCode,
 		$headersA=[],
