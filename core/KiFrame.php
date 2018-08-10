@@ -111,17 +111,8 @@ Register URL default return code and headers, shortcut to KiRoute::bind().
 
 /*
 Add context to URL, shortcut for KiRoute::bindCtx()
-
-
-Notice!
-If only one arument is specified, it is assumed to be $_ctx, while URL matches any.
 */
-	static function rAdd($_url, $_ctx=False){
-		if (func_num_args()==1){
-			$_ctx= $_url;
-			$_url= '.*';
-		}
-
+	static function rAdd($_url, $_ctx){
 		return KiRoute::bindCtx($_url, $_ctx);
 	}
 
