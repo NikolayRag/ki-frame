@@ -65,17 +65,12 @@ $_code
 
 $_headers
 	Default custom return headers array.
-
-
-$_priority
-	When values are concurrent, biggest priority points the ones.
 */
-	static function bind($_url, $_code=200, $_headersA=[], $_priority=1){
+	static function bind($_url, $_code=200, $_headersA=[]){
 		checkUrl($_url);
 
 		self::$bindA[$_url]->code = $_code;
 		self::$bindA[$_url]->headersA = $_headersA;
-		self::$bindA[$_url]->priority = $_priority;
 	}
 
 
@@ -107,7 +102,7 @@ $_ctx
 		if (array_key_exists($_url, self::$bindA))
 			return;
 
-		self::$bindA[$_url] = (object)['ctx'=>[], 'code'=>200, 'headers'=>[], 'priority'=>-100];
+		self::$bindA[$_url] = (object)['ctx'=>[], 'code'=>200, 'headers'=>[]];
 	}
 
 

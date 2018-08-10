@@ -103,8 +103,8 @@ This is useful for light one-page setups.
 /*
 Register URL default return code and headers, shortcut to KiRoute::bind().
 */
-	static function rBind($_url, $_code=200, $_headersA=[], $_priority=1){
-		KiRoute::bind($_url, $_code, $_headersA, $_priority);
+	static function rBind($_url, $_code=200, $_headersA=[]){
+		KiRoute::bind($_url, $_code, $_headersA);
 	}
 
 
