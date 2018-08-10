@@ -142,9 +142,22 @@ This is called once for entire http request.
 	static function render(){
 		self::init();
 
-		self::runMatrix();
 
-		KiHandler::contentOrder(self::buildOrder());
+		$actualOrder = self::buildOrder();
+
+		foreach ($actualOrder as $cCtx){
+	echo "ctx: '$cCtx' >>>\n";
+
+			$cContentA = '';
+
+			foreach (getA(self::$contextA,$cCtx,[]) as $cSrc)
+				$cContentA = self::runContent($cSrc);
+
+			KiHandler::contentSet($cCtx, implode('', $cContentA));
+	echo "<<<\n";
+		}
+
+		KiHandler::contentOrder($actualOrder);
 	}
 
 
@@ -167,19 +180,24 @@ Initialize environment: database, user account and rights, etc.
 
 
 /*
-Build all registered code generators.
+Build actual context order based on registered context list and explicit context order.
 */
-	static private function runMatrix(){
+	static private function buildOrder(){
+		$outContextA = [''];
 
+		return $outContextA;
 	}
 
 
 
 /*
-Build actual context order based on registered context list and explicit context order.
+Build all registered code generators.
 */
-	static private function buildOrder(){
-
+	static private function runContent($_src){
+		echo "c: ";
+		print_r($_src);
+		echo "\n";
+		return '';
 	}
 }
 ?>
