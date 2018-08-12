@@ -19,7 +19,15 @@ __construct($_modeA, $_modeDefault, $_modeWrong)
 
 class KiUrl {
 	static private $isInited;
-	static private $vPath=[], $vArgs, $vServer, $isHttps;
+	static private $vUri, $vPath, $vArgs, $vServer, $isHttps;
+
+
+
+	static function uri(){
+		self::init();
+
+		return self::$vUri;
+	}
 
 
 
@@ -74,8 +82,8 @@ class KiUrl {
 		foreach ($_POST as $pName=>$pVal)
 			self::$vArgs->$pName = $pVal;
 
-		$uriA = explode("?", $_SERVER["REQUEST_URI"]);
-
+		self::$vUri = preg_replace('[/+]', '/', "/${_SERVER["REQUEST_URI"]}");
+		$uriA = explode("?", self::$vUri);
 
 		//Fill vArgs
 		if (isset($uriA[1]))
@@ -91,7 +99,7 @@ class KiUrl {
 
 
 		self::$vPath = array_slice(
-			explode("/", preg_replace('[/+]', '/', $uriA[0])), 1
+			explode("/", $uriA[0]), 1
 		);
 
 	}
