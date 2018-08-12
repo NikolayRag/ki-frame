@@ -2,19 +2,7 @@
 
 /*
 URL parser.
-Detects GET "?" parameters, path breadrolls,
-and uses path[0] as identifier for requested mode.
-
-__construct($_modeA, $_modeDefault, $_modeWrong)
-	$_modeA
-		'name'=>value pair array of modes for detection
-
-	$_modeDefault
-		default value for mode set if no path supplied
-
-	$_modeWrong
-		mode value if no suitable mode found in $_modeA provided
-
+Detect and organize request elements: path, GET and POST variables, server name, http scheme.
 */
 
 class KiUrl {
@@ -23,6 +11,9 @@ class KiUrl {
 
 
 
+/*
+Get request string, always started with '/'.
+*/
 	static function uri(){
 		self::init();
 
@@ -31,14 +22,20 @@ class KiUrl {
 
 
 
+/*
+Get path array.
+*/
 	static function path(){
-		self::init();
+	self::init();
 
 		return self::$vPath;
 	}
 
 
 
+/*
+Get variables array, including both GET and POST.
+*/
 	static function args(){
 		self::init();
 
@@ -47,6 +44,9 @@ class KiUrl {
 
 
 
+/*
+Get requested server name.
+*/
 	static function server(){
 		self::init();
 
@@ -55,6 +55,9 @@ class KiUrl {
 
 
 
+/*
+Get HTTPS flag.
+*/
 	static function https(){
 		self::init();
 
