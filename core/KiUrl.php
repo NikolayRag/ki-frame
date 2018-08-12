@@ -26,7 +26,7 @@ class KiUrl {
 	static function path(){
 		self::init();
 
-		return $vPath;
+		return self::$vPath;
 	}
 
 
@@ -34,7 +34,7 @@ class KiUrl {
 	static function args(){
 		self::init();
 
-		return $vArgs;
+		return self::$vArgs;
 	}
 
 
@@ -42,7 +42,7 @@ class KiUrl {
 	static function server(){
 		self::init();
 
-		return $vServer;
+		return self::$vServer;
 	}
 
 
@@ -50,7 +50,7 @@ class KiUrl {
 	static function https(){
 		self::init();
 
-		return $isHttps;
+		return self::$isHttps;
 	}
 
 
@@ -63,7 +63,7 @@ class KiUrl {
 
 		self::$isHttps =
 			getA($_SERVER, 'HTTPS') ||
-			getA(json_decode(getA($_SERVER, 'HTTP_CF_VISITOR')),'scheme')=='https'; 
+			getA(json_decode(getA($_SERVER, 'HTTP_CF_VISITOR')),'scheme')=='https'; //cloudflare https flag
 	
 
 		self::$vServer = $_SERVER['SERVER_NAME'];
