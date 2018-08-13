@@ -141,19 +141,24 @@ This is called once for entire http request.
 
 		$actualOrder = self::buildOrder();
 
+		//implicit 'not found"'
+		if (!count($actualOrder))
+			KiHandler::setReturn(404);
+
+
 		foreach ($actualOrder as $cCtx){
-	echo "ctx: '$cCtx' >>>\n";
+//	echo "ctx: '$cCtx' >>>\n";
 
-			$cContentA = '';
+//			$cContentA = '';
 
-			foreach (getA(self::$contextA,$cCtx,[]) as $cSrc)
-				$cContentA = self::runContent($cSrc);
+//			foreach (getA(self::$contextA,$cCtx,[]) as $cSrc)
+//				$cContentA = self::runContent($cSrc);
 
-			KiHandler::contentSet($cCtx, implode('', $cContentA));
-	echo "<<<\n";
+//			KiHandler::contentSet($cCtx, implode('', $cContentA));
+//	echo "<<<\n";
 		}
 
-		KiHandler::contentOrder($actualOrder);
+//		KiHandler::contentOrder($actualOrder);
 	}
 
 
@@ -176,10 +181,68 @@ Initialize environment: database, user account and rights, etc.
 
 
 /*
-Build actual context order based on registered context list and explicit context order.
+Detect all matching contexts for current URL.
+All context duplication removed.
+
+Return sorted context array.
 */
 	static private function buildOrder(){
-		$outContextA = [''];
+		//implicit '\/' to '' binding
+		if (!count(self::$bindA)){
+			self::checkUrl('\/', ['']);
+			self::order(['']);
+		}
+
+
+		$bindsA = [];
+		$noneA = [];
+
+		//check all url's
+		foreach (self::$bindA as $cUrl=>$cBind){
+			if ($cUrl=='')
+				$noneA[] = $cBind;
+			else if (is_callable($cUrl) && $cUrl())
+				$bindsA[] = $cBind;
+// -todo 34 (ux, routing) +0: match url variables
+			else if (preg_match("/^$cUrl$/", KiUrl::uri()))
+				$bindsA[] = $cBind;
+		}
+
+
+		//catch 'nothing match' case
+		if (!count($bindsA))
+			$bindsA = $noneA;
+
+
+		$fContextA = [];
+
+		//filter contexts out
+		foreach ($bindsA as $cBind){ //all actual bindings
+			foreach ($cBind->ctx as $cCtx) {
+				if (
+					array_key_exists($cCtx, self::$contextA) &&
+					array_search($cCtx, self::$contextOrder) !== False
+				) {
+					if (!array_key_exists($cCtx, $fContextA))
+						$fContextA[$cCtx] = (object)['hdrA'=>[], 'code'=>0];
+
+					foreach ($cBind->headers as $cHead=>$cVal)
+						$fContextA[$cCtx]->hdrA[$cHead] = $cVal;
+
+					$fContextA[$cCtx]->code = $cBind->code;
+				}
+			}
+		}
+
+
+
+		$outContextA = [];
+
+ 		//sort context with previously specified order
+		foreach (self::$contextOrder as $cCtx)
+			if (array_key_exists($cCtx, $fContextA))
+				$outContextA[$cCtx] = $fContextA[$cCtx];
+
 
 		return $outContextA;
 	}
