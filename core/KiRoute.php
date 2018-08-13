@@ -52,7 +52,7 @@ $_url
 
 	- Match function name.
 
-	- Regex to match URL against. URL always starts with root '\/'.
+	- Regex to match URL against. URL always starts with root '/'.
 	Named capture (?P<name>value) is allowed to scan variables.
 	Tricky regex matches like "^(?!.foo$)" (all but '/foo') are fully allowed.
 
@@ -83,7 +83,7 @@ Add context to URL.
 All contexts for all matching URLs will be used without concurrency.
 Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
 
-If nothing is bound at all, the only implicit assignment is '\/' URL to '' context (root to default).
+If nothing is bound at all, the only implicit assignment is '/' URL to '' context (root to default).
 If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code.
 
 
@@ -199,9 +199,9 @@ All context duplication removed.
 Return sorted context array.
 */
 	static private function buildOrder(){
-		//implicit '\/' to '' binding
+		//implicit '/' to '' binding
 		if (!count(self::$bindA)){
-			self::checkUrl('\/', ['']);
+			self::checkUrl('/', ['']);
 			self::order(['']);
 		}
 
@@ -216,8 +216,12 @@ Return sorted context array.
 			else if (is_callable($cUrl) && $cUrl())
 				$bindsA[] = $cBind;
 // -todo 34 (ux, routing) +0: match url variables
-			else if (preg_match("/^$cUrl$/", KiUrl::uri()))
-				$bindsA[] = $cBind;
+			else {
+				$cRegex = str_replace('/', '\/', $cUrl);
+
+				if (preg_match("/^$cRegex$/", KiUrl::uri()))
+					$bindsA[] = $cBind;
+			}
 		}
 
 
