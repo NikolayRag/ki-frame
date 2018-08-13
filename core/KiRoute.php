@@ -146,18 +146,25 @@ This is called once for entire http request.
 			KiHandler::setReturn(404);
 
 
-		foreach ($actualOrder as $cCtx){
-//	echo "ctx: '$cCtx' >>>\n";
+		foreach ($actualOrder as $cCtx=>$cSupport){
+	echo "ctx: '$cCtx' >>>\n";
 
-//			$cContentA = '';
+			$cContentA = [];
 
-//			foreach (getA(self::$contextA,$cCtx,[]) as $cSrc)
-//				$cContentA = self::runContent($cSrc);
+			foreach (self::$contextA[$cCtx] as $cSrc)
+				$cContentA[] = self::runContent($cSrc);
 
-//			KiHandler::contentSet($cCtx, implode('', $cContentA));
-//	echo "<<<\n";
+
+			KiHandler::setContent($cCtx, implode('', $cContentA));
+
+			foreach ($cSupport->hdrA as $hName=>$hVal)
+				KiHandler::setHeader($hName, $hVal);
+
+			if ($cSupport->code)
+				KiHandler::setReturn($cSupport->code);
+
+	echo "<<<\n";
 		}
-
 	}
 
 
@@ -249,13 +256,19 @@ Return sorted context array.
 
 
 /*
-Build all registered code generators.
+Solve registered code generators for specified context.
 */
 	static private function runContent($_src){
 		echo "c: ";
 		print_r($_src);
 		echo "\n";
-		return '';
+		$out = '';
+
+
+		if (is_string($out))
+			$out = '';
+		
+		return $out;
 	}
 }
 ?>
