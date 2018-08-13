@@ -121,6 +121,7 @@ meta:
 
 		if (self::$doClean)
 			ob_get_clean();
+//  todo 29 (unsure, flow) +0: option to remove explicitely specified headers
 
 
 		//Have any errors, run custom handlers.

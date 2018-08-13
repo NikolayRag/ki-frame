@@ -9,6 +9,12 @@ All functions are divided by function groups, main of which are:
 	- routing matrix, URL, error handling
 	- authorization, social logon, right
 	- support, constants, db, dictionary, etc.
+
+
+There're 3 areas of actual code generation:
+1. Direct echo(), print_r(), and so on, used up from index.php root file. This output will be wiped out by default, till hSetDebug(?,True) is specified.
+2. Code, files and generator functions provided for routing with r*()
+3. Direct code generation and routing context redefinitions, run at custom error handlers, if any. This can override all previously generated code.
 */
 class KiFrame {
 	private static $isInited, $startTime;

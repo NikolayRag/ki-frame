@@ -33,6 +33,7 @@ $_src
 	Anything other than string returned treated as error and ignored in output.
 */
 	static function context($_ctx, $_src){
+// -todo 30 (check) +0: check for duplicates
 		if (!array_key_exists($_ctx, self::$contextA))
 			self::$contextA[$_ctx] = [];
 
@@ -51,16 +52,17 @@ $_url
 
 	- Match function name.
 
-	- Regex to match URL against. URL always starts with root '/'.
+	- Regex to match URL against. URL always starts with root '\/'.
 	Named capture (?P<name>value) is allowed to scan variables.
 	Tricky regex matches like "^(?!.foo$)" (all but '/foo') are fully allowed.
 
 	- Empty string is alias for 'nothing match' special case.
+	Notice, that if there any wide mask bound match, like '.*', it could be impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
 
 
 $_code
 	Default HTTP return code.
-	May be overrided inside $_src
+	Return code have priority over any other defined one.
 
 
 $_headers
@@ -80,7 +82,9 @@ $_headers
 Add context to URL.
 All contexts for all matching URLs will be used without concurrency.
 Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
-If nothing was bound at all, the only implicit assignment is '/' URL to '' context (root to default).
+
+If nothing is bound at all, the only implicit assignment is '\/' URL to '' context (root to default).
+If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code.
 
 
 $_url
@@ -92,6 +96,7 @@ $_ctx
 
 */
 	static function bindCtx($_url, $_ctx){
+// -todo 31 (check) +0: check for duplicates
 		checkUrl($_url);
 
 		self::$bindA[$_url]->ctx[] = $_ctx;
@@ -110,8 +115,10 @@ $_ctx
 
 /*
 Define context order for corresponding matches, when several contents match some URL.
-Every context not ordered explicitely will have it's place after all explicit ones, in order it was declared first time by context().
+
 If particular context don't exist, it is ignored.
+//  todo 33 (ux, routing) +0: use all matching contexts implicitely if order not defined
+All matching contexts will be used if no order specified.
 
 
 $_ctxA
