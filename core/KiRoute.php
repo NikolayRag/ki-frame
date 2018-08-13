@@ -66,10 +66,11 @@ $_code
 $_headers
 	Default custom return headers array.
 */
-	static function bind($_url, $_code=200, $_headersA=[]){
+	static function bind($_url, $_code=0, $_headersA=[]){
 		checkUrl($_url);
 
-		self::$bindA[$_url]->code = $_code;
+		if ($_code)
+			self::$bindA[$_url]->code = $_code;
 		self::$bindA[$_url]->headersA = $_headersA;
 	}
 
@@ -98,11 +99,11 @@ $_ctx
 
 
 
-	private static function checkUrl($_url){
+	private static function checkUrl($_url, $_ctx=[]){
 		if (array_key_exists($_url, self::$bindA))
 			return;
 
-		self::$bindA[$_url] = (object)['ctx'=>[], 'code'=>200, 'headers'=>[]];
+		self::$bindA[$_url] = (object)['ctx'=>$_ctx, 'code'=>0, 'headers'=>[]];
 	}
 
 
