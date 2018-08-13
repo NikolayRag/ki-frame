@@ -147,12 +147,13 @@ This is called once for entire http request.
 
 
 		foreach ($actualOrder as $cCtx=>$cSupport){
-	echo "ctx: '$cCtx' >>>\n";
-
 			$cContentA = [];
 
-			foreach (self::$contextA[$cCtx] as $cSrc)
-				$cContentA[] = self::runContent($cSrc);
+			foreach (self::$contextA[$cCtx] as $cSrc) {
+				$cCont = self::runContent($cSrc);
+				if (is_string($cCont))
+					$cContentA[] = $cCont;
+			}
 
 
 			KiHandler::setContent($cCtx, implode('', $cContentA));
@@ -162,8 +163,6 @@ This is called once for entire http request.
 
 			if ($cSupport->code)
 				KiHandler::setReturn($cSupport->code);
-
-	echo "<<<\n";
 		}
 	}
 
@@ -259,16 +258,27 @@ Return sorted context array.
 Solve registered code generators for specified context.
 */
 	static private function runContent($_src){
-		echo "c: ";
-		print_r($_src);
-		echo "\n";
-		$out = '';
+		if (is_callable($_src)){
+			if (!is_string($_src))
+				return $_src();
+
+			return call_user_func($_src);
+		}
 
 
-		if (is_string($out))
-			$out = '';
-		
-		return $out;
+		if (is_file($_src)){
+			$ob = ob_get_clean(); //hold output buffer
+
+			include($_src);
+			$cOut = ob_get_clean();
+
+			echo $ob; //fetch output buffer
+
+			return $cOut;
+		}
+
+
+		return $_src;
 	}
 }
 ?>
