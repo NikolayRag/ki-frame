@@ -6,8 +6,21 @@ Detect and organize request elements: path, GET and POST variables, server name,
 */
 
 class KiUrl {
+	const GET=1, POST=2;
+
 	static private $isInited;
-	static private $vUri, $vPath, $vArgs, $vServer, $isHttps;
+	static private $vMethod, $vUri, $vPath, $vArgs, $vServer, $isHttps;
+
+
+
+/*
+Get request method.
+*/
+	static function method(){
+		self::init();
+
+		return self::$vMethod;
+	}
 
 
 
@@ -26,7 +39,7 @@ Get request string, always started with '/'.
 Get path array.
 */
 	static function path(){
-	self::init();
+		self::init();
 
 		return self::$vPath;
 	}
@@ -70,6 +83,14 @@ Get HTTPS flag.
 		if (self::$isInited)
 			return;
 		self::$isInited = True;
+
+
+		switch ($_SERVER['REQUEST_METHOD']) {
+			case 'GET':
+				self::$vMethod = self::GET; break;
+			case 'POST':
+				self::$vMethod = self::POST; break;
+		}
 
 
 		self::$isHttps =
