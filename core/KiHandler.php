@@ -124,7 +124,7 @@ meta:
 
 
 		//Have any errors, run custom handlers.
-		//Some ov content context may be substituted with contentSet.
+		//Some of content context may be substituted with setContent.
 		//Notice response code may be changed very finally!
 		if (count(self::$errPoolA)){
 			self::setReturn(500);
@@ -158,7 +158,7 @@ Notice its own errors would not be handled in any way.
 /*
 Add contents
 */
-	static function contentSet($_ctx, $_value){
+	static function setContent($_ctx, $_value){
 		self::$contentA[$_ctx] = $_value;
 	}
 

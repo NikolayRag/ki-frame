@@ -148,9 +148,6 @@ Finalize definition and , shortcut for KiRoute::render()
 	static function hErrCB($_CB){
 		KiHandler::errCB($_CB);
 	}
-	static function hContentSet($_ctx, $_value){
-		KiHandler::contentSet($_ctx, $_value);
-	}
 	static function hSetHeader($_name, $_value){
 		KiHandler::setHeader($_name, $_value);
 	}
