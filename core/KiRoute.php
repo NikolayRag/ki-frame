@@ -38,9 +38,11 @@ $_src
 	Anything other than string returned treated as error and ignored in output.
 */
 	static function context($_ctx, $_src){
-// -todo 30 (check) +0: check for duplicates
 		if (!array_key_exists($_ctx, self::$contextA))
 			self::$contextA[$_ctx] = [];
+
+		if (array_search($_src, self::$contextA[$_ctx]) !== False)
+			return;
 
 		self::$contextA[$_ctx][] = $_src;
 	}
