@@ -128,6 +128,18 @@ Order contexts, shortcut for KiRoute::order()
 Finalize definition and , shortcut for KiRoute::render()
 */
 	static function end(){
+		$dbCfg= KC::DBCFG();
+		
+		$DB = new PDO("mysql:host={$dbCfg->HOST};dbname={$dbCfg->NAME};charset=utf8", $dbCfg->USER, $dbCfg->PASS, array(PDO::ATTR_PERSISTENT=>true));
+		$DB->exec("set names utf8");
+
+		//additional error callback (to DB,table)
+		KiHandler::errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
+
+
+		$USER= new KiAuth($DB, KC::SOCIAL());
+
+
 		return KiRoute::render();
 	}
 

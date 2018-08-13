@@ -137,8 +137,6 @@ Finalize: actually run matching route collection.
 This is called once for entire http request.
 */
 	static function render(){
-		self::init();
-
 		$actualOrder = self::buildOrder();
 
 		//implicit 'no bindings'
@@ -168,23 +166,6 @@ This is called once for entire http request.
 			if ($cSupport->code)
 				KiHandler::setReturn($cSupport->code);
 		}
-	}
-
-
-
-/*
-Initialize environment: database, user account and rights, etc.
-*/
-	static private function init(){
-		$dbCfg= KC::DBCFG();
-		$DB = new PDO("mysql:host={$dbCfg->HOST};dbname={$dbCfg->NAME};charset=utf8", $dbCfg->USER, $dbCfg->PASS, array(PDO::ATTR_PERSISTENT=>true));
-		$DB->exec("set names utf8");
-
-		//additional error callback (to DB,table)
-		KiHandler::errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
-
-
-		$USER= new KiAuth($DB, KC::SOCIAL());
 	}
 
 
