@@ -139,8 +139,11 @@ This is called once for entire http request.
 	static function render(){
 		self::init();
 
-
 		$actualOrder = self::buildOrder();
+
+		//implicit 'no bindings'
+		if ($actualOrder===Null)
+			return;
 
 		//implicit 'not found"'
 		if (!count($actualOrder))
@@ -197,6 +200,9 @@ Return sorted context array.
 		if (!count(self::$bindA)){
 			self::checkUrl('/', ['']);
 			self::order(['']);
+
+			if (!array_key_exists('', self::$contextA))
+				return;
 		}
 
 
