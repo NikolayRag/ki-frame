@@ -158,7 +158,6 @@ This is called once for entire http request.
 //	echo "<<<\n";
 		}
 
-//		KiHandler::contentOrder($actualOrder);
 	}
 
 

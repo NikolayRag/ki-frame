@@ -151,9 +151,6 @@ Finalize definition and , shortcut for KiRoute::render()
 	static function hContentSet($_ctx, $_value){
 		KiHandler::contentSet($_ctx, $_value);
 	}
-	static function hContentOrder($_order){
-		KiHandler::contentOrder($_order);
-	}
 	static function hSetHeader($_name, $_value){
 		KiHandler::setHeader($_name, $_value);
 	}

@@ -40,8 +40,7 @@ class KiHandler {
 		$doClean=True,
 		$returnCode,
 		$headersA=[],
-		$contentA=[],
-		$orderA=[];
+		$contentA=[];
 
 
 
@@ -166,15 +165,6 @@ Add contents
 
 
 /*
-Add contents
-*/
-	static function contentOrder($_orderA){
-		self::$orderA = $_orderA;
-	}
-
-
-
-/*
 Set custom header
 */
 	static function setHeader($_name, $_value){
@@ -229,10 +219,8 @@ Clean explicit output.
 
 
 	private static function outContent() {
-		$collectOutA = [];
-		foreach (self::$orderA as $cCtx)
-			$collectOutA[] = self::$contentA[$cCtx];
-		echo implode('', $collectOutA);
+		foreach (self::$contentA as $cContent)
+			echo $cContent;
 	}
 }
 
