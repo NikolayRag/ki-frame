@@ -3,6 +3,11 @@
 Routing matrix.
 The idea is that 'some request' results in set of 'some contexts', independently defined.
 
+Virtually, there're following levels of complexity in managing content generation:
+- Minimal. Only default context defined for site root by context(code).
+- Basic. Define different contexts by context(context, code), bind them to patticular URLs by bind(url, context), and define output context order by order([context array]). Also define '' (not found) context.
+- Full. Same as Basic, but supply regex or URL checkers for bind() to handle absolutely custom context match. Define custom headers and return codes.
+- Debug. Use explicitely generated output code. Overwrite any generated code and headers by custom error handlers, if any exists.
 */
 
 
@@ -43,8 +48,12 @@ $_src
 
 
 /*
-Assign default return code and headers to URL.
-If concurrent URL matches will be found, most prioritized values take place.
+Add context and headers to URL and set return code.
+Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
+All contexts for all matching URLs will be used without concurrency.
+
+If nothing is bound at all, the only implicit assignment is '/' URL to '' context (root to default).
+If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code.
 
 
 $_url
@@ -60,6 +69,10 @@ $_url
 	Notice, that if there any wide mask bound match, like '.*', it could be impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
 
 
+$_ctx
+	Context added to specified URL.
+
+
 $_code
 	Default HTTP return code.
 	Return code have priority over any other defined one.
@@ -68,39 +81,18 @@ $_code
 $_headers
 	Default custom return headers array.
 */
-	static function bind($_url, $_code=0, $_headersA=[]){
-		checkUrl($_url);
-
-		if ($_code)
-			self::$bindA[$_url]->code = $_code;
-		self::$bindA[$_url]->headersA = $_headersA;
-	}
-
-
-
-/*
-Add context to URL.
-All contexts for all matching URLs will be used without concurrency.
-Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
-
-If nothing is bound at all, the only implicit assignment is '/' URL to '' context (root to default).
-If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code.
-
-
-$_url
-	Same as for bind()
-
-
-$_ctx
-	Context assigned to specified URL.
-
-*/
-	static function bindCtx($_url, $_ctx){
-// -todo 31 (check) +0: check for duplicates
+	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
 		checkUrl($_url);
 
 		self::$bindA[$_url]->ctx[] = $_ctx;
+
+		if ($_code)
+			self::$bindA[$_url]->code = $_code;
+		
+		foreach ($_headersA as $hName=>$hVal)
+			self::$bindA[$_url]->headers[$hName] = $hVal;
 	}
+// -todo 31 (check) +0: check for duplicates
 
 
 

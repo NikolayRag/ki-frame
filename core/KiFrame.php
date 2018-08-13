@@ -107,19 +107,10 @@ This is useful for light one-page setups.
 
 
 /*
-Register URL default return code and headers, shortcut to KiRoute::bind().
+Add context to URL, shortcut for KiRoute::bind()
 */
-	static function rBind($_url, $_code=200, $_headersA=[]){
-		KiRoute::bind($_url, $_code, $_headersA);
-	}
-
-
-
-/*
-Add context to URL, shortcut for KiRoute::bindCtx()
-*/
-	static function rAdd($_url, $_ctx){
-		return KiRoute::bindCtx($_url, $_ctx);
+	static function rBind($_url, $_ctx, $_code=0, $_headersA=[]){
+		return KiRoute::bind($_url, $_ctx, $_code, $_headersA);
 	}
 
 
