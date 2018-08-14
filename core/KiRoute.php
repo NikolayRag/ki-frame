@@ -250,12 +250,8 @@ Return sorted context array.
 Solve registered code generators for specified context.
 */
 	static private function runContent($_src){
-		if (is_callable($_src)){
-			if (!is_string($_src))
-				return $_src();
-
+		if (is_callable($_src))
 			return call_user_func($_src);
-		}
 
 
 		if (is_file($_src)){
