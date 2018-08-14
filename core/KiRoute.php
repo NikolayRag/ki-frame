@@ -259,14 +259,9 @@ Solve registered code generators for specified context.
 
 
 		if (is_file($_src)){
-			$ob = ob_get_clean(); //hold output buffer
-
+			ob_start(); //nest buffer
 			include($_src);
-			$cOut = ob_get_clean();
-
-			echo $ob; //fetch output buffer
-
-			return $cOut;
+			return ob_get_clean();
 		}
 
 
