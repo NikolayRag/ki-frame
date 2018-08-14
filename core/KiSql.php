@@ -7,15 +7,13 @@ Support SQL templates reusing
 */
 
 class KiSql {
-	private static $isInited;
+	private static $isInited, $callsCnt=0;
 
 	private static $db;
-	private static $lastSucc= 0;
 	private static $lastRow;
-	private static $callsCnt= 0;
 	private static $dbErr= 0, $dbErrText= '';
 
-	private static $sqlTemplate= [];
+	private static $sqlTemplateA= [];
 
 
 
@@ -52,7 +50,7 @@ $_sql
 	Arguments should be marked as '?'.
 */
 	function add($_tmpl, $_sql){
-		self::$sqlTemplate[$_tmpl]= $_sql;
+		self::$sqlTemplateA[$_tmpl]= $_sql;
 	}
 
 
@@ -86,16 +84,14 @@ $_tmpl
 				  $bindVars[]= $nextV;
 				return str_repeat('?,',count($nextV)-1) .'?';
 			},
-			self::$sqlTemplate[$_tmpl]
+			self::$sqlTemplateA[$_tmpl]
 		);
 
-		self::$stmt= self::$db->prepare($TSqlA);
-		self::$lastSucc= self::$stmt->execute($bindVars);
 		self::$callsCnt+= 1;
+		self::$stmt= self::$db->prepare($TSqlA);
+		$lastSucc= self::$stmt->execute($bindVars);
 
-		if (!self::$lastSucc)
-		  return false;
-		return true;
+		return $lastSucc;
 	}
 
 
