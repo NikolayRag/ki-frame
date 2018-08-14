@@ -130,7 +130,7 @@ Finalize definition and , shortcut for KiRoute::render()
 	static function end(){
 		$dbCfg= KC::DBCFG();
 
-		$DB = new KiSql($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
+		new KiSql($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB,table)
 // -todo 37 (sql, check) +0: check default error handlers for use with KiSql

@@ -9,7 +9,7 @@ Support SQL templates reusing
 class KiSql {
 	private static $isInited, $callsCnt=0;
 
-	private static $db;
+	private static $db, $stmt;
 	private static $lastRow;
 	private static $dbErr= 0, $dbErrText= '';
 
@@ -22,6 +22,11 @@ class KiSql {
 			return;
 		self::$isInited= True;
 
+
+/*
+INSERT INTO `site_log_errors` (type, code, `desc`, file, line, id_user, url, agent) VALUES (1,8,'Undefined variable: DB','/mnt/hgfs/Inetpub/www/yell.fm.wrk/core/KiFrame.php',140,0,'/','Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36
+')
+*/
 
 		try {
 			self::$db = new PDO("mysql:host={$_host};dbname={$_base};charset=UTF8", $_uname, $_upass, array(PDO::ATTR_PERSISTENT=>true));
@@ -49,7 +54,7 @@ $_sql
 	Query string.
 	Arguments should be marked as '?'.
 */
-	function add($_tmpl, $_sql){
+	static function add($_tmpl, $_sql){
 		self::$sqlTemplateA[$_tmpl]= $_sql;
 	}
 
@@ -66,17 +71,17 @@ $_tmpl
 	Several arguments, respect to query parameter list.
 
 */
-	function apply($_tmpl){
+	static function apply($_tmpl){
 		$sqVars= func_get_args();
-		foreach ($sqVars as $sqVal)
-		  if (!count($sqVal))
-		    return false;
+//		foreach ($sqVars as $sqVal)
+//		  if (!count($sqVal))
+//		    return false;
 
 		$bindVars= array();
 		$searchPos= 1;
 		$TSqlA= preg_replace_callback(
 			'/\?/',
-			function ($_in) use ($sqVars,&$bindVars,&$searchPos) {
+			static function ($_in) use ($sqVars,&$bindVars,&$searchPos) {
 				$nextV= $sqVars[$searchPos++];
 				if (is_array($nextV))
 				  $bindVars= array_merge($bindVars,$nextV);
@@ -87,9 +92,13 @@ $_tmpl
 			self::$sqlTemplateA[$_tmpl]
 		);
 
+
 		self::$callsCnt+= 1;
 		self::$stmt= self::$db->prepare($TSqlA);
 		$lastSucc= self::$stmt->execute($bindVars);
+		if (!$lastSucc)
+			throw new Exception( self::$stmt->errorInfo()[2] );
+
 
 		return $lastSucc;
 	}
@@ -109,7 +118,7 @@ $_def
 	Default value for wrong column name case.
 
 */
-	function fetch($_col=false,$_def=false){
+	static function fetch($_col=false,$_def=false){
 		self::$lastRow= self::$stmt->fetch();
 		if ($_col===false)
 		  return self::$lastRow;
@@ -121,7 +130,7 @@ $_def
 /*
 Return last inserted ID.
 */
-	function lastInsertId(){
+	static function lastInsertId(){
 		return self::$db->lastInsertId();
 	}
 }
