@@ -49,7 +49,7 @@ class KiFrame {
 		include(__dir__ .'/KiRoute.php');
 
 
-		include(__dir__ .'/ki-sql.php');
+		include(__dir__ .'/KiSql.php');
 		include(__dir__ .'/ki-dict.php');
 
 		include(__dir__ .'/KiUrl.php');
@@ -129,14 +129,14 @@ Finalize definition and , shortcut for KiRoute::render()
 */
 	static function end(){
 		$dbCfg= KC::DBCFG();
-		
-		$DB = new PDO("mysql:host={$dbCfg->HOST};dbname={$dbCfg->NAME};charset=utf8", $dbCfg->USER, $dbCfg->PASS, array(PDO::ATTR_PERSISTENT=>true));
-		$DB->exec("set names utf8");
+
+		$DB = new KiSql($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB,table)
+// -todo 37 (sql, check) +0: check default error handlers for use with KiSql
 		KiHandler::errCB(ErrCB\errCBDB($DB, 'site_log_errors'));
 
-
+// -todo 38 (sql, check) +0: check KiAuth for use with KiSql
 		$USER= new KiAuth($DB, KC::SOCIAL());
 
 
