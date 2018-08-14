@@ -131,7 +131,12 @@ meta:
 			self::setReturn(500);
 
 			foreach (self::$errCBA as $cCB)
-				call_user_func($cCB, self::$errPoolA);
+				try {
+					call_user_func($cCB, self::$errPoolA);
+				} catch (Exception $e){
+					if (self::$debug)
+						echo $e->getMessage() .'<br>';
+				}
 		}
 
 
