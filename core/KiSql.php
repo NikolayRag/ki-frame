@@ -133,6 +133,15 @@ Return last inserted ID.
 	static function lastInsertId(){
 		return self::$db->lastInsertId();
 	}
+
+
+
+/*
+Return underlayind PDO.
+*/
+	static function getPDO(){
+		return self::$db;
+	}
 }
 
 ?>

@@ -137,7 +137,7 @@ Finalize definition and , shortcut for KiRoute::render()
 		KiHandler::errCB(ErrCB\errCBDB('site_log_errors'));
 
 // -todo 38 (sql, check) +0: check KiAuth for use with KiSql
-		$USER= new KiAuth($DB, KC::SOCIAL());
+		self::$user= new KiAuth(KC::SOCIAL());
 
 
 		return KiRoute::render();

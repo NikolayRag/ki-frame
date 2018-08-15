@@ -36,18 +36,22 @@ include(__dir__ .'/KiAuthSoc.php');
 
 
 
+KiSql::add('kisqlGetCount', 'SELECT count(*) FROM Users');
+KiSql::add('kisqlGetSocial', 'SELECT id_users FROM users_social WHERE type=? AND id=?');
+KiSql::add('kisqlAdd', 'INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)');
+KiSql::add('kisqlAddSocial', 'INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)');
+KiSql::add('kisqlUpdateLast', 'UPDATE users SET LastLogin=? WHERE ID=?');
+
+
+
 //  todo 23 (ux, auth) +0: introduce entire auth cached timeout
 class KiAuth {
-	private $db;
-
-	var $socUser=false, $flexUser, $mask=0, $rights;
+	private $socUser=false, $flexUser, $mask=0, $rights;
 
 	var $isSigned=false, $id=0, $name='', $email='', $photo='';
 
 
-	function __construct($_db, $_socialCfg){
-		$this->db= $_db;
-
+	function __construct($_socialCfg){
 		($user= $this->initFlexUser()) || ($user= $this->initSocUser($_socialCfg));
 		if (!$user)
 			return;
@@ -93,9 +97,8 @@ Regster new email/pass user and login.
 */
 	function passRegister($_email, $_pass){
 		//prepare username, coz uFlex refuse blank usernames
-        $stmt= $this->db->prepare('SELECT count(*) FROM Users');
-        $stmt->execute();
-        $arr= $stmt->fetch();
+        $stmt= KiSql::apply('kisqlGetCount');
+        $arr= KiSql::fetch();
 
         $res = $this->flexUser->register([
             'Username'=> "u_{$arr[0]}",
@@ -210,7 +213,7 @@ Check if logpass user is signed.
 */
 	private function initFlexUser(){
 		$this->flexUser= new \ptejada\uFlex\User();
-		$this->flexUser->config->database->pdo= $this->db;
+		$this->flexUser->config->database->pdo= KiSql::getPDO();
 
 		if (!$this->flexUser->start()->isSigned())
 			return;
@@ -246,9 +249,8 @@ If none logpass user is assigned, implicit one is created and assigned.
 Return user id.
 */
 	private function assignedGet($_soc){
-		$stmt= $this->db->prepare('SELECT id_users FROM users_social WHERE type=? AND id=?');
-		$stmt->execute([$_soc->type, $_soc->id]);
-		$id_assigned= getA($stmt->fetch(), 'id_users', 0);
+		$stmt= KiSql::apply('kisqlGetSocial', $_soc->type, $_soc->id);
+		$id_assigned= KiSql::fetch('id_users', 0);
 
 //  todo 7 (ux, socal, unsure) -1: probably update user data from social
 
@@ -269,13 +271,11 @@ Return user id.
 Create implicit logpass user for given social one.
 */
 	private function assignedCreate($_userData){
-		$stmt= $this->db->prepare('INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)');
-		$stmt->execute([time(),$_userData->firstName, $_userData->photoUrl]);
-		$id_assigned= $this->db->lastInsertId();
+		$stmt= KiSql::apply('kisqlAdd', time(), $_userData->firstName, $_userData->photoUrl);
+		$id_assigned= KiSql::lastInsertId();
 
 
-		$stmt= $this->db->prepare('INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)');
-		$stmt->execute([$this->socUser->type, $this->socUser->id, $id_assigned]);
+		$stmt= KiSql::apply('kisqlAddSocial', $this->socUser->type, $this->socUser->id, $id_assigned);
 
 		return $id_assigned;
 	}
@@ -286,8 +286,7 @@ Create implicit logpass user for given social one.
 Update last logon state.
 */
 	private function assignedUpdate($_id){
-		$stmt= $this->db->prepare('UPDATE users SET LastLogin=? WHERE ID=?');
-		$stmt->execute([time(), $_id]);
+		$stmt= KiSql::apply('kisqlUpdateLast', time(), $_id);
 	}
 
 
