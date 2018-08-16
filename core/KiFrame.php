@@ -150,6 +150,60 @@ Finalize definition and , shortcut for KiRoute::render()
 
 
 
+//=================================================================//
+//============================= LOGON =============================//
+//=================================================================//
+
+
+
+/*
+Get available social login URL's. Shortcut for KiAuth socUrlA().
+*/
+	static function lUrls(){
+		self::$user->socUrlA();
+	}
+/*
+Callback for social login. Shortcut for KiAuth socCB().
+*/
+	static function lSocCB(){
+		self::$user->socCB();
+	}
+/*
+Register new user with login/pass. Shortcut for KiAuth passRegister().
+*/
+	static function lReg($_email, $_pass){
+		self::$user->passRegister($_email, $_pass);
+	}
+/*
+Login user with login/pass. Shortcut for KiAuth passLogin().
+*/
+	static function lIn($_email, $_pass){
+		self::$user->passLogin($_email, $_pass);
+	}
+/*
+Log out logged use. Shortcut for KiAuth logout().
+*/
+	static function lOut(){
+		self::$user->logout();
+	}
+/*
+Request password reset link for registered email. Shortcut for KiAuth passRestore().
+*/
+	static function lRestore($_email){
+		self::$user->passRestore($_email);
+	}
+/*
+Set new password for registered email, using provided key. Shortcut for KiAuth passNew().
+*/
+	static function lPass($_email, $_pass, $_hash){
+		self::$user->passNew($_email, $_pass, $_hash);
+	}
+
+
+
+
+
+
 //===================================================================//
 //============================= HANDLER =============================//
 //===================================================================//
