@@ -94,7 +94,7 @@ $_headers
 		foreach ($_headersA as $hName=>$hVal)
 			self::$bindA[$_url]->headers[$hName] = $hVal;
 	}
-// -todo 31 (check) +0: check for duplicates
+// -todo 31 (check) +0: check urls for duplicates
 
 
 
@@ -182,6 +182,7 @@ Return sorted context array.
 			self::checkUrl('/', ['']);
 			self::order(['']);
 
+			//no definitions
 			if (!array_key_exists('', self::$contextA))
 				return;
 		}
