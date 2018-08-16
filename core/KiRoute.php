@@ -84,7 +84,7 @@ $_headers
 	Default custom return headers array.
 */
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
-		checkUrl($_url);
+		self::checkUrl($_url);
 
 		self::$bindA[$_url]->ctx[] = $_ctx;
 
