@@ -333,7 +333,7 @@ Get code for last (and only) uFlex error, if any.
 
 Return: code id
 */
-	function flexErrorGetLast(){
+	private function flexErrorGetLast(){
 		$err= Null;
 		foreach ($this->flexUser->log->getAllErrors() as $err);
 
