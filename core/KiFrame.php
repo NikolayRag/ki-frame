@@ -19,6 +19,8 @@ There're 3 areas of actual code generation:
 class KiFrame {
 	private static $isInited, $startTime;
 
+	private static $user;
+
 
 
 	function __construct(){
