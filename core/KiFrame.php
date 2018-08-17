@@ -311,6 +311,16 @@ Return seconds since very start.
 		return round((microtime(true) -self::$startTime)*$mult)/$mult;
 	}
 
+
+
+/*
+Sent email.
+*/
+	static function sendMail(
+		$_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_port=465
+	){
+		sendMail($_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_port);
+	}
 }
 
 
