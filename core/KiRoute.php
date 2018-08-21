@@ -193,9 +193,9 @@ Return sorted context array.
 
 		//check all url's
 		foreach (self::$bindA as $cUrl=>$cBind){
-			if ($cUrl=='')
+			if ($cUrl=='') //"not found" binding
 				$noneA[] = $cBind;
-			else if (is_callable($cUrl) && $cUrl())
+			else if (is_callable($cUrl) && $cUrl()) //function binding
 				$bindsA[] = $cBind;
 // -todo 34 (ux, routing) +0: match url variables
 			else {
