@@ -137,7 +137,7 @@ Finalize: actually run matching route collection.
 This is called once for entire http request.
 */
 	static function render(){
-		$o = self::implicitOrder();
+		$o = self::orderSnapshot();
 		$orderA = self::buildOrder($o);
 
 		//implicit 'no bindings'
@@ -174,7 +174,7 @@ This is called once for entire http request.
 /*
 Fetch order of contexts as they were defined if no order is specified implicitely.
 */
-	static private function implicitOrder(){
+	static private function orderSnapshot(){
 		$in = array_keys(self::$contextA);
 		if (count(self::$contextOrder))
 			$in = self::$contextOrder;
