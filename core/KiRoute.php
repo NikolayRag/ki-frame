@@ -137,18 +137,19 @@ Finalize: actually run matching route collection.
 This is called once for entire http request.
 */
 	static function render(){
-		$actualOrder = self::buildOrder();
+		$o = self::implicitOrder();
+		$orderA = self::buildOrder($o);
 
 		//implicit 'no bindings'
-		if ($actualOrder===Null)
+		if ($orderA===Null)
 			return;
 
 		//implicit 'not found"'
-		if (!count($actualOrder))
+		if (!count($orderA))
 			KiHandler::setReturn(404);
 
 
-		foreach ($actualOrder as $cCtx=>$cSupport){
+		foreach ($orderA as $cCtx=>$cSupport){
 			$cContentA = [];
 
 			foreach (self::$contextA[$cCtx] as $cSrc) {
@@ -166,6 +167,25 @@ This is called once for entire http request.
 			if ($cSupport->code)
 				KiHandler::setReturn($cSupport->code);
 		}
+	}
+
+
+
+/*
+Fetch order of contexts as they were defined if no order is specified implicitely.
+*/
+	static private function implicitOrder(){
+		if (count(self::$contextOrder))
+			return self::$contextOrder;
+
+
+		$outOrderA = [];
+
+		foreach (self::$contextA as $cCtx=>$v)
+			if (array_search($cCtx, $outOrderA) === False)
+				$outOrderA[] = $cCtx;
+
+		return $outOrderA;
 	}
 
 
