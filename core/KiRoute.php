@@ -172,21 +172,15 @@ This is called once for entire http request.
 
 
 /*
-Fetch order of contexts as they were defined if no order is specified implicitely.
+Fetch ordered and filtered context.
 */
 	static private function orderSnapshot(){
-		$in = array_keys(self::$contextA);
+		$ctxA = array_keys(self::$contextA);
+
 		if (count(self::$contextOrder))
-			$in = self::$contextOrder;
+			$ctxA = array_values(array_intersect(self::$contextOrder, $ctxA));
 
-
-		$outOrderA = [];
-
-		foreach ($in as $cCtx)
-			if (array_search($cCtx, $outOrderA) === False)
-				$outOrderA[] = $cCtx;
-
-		return $outOrderA;
+		return array_unique($ctxA);
 	}
 
 
