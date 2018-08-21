@@ -196,11 +196,10 @@ All context duplication removed.
 
 Return sorted context array.
 */
-	static private function buildOrder(){
+	static private function buildOrder($_order){
 		//implicit '/' to '' binding
 		if (!count(self::$bindA)){
 			self::checkUrl('/', ['']);
-			self::order(['']);
 
 			//no definitions
 			if (!array_key_exists('', self::$contextA))
@@ -239,7 +238,7 @@ Return sorted context array.
 			foreach ($cBind->ctx as $cCtx) {
 				if (
 					array_key_exists($cCtx, self::$contextA) &&
-					array_search($cCtx, self::$contextOrder) !== False
+					array_search($cCtx, $_order) !== False
 				) {
 					if (!array_key_exists($cCtx, $fContextA))
 						$fContextA[$cCtx] = (object)['hdrA'=>[], 'code'=>0];
@@ -257,7 +256,7 @@ Return sorted context array.
 		$outContextA = [];
 
  		//sort context with previously specified order
-		foreach (self::$contextOrder as $cCtx)
+		foreach ($_order as $cCtx)
 			if (array_key_exists($cCtx, $fContextA))
 				$outContextA[$cCtx] = $fContextA[$cCtx];
 
