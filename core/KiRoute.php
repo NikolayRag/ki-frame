@@ -175,13 +175,14 @@ This is called once for entire http request.
 Fetch order of contexts as they were defined if no order is specified implicitely.
 */
 	static private function implicitOrder(){
+		$in = array_keys(self::$contextA);
 		if (count(self::$contextOrder))
-			return self::$contextOrder;
+			$in = self::$contextOrder;
 
 
 		$outOrderA = [];
 
-		foreach (self::$contextA as $cCtx=>$v)
+		foreach ($in as $cCtx)
 			if (array_search($cCtx, $outOrderA) === False)
 				$outOrderA[] = $cCtx;
 
