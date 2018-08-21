@@ -202,7 +202,7 @@ Return sorted context array.
 		}
 
 
-		$bindsA = [];
+		$bondA = [];
 		$noneA = [];
 
 		//check all url's
@@ -210,26 +210,27 @@ Return sorted context array.
 			if ($cUrl=='') //"not found" binding
 				$noneA[] = $cBind;
 			else if (is_callable($cUrl) && $cUrl()) //function binding
-				$bindsA[] = $cBind;
+				$bondA[] = $cBind;
 // -todo 34 (ux, routing) +0: match url variables
 			else {
 				$cRegex = str_replace('/', '\/', $cUrl);
 
 				if (preg_match("/^$cRegex$/", KiUrl::uri()))
-					$bindsA[] = $cBind;
+					$bondA[] = $cBind;
 			}
 		}
 
 
 		//catch 'nothing match' case
-		if (!count($bindsA))
-			$bindsA = $noneA;
+		if (!count($bondA))
+			$bondA = $noneA;
 
 
 		$fContextA = [];
 
 		//filter contexts out
-		foreach ($bindsA as $cBind){ //all actual bindings
+		foreach ($bondA as $cBind){ //all actual bindings
+
 			foreach ($cBind->ctx as $cCtx) {
 				if (
 					array_key_exists($cCtx, self::$contextA) &&
