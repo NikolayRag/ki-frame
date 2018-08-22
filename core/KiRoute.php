@@ -141,16 +141,11 @@ This is called once for entire http request.
 */
 	static function render(){
 		$o = self::orderSnapshot();
-		$orderA = self::buildOrder($o);
+		$matches = self::matchUrl();
+		
 
-		//implicit 'no bindings'
-		if ($orderA===Null)
-			return;
 
-		//implicit 'not found"'
-		if (!count($orderA))
-			KiHandler::setReturn(404);
-
+		$orderA = self::orderRun($matches, $o);
 
 		foreach ($orderA as $cCtx=>$cSupport){
 			$cContentA = [];
@@ -189,22 +184,9 @@ Fetch ordered and filtered context.
 
 
 /*
-Detect all matching contexts for current URL.
-All context duplication removed.
-
-Return sorted context array.
+Detect all matching URL bindings.
 */
-	static private function buildOrder($_order){
-		//implicit '/' to '' binding
-		if (!count(self::$bindA)){
-			self::checkUrl('/', ['']);
-
-			//no definitions
-			if (!array_key_exists('', self::$contextA))
-				return;
-		}
-
-
+	static private function matchUrl(){
 		$bondA = [];
 		$noneA = [];
 
@@ -228,17 +210,20 @@ Return sorted context array.
 		if (!count($bondA))
 			$bondA = $noneA;
 
+		return $bondA;
+	}
 
+
+
+/*
+Collect all URL contexts in specified order
+*/
+	static private function orderRun($_urlA, $_order){
 		$fContextA = [];
-
 		//filter contexts out
-		foreach ($bondA as $cBind){ //all actual bindings
-
+		foreach ($_urlA as $cBind){ //all actual bindings
 			foreach ($cBind->ctx as $cCtx) {
-				if (
-					array_key_exists($cCtx, self::$contextA) &&
-					array_search($cCtx, $_order) !== False
-				) {
+				if (array_search($cCtx, $_order) !== False){
 					if (!array_key_exists($cCtx, $fContextA))
 						$fContextA[$cCtx] = (object)['hdrA'=>[], 'code'=>0];
 
