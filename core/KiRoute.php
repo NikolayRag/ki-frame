@@ -12,6 +12,22 @@ Virtually, there're following levels of complexity in managing content generatio
 
 
 
+/*
+Context support class
+*/
+class Ki_RouteContext {
+	var $ctx=[], $code=0, $headersA;
+
+
+	function __construct($_ctx=[]){
+		$this->ctx = $_ctx;
+		$this->code = 0;
+		$this->headersA = [];
+	}
+}
+
+
+
 class KiRoute {
 	private static $contextA=[], $bindA=[], $contextOrder=[];
 
@@ -85,7 +101,7 @@ $_headers
 */
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
 		if (!array_key_exists($_url, self::$bindA))
-			self::$bindA[$_url] = self::stxObj();
+			self::$bindA[$_url] = new Ki_RouteContext();
 
 		self::$bindA[$_url]->ctx[] = $_ctx;
 
@@ -94,15 +110,11 @@ $_headers
 			self::$bindA[$_url]->code = $_code;
 		
 		foreach ($_headersA as $hName=>$hVal)
-			self::$bindA[$_url]->headers[$hName] = $hVal;
+			self::$bindA[$_url]->headersA[$hName] = $hVal;
 	}
 // -todo 31 (check) +0: check urls for duplicates
 
 
-
-	private static function stxObj($_ctx=[]){
-		return (object)['ctx'=>$_ctx, 'code'=>0, 'headers'=>[]];
-	}
 
 /*
 Define context order for corresponding matches, when several contents match some URL.
@@ -140,7 +152,7 @@ This is called once for entire http request.
 		if (!count($matches)){
 			//bound '/' to all binding
 			if (KiUrl::uri()=='/')
-				$matches = [self::stxObj($orderCtx)];
+				$matches = [new Ki_RouteContext($orderCtx)];
 			
 			//'not found'
 			else
@@ -162,7 +174,7 @@ This is called once for entire http request.
 
 			KiHandler::setContent($cCtx, implode('', $cContentA));
 
-			foreach ($cSupport->hdrA as $hName=>$hVal)
+			foreach ($cSupport->headersA as $hName=>$hVal)
 				KiHandler::setHeader($hName, $hVal);
 
 			if ($cSupport->code)
@@ -228,10 +240,10 @@ Collect all URL contexts in specified order
 					continue;
 
 				if (!array_key_exists($cCtx, $fContextA))
-					$fContextA[$cCtx] = (object)['hdrA'=>[], 'code'=>0];
+					$fContextA[$cCtx] = new Ki_RouteContext();
 
-				foreach ($cBind->headers as $cHead=>$cVal)
-					$fContextA[$cCtx]->hdrA[$cHead] = $cVal;
+				foreach ($cBind->headersA as $cHead=>$cVal)
+					$fContextA[$cCtx]->headersA[$cHead] = $cVal;
 
 				if ($cBind->code)
 					$fContextA[$cCtx]->code = $cBind->code;
