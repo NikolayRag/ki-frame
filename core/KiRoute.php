@@ -195,13 +195,13 @@ Detect all matching URL bindings.
 
 		//collect detected url's
 		foreach (self::$bindA as $cUrl=>$cBind){
-			if ($cUrl=='') //'not found' binding
+			if ($cUrl==''){ //'not found' binding
 				$noneA[] = $cBind;
-			else if (is_callable($cUrl) && $cUrl()) //function binding
+			} else if (is_callable($cUrl) && $cUrl()){ //function binding
 				$bondA[] = $cBind;
 // -todo 34 (ux, routing) +0: match url variables
-			else {
 				$cRegex = str_replace('/', '\/', $cUrl);
+			} else {
 				if (preg_match("/^$cRegex$/", KiUrl::uri()))
 					$bondA[] = $cBind;
 			}
