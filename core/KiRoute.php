@@ -224,16 +224,17 @@ Collect all URL contexts in specified order
 		//filter contexts out
 		foreach ($_urlA as $cBind){ //all actual bindings
 			foreach ($cBind->ctx as $cCtx) {
-				if (array_search($cCtx, $_order) !== False){
-					if (!array_key_exists($cCtx, $fContextA))
-						$fContextA[$cCtx] = (object)['hdrA'=>[], 'code'=>0];
+				if (array_search($cCtx, $_order) === False)
+					continue;
 
-					foreach ($cBind->headers as $cHead=>$cVal)
-						$fContextA[$cCtx]->hdrA[$cHead] = $cVal;
+				if (!array_key_exists($cCtx, $fContextA))
+					$fContextA[$cCtx] = (object)['hdrA'=>[], 'code'=>0];
 
-					if ($cBind->code)
-						$fContextA[$cCtx]->code = $cBind->code;
-				}
+				foreach ($cBind->headers as $cHead=>$cVal)
+					$fContextA[$cCtx]->hdrA[$cHead] = $cVal;
+
+				if ($cBind->code)
+					$fContextA[$cCtx]->code = $cBind->code;
 			}
 		}
 
