@@ -148,9 +148,9 @@ This is called once for entire http request.
 		}
 
 
-		$orderA = self::orderRun($matches, $orderCtx);
+		$runA = self::orderRun($matches, $orderCtx);
 
-		foreach ($orderA as $cCtx=>$cSupport){
+		foreach ($runA as $cCtx=>$cSupport){
 			$cContentA = [];
 
 			foreach (self::$contextA[$cCtx] as $cSrc) {
