@@ -84,7 +84,8 @@ $_headers
 	Default custom return headers array.
 */
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
-		self::checkUrl($_url);
+		if (!array_key_exists($_url, self::$bindA))
+			self::$bindA[$_url] = self::stxObj();
 
 		self::$bindA[$_url]->ctx[] = $_ctx;
 
@@ -105,7 +106,9 @@ $_headers
 		self::$bindA[$_url] = (object)['ctx'=>$_ctx, 'code'=>0, 'headers'=>[]];
 	}
 
-
+	private static function stxObj($_ctx=[]){
+		return (object)['ctx'=>$_ctx, 'code'=>0, 'headers'=>[]];
+	}
 
 /*
 Define context order for corresponding matches, when several contents match some URL.
