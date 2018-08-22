@@ -143,6 +143,16 @@ This is called once for entire http request.
 		$o = self::orderSnapshot();
 		$matches = self::matchUrl();
 		
+		//implicit bindings
+		if (!count($matches)){
+			//bound '/' to all binding
+			if (KiUrl::uri()=='/')
+				$matches = [self::stxObj($o)];
+			
+			//'not found'
+			else
+				KiHandler::setReturn(404);
+		}
 
 
 		$orderA = self::orderRun($matches, $o);
