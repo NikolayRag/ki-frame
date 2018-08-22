@@ -100,13 +100,6 @@ $_headers
 
 
 
-	private static function checkUrl($_url, $_ctx=[]){
-		if (array_key_exists($_url, self::$bindA))
-			return;
-
-		self::$bindA[$_url] = (object)['ctx'=>$_ctx, 'code'=>0, 'headers'=>[]];
-	}
-
 	private static function stxObj($_ctx=[]){
 		return (object)['ctx'=>$_ctx, 'code'=>0, 'headers'=>[]];
 	}
