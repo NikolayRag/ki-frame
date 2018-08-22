@@ -133,14 +133,14 @@ Finalize: actually run matching route collection.
 This is called once for entire http request.
 */
 	static function render(){
-		$o = self::orderSnapshot();
+		$orderCtx = self::orderSnapshot();
 		$matches = self::matchUrl();
 		
 		//implicit bindings
 		if (!count($matches)){
 			//bound '/' to all binding
 			if (KiUrl::uri()=='/')
-				$matches = [self::stxObj($o)];
+				$matches = [self::stxObj($orderCtx)];
 			
 			//'not found'
 			else
@@ -148,7 +148,7 @@ This is called once for entire http request.
 		}
 
 
-		$orderA = self::orderRun($matches, $o);
+		$orderA = self::orderRun($matches, $orderCtx);
 
 		foreach ($orderA as $cCtx=>$cSupport){
 			$cContentA = [];
