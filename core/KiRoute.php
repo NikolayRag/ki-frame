@@ -201,6 +201,7 @@ Detect all matching URL bindings.
 				$bondA[] = $cBind;
 // -todo 34 (ux, routing) +0: match url variables
 			} else {
+				$cRegex = str_replace('/', '\/', $cUrl);
 				if (preg_match("/^$cRegex$/", KiUrl::uri()))
 					$bondA[] = $cBind;
 			}
