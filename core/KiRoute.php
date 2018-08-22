@@ -231,7 +231,8 @@ Collect all URL contexts in specified order
 					foreach ($cBind->headers as $cHead=>$cVal)
 						$fContextA[$cCtx]->hdrA[$cHead] = $cVal;
 
-					$fContextA[$cCtx]->code = $cBind->code;
+					if ($cBind->code)
+						$fContextA[$cCtx]->code = $cBind->code;
 				}
 			}
 		}
