@@ -55,7 +55,7 @@ Different contexts may be bond to one URL, as well as one context may be bond to
 All contexts for all matching URLs will be used without concurrency.
 
 If nothing is bound at all, the only implicit assignment is '/' URL to '' context (root to default).
-If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code.
+If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code. If '' url is bound, 404 return code must be then set explicitely.
 
 
 $_url
@@ -89,6 +89,7 @@ $_headers
 
 		self::$bindA[$_url]->ctx[] = $_ctx;
 
+
 		if ($_code)
 			self::$bindA[$_url]->code = $_code;
 		
@@ -114,7 +115,6 @@ $_headers
 Define context order for corresponding matches, when several contents match some URL.
 
 If particular context don't exist, it is ignored.
-//  todo 33 (ux, routing) +0: use all matching contexts implicitely if order not defined
 All matching contexts will be used if no order specified.
 
 
@@ -200,23 +200,21 @@ Detect all matching URL bindings.
 		$bondA = [];
 		$noneA = [];
 
-		//check all url's
+		//collect detected url's
 		foreach (self::$bindA as $cUrl=>$cBind){
-			if ($cUrl=='') //"not found" binding
+			if ($cUrl=='') //'not found' binding
 				$noneA[] = $cBind;
 			else if (is_callable($cUrl) && $cUrl()) //function binding
 				$bondA[] = $cBind;
 // -todo 34 (ux, routing) +0: match url variables
 			else {
 				$cRegex = str_replace('/', '\/', $cUrl);
-
 				if (preg_match("/^$cRegex$/", KiUrl::uri()))
 					$bondA[] = $cBind;
 			}
 		}
 
-
-		//catch 'nothing match' case
+		//no-match case
 		if (!count($bondA))
 			$bondA = $noneA;
 
