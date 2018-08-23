@@ -81,7 +81,7 @@ $_url
 	Named capture (?P<name>value) is allowed to scan variables.
 	Tricky regex matches like "^(?!.foo$)" (all but '/foo') are fully allowed.
 
-	- Empty string is alias for 'nothing match' special case.
+	- False value is alias for 'nothing match' special case.
 	Notice, that if there any wide mask bound match, like '.*', it could be impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
 
 	Array accepted, where ALL elements must match.
@@ -222,14 +222,14 @@ Detect all matching URL bindings.
 				$cUrlA = [$cUrlA];
 
 			//skip excess match type
-			$is404 = (array_search('', $cUrlA) === False);
+			$is404 = (array_search(False, $cUrlA) === False);
 			if ($_not404 xor $is404)
 				continue;
 
 
 			$lost = False;
 			foreach ($cUrlA as $cUrl) {
-				if ($cUrl==='') //skip no-match marker
+				if ($cUrl===False) //skip no-match marker
 					continue;
 
 				$found = False;
