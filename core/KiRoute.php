@@ -29,7 +29,7 @@ class Ki_RouteContext {
 
 
 class KiRoute {
-	private static $contextA=[], $bindA=[], $contextOrder=[];
+	private static $contextA=[], $contextOrder=[], $bindSrcA=[], $bindA=[];
 
 
 
@@ -75,9 +75,7 @@ If nothing is bound to '' (404 case), it will implicitely be assigned to blank p
 
 
 $_url
-	One of:
-
-	- Match function name.
+	- Match function or function name.
 
 	- Regex to match URL against. URL always starts with root '/'.
 	Named capture (?P<name>value) is allowed to scan variables.
@@ -85,6 +83,8 @@ $_url
 
 	- Empty string is alias for 'nothing match' special case.
 	Notice, that if there any wide mask bound match, like '.*', it could be impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
+
+	Array accepted, where ALL elements must match.
 
 
 $_ctx
@@ -100,17 +100,24 @@ $_headers
 	Default custom return headers array.
 */
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
-		if (!array_key_exists($_url, self::$bindA))
-			self::$bindA[$_url] = new Ki_RouteContext();
+		$cKey = array_search($_url, self::$bindSrcA);
+		if ($cKey === False){
+			$cKey = count(self::$bindSrcA);
+			self::$bindSrcA[] = $_url;
+		}
 
-		self::$bindA[$_url]->ctx[] = $_ctx;
+
+		if (!array_key_exists($cKey, self::$bindA))
+			self::$bindA[$cKey] = new Ki_RouteContext();
+
+		self::$bindA[$cKey]->ctx[] = $_ctx;
 
 
 		if ($_code)
-			self::$bindA[$_url]->code = $_code;
+			self::$bindA[$cKey]->code = $_code;
 		
 		foreach ($_headersA as $hName=>$hVal)
-			self::$bindA[$_url]->headersA[$hName] = $hVal;
+			self::$bindA[$cKey]->headersA[$hName] = $hVal;
 	}
 // -todo 31 (check) +0: check urls for duplicates
 
@@ -147,6 +154,9 @@ This is called once for entire http request.
 	static function render(){
 		$orderCtx = self::orderSnapshot();
 		$matches = self::matchUrl();
+		if (!count($matches))
+			$matches = self::matchUrl(False);
+
 		
 		//implicit bindings
 		if (!count($matches)){
@@ -201,27 +211,45 @@ Fetch ordered and filtered context.
 /*
 Detect all matching URL bindings.
 */
-	static private function matchUrl(){
+	static private function matchUrl($_not404=True){
 		$bondA = [];
-		$noneA = [];
 
 		//collect detected url's
-		foreach (self::$bindA as $cUrl=>$cBind){
-			if ($cUrl==''){ //'not found' binding
-				$noneA[] = $cBind;
-			} else if (is_callable($cUrl) && $cUrl()){ //function binding
-				$bondA[] = $cBind;
-// -todo 34 (ux, routing) +0: match url variables
-			} else {
-				$cRegex = str_replace('/', '\/', $cUrl);
-				if (preg_match("/^$cRegex$/", KiUrl::uri()))
-					$bondA[] = $cBind;
-			}
-		}
+		foreach (self::$bindA as $cKey=>$cBind){
+			//get hashed array
+			$cUrlA = self::$bindSrcA[$cKey];
+			if (!is_array($cUrlA))
+				$cUrlA = [$cUrlA];
 
-		//no-match case
-		if (!count($bondA))
-			$bondA = $noneA;
+			//skip excess match type
+			$is404 = (array_search('', $cUrlA) === False);
+			if ($_not404 xor $is404)
+				continue;
+
+
+			$lost = False;
+			foreach ($cUrlA as $cUrl) {
+				if ($cUrl==='') //skip no-match marker
+					continue;
+
+				$found = False;
+				if (is_callable($cUrl)){ //function binding
+					if ($cUrl())
+						$found = True;
+	// -todo 34 (ux, routing) +0: match url variables
+				} else {
+					$cRegex = str_replace('/', '\/', $cUrl);
+					if (preg_match("/^$cRegex$/", KiUrl::uri()))
+						$found = True;
+				}
+
+				$lost = $lost || !$found;
+			}
+
+
+			if (!$lost)
+				$bondA[] = $cBind;
+		}
 
 		return $bondA;
 	}
