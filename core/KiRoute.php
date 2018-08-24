@@ -17,6 +17,7 @@ Context support class
 */
 class Ki_RouteContext {
 	var $ctx=[], $code=0, $headersA;
+	var $vars = [];
 
 
 	function __construct($_ctx=[]){
@@ -231,6 +232,7 @@ Detect all matching URL bindings.
 
 
 			$lost = False;
+			$varsA = [];
 			foreach ($cUrlA as $cUrl) {
 				if ($cUrl===False) //skip no-match marker
 					continue;
@@ -239,19 +241,29 @@ Detect all matching URL bindings.
 				if (is_callable($cUrl)){ //function binding
 					if ($cUrl())
 						$found = True;
-	// -todo 34 (ux, routing) +0: match url variables
+	// =todo 34 (ux, routing) +0: match url variables
 				} else {
 					$cRegex = str_replace('/', '\/', $cUrl);
-					if (preg_match("/^$cRegex$/", KiUrl::uri()))
+					$cRes = [];
+					
+					if (preg_match("/^$cRegex$/", KiUrl::uri(), $cRes)){
 						$found = True;
+						$varsA = array_merge($varsA, $cRes);
+					}
 				}
 
 				$lost = $lost || !$found;
 			}
 
 
-			if (!$lost)
+			if (!$lost){
+				foreach ($varsA as $key=>$val)
+				    if (is_int($key)) 
+				        unset($varsA[$key]);
+
+				$cBind->vars = $varsA;
 				$bondA[] = $cBind;
+			}
 		}
 
 		return $bondA;
