@@ -75,16 +75,19 @@ If nothing is bound to '' (404 case), it will implicitely be assigned to blank p
 
 
 $_url
-	- Match function or function name.
+	Match function or URL match regex.
+	Array accepted, where ALL elements must match.
 
-	- Regex to match URL against. URL always starts with root '/'.
+	If function supplied, it should return True for successfull match.
+	
+	URL passed for regex match, always starting with root '/'.
+	Regex may have '/' unescaped slashes.
 	Named capture (?P<name>value) is allowed to scan variables.
 	Tricky regex matches like "^(?!.foo$)" (all but '/foo') are fully allowed.
 
-	- False value is alias for 'nothing match' special case.
-	Notice, that if there any wide mask bound match, like '.*', it could be impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
+	If first (or only) value specified is False, match is used in case of no 'normal' matches found.
+	Notice, that if there any wide mask bound match, like '.*', it could become impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
 
-	Array accepted, where ALL elements must match.
 
 
 $_ctx
@@ -222,7 +225,7 @@ Detect all matching URL bindings.
 				$cUrlA = [$cUrlA];
 
 			//skip excess match type
-			$is404 = (array_search(False, $cUrlA) === False);
+			$is404 = !($cUrlA[0]===False);
 			if ($_not404 xor $is404)
 				continue;
 
