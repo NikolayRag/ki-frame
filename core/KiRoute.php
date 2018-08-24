@@ -79,7 +79,8 @@ $_url
 	Match function or URL match regex.
 	Array accepted, where ALL elements must match.
 
-	If function supplied, it should return True for successfull match.
+	If function supplied returns False, None or 0, then there's no match. Any other return triggers set match.
+	If array is returned, it's used as 'variables' argument for context functions.
 	
 	URL passed for regex match, always starting with root '/'.
 	Regex may have '/' unescaped slashes.
@@ -239,8 +240,12 @@ Detect all matching URL bindings.
 
 				$found = False;
 				if (is_callable($cUrl)){ //function binding
-					if ($cUrl())
+					$fRes = $cUrl();
+					if (($fRes !== False) && ($fRes !== Null) && ($fRes !== 0)){
 						$found = True;
+						if (is_array($fRes))
+							$varsA = array_merge($varsA, $fRes);
+					}
 	// =todo 34 (ux, routing) +0: match url variables
 				} else {
 					$cRegex = str_replace('/', '\/', $cUrl);
