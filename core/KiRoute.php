@@ -17,6 +17,8 @@ Context object
 */
 //  todo 60 (code) +0: expand Ki_RouteCtx into normal class
 class Ki_RouteCtx {
+	var $code=[], $headersA=[], $return=0;
+	var $vars=[];
 }
 
 
@@ -66,12 +68,12 @@ $_src
 */
 	static function context($_ctx, $_src){
 		if (!array_key_exists($_ctx, self::$contextA))
-			self::$contextA[$_ctx] = [];
+			self::$contextA[$_ctx] = new Ki_RouteCtx();
 
-		if (array_search($_src, self::$contextA[$_ctx]) !== False)
+		if (array_search($_src, self::$contextA[$_ctx]->code) !== False)
 			return;
 
-		self::$contextA[$_ctx][] = $_src;
+		self::$contextA[$_ctx]->code[] = $_src;
 	}
 
 
@@ -195,7 +197,7 @@ _newOrder
 			$cContentA = [];
 // -todo 58 (code) +0: move run code into context object
 			//run all code
-			foreach (self::$contextA[$cCtx] as $cSrc) {
+			foreach (self::$contextA[$cCtx]->code as $cSrc) {
 				$cCont = self::runContent($cSrc, $cSupport->vars);
 				if (is_string($cCont))
 					$cContentA[] = $cCont;
