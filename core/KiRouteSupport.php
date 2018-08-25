@@ -27,7 +27,7 @@ Run prepared code and variables into KiHandler
 		foreach ($this->headersA as $hName=>$hVal)
 			KiHandler::setHeader($hName, $hVal);
 
-		if ($this->codeA)
+		if ($this->return)
 			KiHandler::setReturn($this->return);
 	}
 
