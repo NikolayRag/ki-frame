@@ -17,8 +17,8 @@ Context object
 */
 //  todo 60 (code) +0: expand Ki_RouteCtx into normal class
 class Ki_RouteCtx {
-	var $code=[], $headersA=[], $return=0;
-	var $vars=[];
+	var $codeA=[], $headersA=[], $return=0;
+	var $varsA=[];
 }
 
 
@@ -70,10 +70,10 @@ $_src
 		if (!array_key_exists($_ctx, self::$contextA))
 			self::$contextA[$_ctx] = new Ki_RouteCtx();
 
-		if (array_search($_src, self::$contextA[$_ctx]->code) !== False)
+		if (array_search($_src, self::$contextA[$_ctx]->codeA) !== False)
 			return;
 
-		self::$contextA[$_ctx]->code[] = $_src;
+		self::$contextA[$_ctx]->codeA[] = $_src;
 	}
 
 
@@ -193,24 +193,25 @@ _newOrder
 
 		$runA = self::orderRun($matches, $orderCtx);
 
-		foreach ($runA as $cCtx=>$cSupport){
+		foreach ($runA as $cCtxName){
+			$cCtx = self::$contextA[$cCtxName];
+
 			$cContentA = [];
 // -todo 58 (code) +0: move run code into context object
 			//run all code
-			foreach (self::$contextA[$cCtx]->code as $cSrc) {
-				$cCont = self::runContent($cSrc, $cSupport->vars);
+			foreach ($cCtx->codeA as $cSrc) {
+				$cCont = self::runContent($cSrc, $cCtx->varsA);
 				if (is_string($cCont))
 					$cContentA[] = $cCont;
 			}
 
+			KiHandler::setContent($cCtxName, implode('', $cContentA));
 
-			KiHandler::setContent($cCtx, implode('', $cContentA));
-
-			foreach ($cSupport->headersA as $hName=>$hVal)
+			foreach ($cCtx->headersA as $hName=>$hVal)
 				KiHandler::setHeader($hName, $hVal);
 
-			if ($cSupport->code)
-				KiHandler::setReturn($cSupport->code);
+			if ($cCtx->codeA)
+				KiHandler::setReturn($cCtx->return);
 		}
 	}
 
@@ -307,28 +308,27 @@ Collect all URL contexts in specified order
 				if (array_search($cCtx, $_order) === False)
 					continue;
 
-				if (!array_key_exists($cCtx, $fContextA))
-// =todo 59 (code) +0: change to Ki_RouteCtx object
-					$fContextA[$cCtx] = new Ki_RouteBind(); //existing is not reused, while contexts are merged to run once: worrying about data inconsistence.
 
-				foreach ($cBind->headersA as $cHead=>$cVal)
-					$fContextA[$cCtx]->headersA[$cHead] = $cVal;
+				array_push($fContextA, $cCtx);
+
+				//update stored context object
+				$cCtx = self::$contextA[$cCtx];
+				$cCtx->headersA = array_merge($cBind->headersA, $cCtx->headersA);
 
 				if ($cBind->code)
-					$fContextA[$cCtx]->code = $cBind->code;
+					$cCtx->return = $cBind->code;
 
-				$fContextA[$cCtx]->vars = array_merge($cBind->vars, $fContextA[$cCtx]->vars);
+				$cCtx->varsA = array_merge($cBind->vars, $cCtx->varsA);
 			}
 		}
-
 
 
 		$outContextA = [];
 
  		//sort context with previously specified order
 		foreach ($_order as $cCtx)
-			if (array_key_exists($cCtx, $fContextA))
-				$outContextA[$cCtx] = $fContextA[$cCtx];
+			if (in_array($cCtx, $fContextA))
+				array_push($outContextA, $cCtx);
 
 
 		return $outContextA;
