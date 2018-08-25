@@ -52,4 +52,76 @@ Solve registered code generators for specified context.
 	}
 }
 
+
+
+
+
+
+/*
+Context bind class
+*/
+// -todo 57 (code) +0: expand Ki_RouteBind into normal class.
+class Ki_RouteBind {
+	var $key, $ctxA=[], $return=0, $headersA;
+	var $varsA=[];
+
+
+	function __construct($_ctx=[]){
+		$this->ctxA = $_ctx;
+		$this->return = 0;
+		$this->headersA = [];
+	}
+
+
+
+	function match($_urlA, $_not404=True){
+		//skip excess match type
+		$is404 = !($_urlA[0]===False);
+		if ($_not404 xor $is404)
+			return;
+
+
+		$lost = False;
+		$varsA = [];
+		foreach ($_urlA as $cUrl) {
+			if ($cUrl===False) //skip no-match marker
+				continue;
+
+			$found = False;
+			if (is_callable($cUrl)){ //function binding
+				$fRes = $cUrl();
+				if (($fRes !== False) && ($fRes !== Null) && ($fRes !== 0)){
+					$found = True;
+					if (is_array($fRes))
+						$varsA = array_merge($varsA, $fRes);
+				}
+			} else { //regex binding
+				$cRegex = str_replace('/', '\/', $cUrl);
+				$cRes = [];
+				
+				if (preg_match("/^$cRegex$/", KiUrl::uri(), $cRes)){
+					$found = True;
+					$varsA = array_merge($varsA, $cRes);
+				}
+			}
+
+
+			$lost = $lost || !$found;
+			if ($lost)
+				break;
+		}
+
+
+		if (!$lost){
+			foreach ($varsA as $key=>$val)
+			    if (is_int($key)) 
+			        unset($varsA[$key]);
+
+			$this->varsA = $varsA;
+		}
+
+		return !$lost;
+	}
+}
+
 ?>

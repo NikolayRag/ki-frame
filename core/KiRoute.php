@@ -1,4 +1,8 @@
 <?
+include(__dir__ .'/KiRouteSupport.php');
+
+
+
 /*
 Routing matrix.
 The idea is that 'some request' results in set of 'some contexts', independently defined.
@@ -9,24 +13,6 @@ Virtually, there're following levels of complexity in managing content generatio
 - Full. Same as Basic, but supply regex or URL checkers for bind() to handle absolutely custom context match. Define custom headers and return codes.
 - Debug. Use explicitely generated output code. Overwrite any generated code and headers by custom error handlers, if any exists.
 */
-
-
-
-/*
-Context bind class
-*/
-// -todo 57 (code) +0: expand Ki_RouteBind into normal class.
-class Ki_RouteBind {
-	var $ctx=[], $code=0, $headersA;
-	var $vars = [];
-
-
-	function __construct($_ctx=[]){
-		$this->ctx = $_ctx;
-		$this->code = 0;
-		$this->headersA = [];
-	}
-}
 
 
 
@@ -107,6 +93,10 @@ $_headers
 	Default custom return headers array.
 */
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
+		if (!is_array($_url))
+			$_url = [$_url];
+
+
 		$cKey = array_search($_url, self::$bindSrcA);
 		if ($cKey === False){
 			$cKey = count(self::$bindSrcA);
@@ -117,11 +107,13 @@ $_headers
 		if (!array_key_exists($cKey, self::$bindA))
 			self::$bindA[$cKey] = new Ki_RouteBind();
 
-		self::$bindA[$cKey]->ctx[] = $_ctx;
+		self::$bindA[$cKey]->key = $cKey;
+
+		self::$bindA[$cKey]->ctxA[] = $_ctx;
 
 
 		if ($_code)
-			self::$bindA[$cKey]->code = $_code;
+			self::$bindA[$cKey]->return = $_code;
 		
 		foreach ($_headersA as $hName=>$hVal)
 			self::$bindA[$cKey]->headersA[$hName] = $hVal;
@@ -213,54 +205,12 @@ Detect all matching URL bindings.
 		$bondA = [];
 
 		//collect detected url's
-		foreach (self::$bindA as $cKey=>$cBind){
+		foreach (self::$bindA as $cBind){
 			//get hashed array
-			$cUrlA = self::$bindSrcA[$cKey];
-			if (!is_array($cUrlA))
-				$cUrlA = [$cUrlA];
+			$cUrlA = self::$bindSrcA[$cBind->key];
 
-			//skip excess match type
-			$is404 = !($cUrlA[0]===False);
-			if ($_not404 xor $is404)
-				continue;
-
-
-			$lost = False;
-			$varsA = [];
-			foreach ($cUrlA as $cUrl) {
-				if ($cUrl===False) //skip no-match marker
-					continue;
-
-				$found = False;
-				if (is_callable($cUrl)){ //function binding
-					$fRes = $cUrl();
-					if (($fRes !== False) && ($fRes !== Null) && ($fRes !== 0)){
-						$found = True;
-						if (is_array($fRes))
-							$varsA = array_merge($varsA, $fRes);
-					}
-				} else { //regex binding
-					$cRegex = str_replace('/', '\/', $cUrl);
-					$cRes = [];
-					
-					if (preg_match("/^$cRegex$/", KiUrl::uri(), $cRes)){
-						$found = True;
-						$varsA = array_merge($varsA, $cRes);
-					}
-				}
-
-				$lost = $lost || !$found;
-			}
-
-
-			if (!$lost){
-				foreach ($varsA as $key=>$val)
-				    if (is_int($key)) 
-				        unset($varsA[$key]);
-
-				$cBind->vars = $varsA;
+			if ($cBind->match($cUrlA, $_not404))
 				$bondA[] = $cBind;
-			}
 		}
 
 		return $bondA;
@@ -276,7 +226,7 @@ Collect all URL contexts in specified order
 		//filter contexts out
 //  todo 56 (unsure, feature) +0: maybe call same contexts several matches separately
 		foreach ($_urlA as $cBind){ //all actual bindings
-			foreach ($cBind->ctx as $cCtx) {
+			foreach ($cBind->ctxA as $cCtx) {
 				if (array_search($cCtx, $_order) === False)
 					continue;
 
@@ -287,10 +237,10 @@ Collect all URL contexts in specified order
 				$cCtx = self::$contextA[$cCtx];
 				$cCtx->headersA = array_merge($cBind->headersA, $cCtx->headersA);
 
-				if ($cBind->code)
-					$cCtx->return = $cBind->code;
+				if ($cBind->return)
+					$cCtx->return = $cBind->return;
 
-				$cCtx->varsA = array_merge($cBind->vars, $cCtx->varsA);
+				$cCtx->varsA = array_merge($cBind->varsA, $cCtx->varsA);
 			}
 		}
 
