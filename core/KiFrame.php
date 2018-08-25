@@ -127,9 +127,12 @@ Order contexts, shortcut for KiRoute::order()
 
 
 /*
-Finalize definition and , shortcut for KiRoute::render()
+Finalize definition and render routing, shortcut for KiRoute::render()
+
+_ctxOrder
+	Optional context reorder.
 */
-	static function end(){
+	static function end($_ctxOrder=False){
 		$dbCfg= KC::DBCFG();
 
 		new KiSql($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
@@ -142,7 +145,7 @@ Finalize definition and , shortcut for KiRoute::render()
 		self::$user= new KiAuth(KC::SOCIAL());
 
 
-		return KiRoute::render();
+		return KiRoute::render($_ctxOrder);
 	}
 
 
