@@ -180,8 +180,9 @@ This is called once for entire http request.
 		foreach ($runA as $cCtx=>$cSupport){
 			$cContentA = [];
 
+			//run all code
 			foreach (self::$contextA[$cCtx] as $cSrc) {
-				$cCont = self::runContent($cSrc);
+				$cCont = self::runContent($cSrc, $cSupport->vars);
 				if (is_string($cCont))
 					$cContentA[] = $cCont;
 			}
@@ -246,8 +247,7 @@ Detect all matching URL bindings.
 						if (is_array($fRes))
 							$varsA = array_merge($varsA, $fRes);
 					}
-	// =todo 34 (ux, routing) +0: match url variables
-				} else {
+				} else { //regex binding
 					$cRegex = str_replace('/', '\/', $cUrl);
 					$cRes = [];
 					
@@ -282,6 +282,7 @@ Collect all URL contexts in specified order
 	static private function orderRun($_urlA, $_order){
 		$fContextA = [];
 		//filter contexts out
+//  todo 56 (unsure, feature) +0: maybe call same contexts several matches separately
 		foreach ($_urlA as $cBind){ //all actual bindings
 			foreach ($cBind->ctx as $cCtx) {
 				if (array_search($cCtx, $_order) === False)
@@ -295,6 +296,8 @@ Collect all URL contexts in specified order
 
 				if ($cBind->code)
 					$fContextA[$cCtx]->code = $cBind->code;
+
+				$fContextA[$cCtx]->vars = array_merge($cBind->vars, $fContextA[$cCtx]->vars);
 			}
 		}
 
@@ -316,9 +319,9 @@ Collect all URL contexts in specified order
 /*
 Solve registered code generators for specified context.
 */
-	static private function runContent($_src){
+	static private function runContent($_src, $_vars){
 		if (is_callable($_src))
-			return call_user_func($_src);
+			return call_user_func($_src, (object)$_vars);
 
 
 		if (is_file($_src)){
