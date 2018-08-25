@@ -12,7 +12,7 @@ All functions are divided by function groups, main of which are:
 
 
 There're 3 areas of actual code generation:
-1. Direct echo(), print_r(), and so on, used up from index.php root file. This output will be wiped out by default, till hSetDebug(?,True) is specified.
+1. Direct echo(), print_r(), and so on, used up from index.php root file. This output will be wiped out by default, till hDebug(?,True) is specified.
 2. Code, files and generator functions provided for routing with r*()
 3. Direct code generation and routing context redefinitions, run at custom error handlers, if any. This can override all previously generated code.
 */
@@ -216,13 +216,13 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 	static function hErrCB($_CB){
 		KiHandler::errCB($_CB);
 	}
-	static function hSetHeader($_name, $_value){
+	static function hHeader($_name, $_value){
 		KiHandler::setHeader($_name, $_value);
 	}
-	static function hSetReturn($_code){
+	static function hReturn($_code){
 		KiHandler::setReturn($_code);
 	}
-	static function hSetDebug($_debug, $_clean){
+	static function hDebug($_debug, $_clean){
 		KiHandler::setDebug($_debug, $_clean);
 	}
 	static function hCountErrors($_countErrors=true, $_countXcption=true){
