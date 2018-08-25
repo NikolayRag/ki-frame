@@ -13,9 +13,19 @@ Virtually, there're following levels of complexity in managing content generatio
 
 
 /*
-Context support class
+Context object
 */
-class Ki_RouteContext {
+//  todo 60 (code) +0: expand Ki_RouteCtx into normal class
+class Ki_RouteCtx {
+}
+
+
+
+/*
+Context bind class
+*/
+// -todo 57 (code) +0: expand Ki_RouteBind into normal class.
+class Ki_RouteBind {
 	var $ctx=[], $code=0, $headersA;
 	var $vars = [];
 
@@ -113,7 +123,7 @@ $_headers
 
 
 		if (!array_key_exists($cKey, self::$bindA))
-			self::$bindA[$cKey] = new Ki_RouteContext();
+			self::$bindA[$cKey] = new Ki_RouteBind();
 
 		self::$bindA[$cKey]->ctx[] = $_ctx;
 
@@ -170,7 +180,7 @@ _newOrder
 		if (!count($matches)){
 			//bound '/' to all binding
 			if (KiUrl::uri()=='/')
-				$matches = [new Ki_RouteContext($orderCtx)];
+				$matches = [new Ki_RouteBind($orderCtx)];
 			
 			//'not found'
 			else
@@ -183,7 +193,7 @@ _newOrder
 
 		foreach ($runA as $cCtx=>$cSupport){
 			$cContentA = [];
-
+// -todo 58 (code) +0: move run code into context object
 			//run all code
 			foreach (self::$contextA[$cCtx] as $cSrc) {
 				$cCont = self::runContent($cSrc, $cSupport->vars);
@@ -296,7 +306,8 @@ Collect all URL contexts in specified order
 					continue;
 
 				if (!array_key_exists($cCtx, $fContextA))
-					$fContextA[$cCtx] = new Ki_RouteContext();
+// =todo 59 (code) +0: change to Ki_RouteCtx object
+					$fContextA[$cCtx] = new Ki_RouteBind(); //existing is not reused, while contexts are merged to run once: worrying about data inconsistence.
 
 				foreach ($cBind->headersA as $cHead=>$cVal)
 					$fContextA[$cCtx]->headersA[$cHead] = $cVal;
