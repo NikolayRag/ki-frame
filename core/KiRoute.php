@@ -124,7 +124,6 @@ $_headers
 		foreach ($_headersA as $hName=>$hVal)
 			self::$bindA[$cKey]->headersA[$hName] = $hVal;
 	}
-// -todo 31 (check) +0: check urls for duplicates
 
 
 
@@ -173,6 +172,7 @@ This is called once for entire http request.
 			else
 				KiHandler::setReturn(404);
 		}
+
 
 
 		$runA = self::orderRun($matches, $orderCtx);
