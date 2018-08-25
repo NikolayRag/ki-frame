@@ -13,17 +13,6 @@ Virtually, there're following levels of complexity in managing content generatio
 
 
 /*
-Context object
-*/
-//  todo 60 (code) +0: expand Ki_RouteCtx into normal class
-class Ki_RouteCtx {
-	var $codeA=[], $headersA=[], $return=0;
-	var $varsA=[];
-}
-
-
-
-/*
 Context bind class
 */
 // -todo 57 (code) +0: expand Ki_RouteBind into normal class.
@@ -73,6 +62,7 @@ $_src
 		if (array_search($_src, self::$contextA[$_ctx]->codeA) !== False)
 			return;
 
+		self::$contextA[$_ctx]->name = $_ctx;
 		self::$contextA[$_ctx]->codeA[] = $_src;
 	}
 
@@ -193,26 +183,8 @@ _newOrder
 
 		$runA = self::orderRun($matches, $orderCtx);
 
-		foreach ($runA as $cCtxName){
-			$cCtx = self::$contextA[$cCtxName];
-
-			$cContentA = [];
-// -todo 58 (code) +0: move run code into context object
-			//run all code
-			foreach ($cCtx->codeA as $cSrc) {
-				$cCont = self::runContent($cSrc, $cCtx->varsA);
-				if (is_string($cCont))
-					$cContentA[] = $cCont;
-			}
-
-			KiHandler::setContent($cCtxName, implode('', $cContentA));
-
-			foreach ($cCtx->headersA as $hName=>$hVal)
-				KiHandler::setHeader($hName, $hVal);
-
-			if ($cCtx->codeA)
-				KiHandler::setReturn($cCtx->return);
-		}
+		foreach ($runA as $cCtxName)
+			self::$contextA[$cCtxName]->run();
 	}
 
 
@@ -332,26 +304,6 @@ Collect all URL contexts in specified order
 
 
 		return $outContextA;
-	}
-
-
-
-/*
-Solve registered code generators for specified context.
-*/
-	static private function runContent($_src, $_vars){
-		if (is_callable($_src))
-			return call_user_func($_src, (object)$_vars);
-
-
-		if (is_file($_src)){
-			ob_start(); //nest buffer
-			include($_src);
-			return ob_get_clean();
-		}
-
-
-		return $_src;
 	}
 }
 ?>
