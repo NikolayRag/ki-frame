@@ -154,9 +154,13 @@ $_ctxA
 /*
 Finalize: actually run matching route collection.
 This is called once for entire http request.
+
+_newOrder
+	Array may be supplied to reorder output contexts.
+	Remember again only those listed in array will be run at all.
 */
-	static function render(){
-		$orderCtx = self::orderSnapshot();
+	static function render($_newOrder=False){
+		$orderCtx = self::orderSnapshot($_newOrder);
 		$matches = self::matchUrl();
 		if (!count($matches))
 			$matches = self::matchUrl(False);
@@ -203,11 +207,14 @@ This is called once for entire http request.
 /*
 Fetch ordered and filtered context.
 */
-	static private function orderSnapshot(){
+	static private function orderSnapshot($_overOrder=False){
 		$ctxA = array_keys(self::$contextA);
 
-		if (count(self::$contextOrder))
-			$ctxA = array_values(array_intersect(self::$contextOrder, $ctxA));
+		if (!is_array($_overOrder))
+			$_overOrder = self::$contextOrder;
+
+		if (count($_overOrder))
+			$ctxA = array_values(array_intersect($_overOrder, $ctxA));
 
 		return array_unique($ctxA);
 	}
