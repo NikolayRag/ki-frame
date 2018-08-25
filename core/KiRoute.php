@@ -124,15 +124,17 @@ $_headers
 /*
 Define context order for corresponding matches, when several contents match some URL.
 
-If particular context don't exist, it is ignored.
+Regex may be used to specify set of contexts, which will go as they were defined.
+When wide mask used, all matching context are switched off further match.
+That is, if there's ['c1', 'c2', 'd2'] contexts defined, ordering with ['.2', 'c\d'] will result in ['c2', 'd2', 'c1'] since 'c2' is grabbed with '.2' match.  Using '.*' anywhere on order list will place all remaining contexts in order they wede defined.
+
+If particular context don't match, it is ignored.
 All matching contexts will be used if no order specified.
 
 
 $_ctxA
 	Array of contexts.
 	Default context may be refered as ''.
-
-	If omited, only return current order.
 */
 	static function order($_ctxA=False){
 		if ($_ctxA)
@@ -190,10 +192,16 @@ Fetch ordered and filtered context.
 		if (!is_array($_overOrder))
 			$_overOrder = self::$contextOrder;
 
-		if (count($_overOrder))
-			$ctxA = array_values(array_intersect($_overOrder, $ctxA));
 
-		return array_unique($ctxA);
+		$collectA = [];
+		if (count($_overOrder))
+			foreach ($_overOrder as $cCtx){
+				$fA =  array_filter($ctxA, function ($v) use ($cCtx) {return preg_match("/^$cCtx$/", $v);});
+				$collectA = array_merge($collectA, $fA);
+			}
+
+
+		return array_values( array_unique($collectA) );
 	}
 
 
