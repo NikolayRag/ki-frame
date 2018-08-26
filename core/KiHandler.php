@@ -117,6 +117,9 @@ meta:
 		if (self::$debug){
 			ini_set("display_errors", "1");
 			error_reporting(E_ALL);
+
+			set_error_handler(Null);
+			set_exception_handler(Null);
 		}
 
 		if (self::$doClean)
