@@ -22,11 +22,15 @@ errCBFile($_fn)
 
 		return function($_errPool) use($_fn) {
 			$fn= fopen($_fn,'a');
+			if (!$fn)
+				return;
+
 			fWrite($fn, "\n" .date('y-M-d h:m:s') ."\n");
 			foreach ($_errPool as $cKey => $cVal) {
 				$isX= array_key_exists('etype', $cVal) && $cVal['etype']==2;
 				fWrite($fn, ($isX?'X':'E')." ${cVal['type']}, ${cVal['message']}, ${cVal['file']}, ${cVal['line']}\n");
 			}
+
 			fClose($fn);
 		};
 	}
