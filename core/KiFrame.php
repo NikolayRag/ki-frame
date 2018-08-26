@@ -17,7 +17,7 @@ There're 3 areas of actual code generation:
 3. Direct code generation and routing context redefinitions, run at custom error handlers, if any. This can override all previously generated code.
 */
 class KiFrame {
-	private static $isInited, $startTime;
+	private static $isInited, $isEnded, $startTime;
 
 	private static $user;
 
@@ -133,8 +133,12 @@ _ctxOrder
 	Optional context reorder.
 */
 	static function end($_ctxOrder=False){
-		$dbCfg= KC::DBCFG();
+		if (self::$isEnded)
+			return;
+		self::$isEnded = True;
 
+
+		$dbCfg= KC::DBCFG();
 		new KiSql($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB,table)
