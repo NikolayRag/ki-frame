@@ -184,6 +184,12 @@ _newOrder
 
 
 /*
+	PRIVATE
+*/
+
+
+
+/*
 Fetch ordered and filtered context.
 */
 	static private function orderSnapshot($_overOrder=False){
