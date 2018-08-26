@@ -90,14 +90,14 @@ If ctx specified, only ctx context variables are returned.
 
 
 /*
-Register routing context, shortcut for KiRoute::context()
+Register routing context code, shortcut for KiRoute::context()
 
 Notice!
 If only one argument given, it will be $_src, not $_ctx.
 Context is assumed then to be ''.
 This is useful for light one-page setups.
 */
-	static function rReg($_ctx, $_src=false){
+	static function rCode($_ctx, $_src=false){
 		if (func_num_args()==1){
 			$_src= $_ctx;
 			$_ctx= '';
