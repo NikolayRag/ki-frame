@@ -137,7 +137,7 @@ $_ctxA
 	Default context may be refered as ''.
 */
 	static function order($_ctxA=False){
-		if ($_ctxA)
+		if (is_array($_ctxA))
 			self::$contextOrder = $_ctxA;
 
 		return self::$contextOrder;
@@ -196,6 +196,9 @@ Fetch ordered and filtered context.
 		$collectA = [];
 		if (count($_overOrder))
 			foreach ($_overOrder as $cCtx){
+				if (!is_string($cCtx)) //type check
+					continue;
+
 				$fA =  array_filter($ctxA, function ($v) use ($cCtx) {return preg_match("/^$cCtx$/", $v);});
 				$collectA = array_merge($collectA, $fA);
 			}
