@@ -105,18 +105,19 @@ $_headers
 
 
 		if (!array_key_exists($cKey, self::$bindA))
-			self::$bindA[$cKey] = new Ki_RouteBind();
+			self::$bindA[$cKey] = new Ki_RouteBind($_url);
+		$cBind = self::$bindA[$cKey];
 
-		self::$bindA[$cKey]->key = $cKey;
 
-		self::$bindA[$cKey]->ctxA[] = $_ctx;
+
+		$cBind->ctxA[] = $_ctx;
 
 
 		if ($_code)
-			self::$bindA[$cKey]->return = $_code;
+			$cBind->return = $_code;
 		
 		foreach ($_headersA as $hName=>$hVal)
-			self::$bindA[$cKey]->headersA[$hName] = $hVal;
+			$cBind->headersA[$hName] = $hVal;
 	}
 
 
@@ -167,7 +168,7 @@ _newOrder
 		if (!count($matches)){
 			//bound '/' to all binding
 			if (KiUrl::uri()=='/')
-				$matches = [new Ki_RouteBind($orderCtx)];
+				$matches = [new Ki_RouteBind(['/'],$orderCtx)];
 			
 			//'not found'
 			else
@@ -223,13 +224,9 @@ Detect all matching URL bindings.
 		$bondA = [];
 
 		//collect detected url's
-		foreach (self::$bindA as $cBind){
-			//get hashed array
-			$cUrlA = self::$bindSrcA[$cBind->key];
-
-			if ($cBind->match($cUrlA, $_not404))
+		foreach (self::$bindA as $cBind)
+			if ($cBind->match($_not404))
 				$bondA[] = $cBind;
-		}
 
 		return $bondA;
 	}
@@ -239,11 +236,11 @@ Detect all matching URL bindings.
 /*
 Collect all URL contexts in specified order
 */
-	static private function orderRun($_urlA, $_order){
+	static private function orderRun($_bindA, $_order){
 		$fContextA = [];
 		//filter contexts out
 //  todo 56 (unsure, feature) +0: maybe call same contexts several matches separately
-		foreach ($_urlA as $cBind){ //all actual bindings
+		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtx) {
 				if (array_search($cCtx, $_order) === False)
 					continue;
