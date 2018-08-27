@@ -125,8 +125,9 @@ $_headers
 Define context order for corresponding matches, when several contents match some URL.
 
 Regex may be used to specify set of contexts, which will go as they were defined.
+Regex used is implicitely expanded to full-string form (^...&).
 When wide mask used, all matching context are switched off further match.
-That is, if there's ['c1', 'c2', 'd2'] contexts defined, ordering with ['.2', 'c\d'] will result in ['c2', 'd2', 'c1'] since 'c2' is grabbed with '.2' match.  Using '.*' anywhere on order list will place all remaining contexts in order they wede defined.
+That is, if there's ['c1', 'c2', 'd2'] contexts defined, ordering with ['.2', 'c\d'] will result in ['c2', 'd2', 'c1'] since 'c2' is grabbed with '.2' match.  Using '.*' anywhere on order, will place all remaining contexts without sorting.
 
 If particular context don't match, it is ignored.
 All matching contexts will be used if no order specified.
@@ -205,7 +206,7 @@ Fetch ordered and filtered context.
 				if (!is_string($cCtx)) //type check
 					continue;
 
-				$fA =  array_filter($ctxA, function ($v) use ($cCtx) {return preg_match("/^$cCtx$/", $v);});
+				$fA = array_filter($ctxA, function ($v) use ($cCtx) {return preg_match("/^$cCtx$/", $v);});
 				$collectA = array_merge($collectA, $fA);
 			}
 
