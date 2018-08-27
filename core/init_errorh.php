@@ -27,8 +27,8 @@ errCBFile($_fn)
 
 			fWrite($fn, "\n" .date('y-M-d h:m:s') ."\n");
 			foreach ($_errPool as $cKey => $cVal) {
-				$isX= array_key_exists('etype', $cVal) && $cVal['etype']==2;
-				fWrite($fn, ($isX?'X':'E')." ${cVal['type']}, ${cVal['message']}, ${cVal['file']}, ${cVal['line']}\n");
+				$errType= ['','E','X'][getA($cVal, 'etype')];
+				fWrite($fn, "$errType ${cVal['type']}, ${cVal['message']}, ${cVal['file']}, ${cVal['line']}\n");
 			}
 
 			fClose($fn);

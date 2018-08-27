@@ -27,6 +27,8 @@ countErrors($_countErrors=true, $_countXcption=true)
 
 
 class KiHandler {
+	const ERRR=1, XCPT=2;
+
 	private static $isInited;
 
 	
@@ -74,7 +76,7 @@ Capture runtime error.
 			'message'=> $_errMessage,
 			'file'=> $_errFile,
 			'line'=> $_errLine,
-			'etype'=> 1
+			'etype'=> self::ERRR
 		];
 	}
 
@@ -89,7 +91,7 @@ Capture runtime exception.
 			'message'=> $_exception->getMessage(),
 			'file'=> $_exception->getFile(),
 			'line'=> $_exception->getLine(),
-			'etype'=> 2
+			'etype'=> self::XCPT
 		];
 	}
 
