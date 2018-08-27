@@ -82,6 +82,7 @@ $_url
 
 $_ctx
 	Context added to specified URL.
+	May be string or array of contexts.
 
 
 $_code
@@ -110,7 +111,9 @@ $_headers
 
 
 
-		$cBind->ctxA[] = $_ctx;
+		if (!is_array($_ctx))
+			$_ctx = [$_ctx];
+		$cBind->ctxA = array_merge($cBind->ctxA, $_ctx);
 
 
 		if ($_code)
