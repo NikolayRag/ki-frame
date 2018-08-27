@@ -141,11 +141,9 @@ _ctxOrder
 		$dbCfg= KC::DBCFG();
 		new KiSql($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
-		//additional error callback (to DB,table)
-// -todo 37 (sql, check) +0: check default error handlers for use with KiSql
+		//additional error callback (to DB table)
 		KiHandler::errCB(ErrCB\errCBDB('site_log_errors'));
 
-// -todo 38 (sql, check) +0: check KiAuth for use with KiSql
 		self::$user= new KiAuth(KC::SOCIAL());
 
 
