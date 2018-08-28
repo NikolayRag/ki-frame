@@ -2,21 +2,22 @@
 /*
 Authorize by log/pass.
 */
-
-
-include(__dir__ .'/../_3rd/uflex/autoload.php');
-
-
-
-KiSql::add('kiAuthGetCount', 'SELECT count(*) FROM Users');
-
-
 class KiAuthPass {
+	private static $isInited;
+
 	static $user;
 
 
 
 	static function start($_db){
+		if (self::$isInited)
+			return;
+		self::$isInited = True;
+
+
+		self::init();
+
+
 		self::$user= new \ptejada\uFlex\User();
 		self::$user->config->database->pdo= $_db;
 
@@ -71,6 +72,33 @@ class KiAuthPass {
 	}
 
 
+
+
+
+
+/*
+	Private
+*/
+
+
+
+	private static function init(){
+		KiSql::add('kiAuthGetCount', 'SELECT count(*) FROM Users');
+
+
+		//include(__dir__ .'/../_3rd/uflex/autoload.php');
+
+		include(__dir__ .'/../_3rd/uflex/src/collection.php');
+		include(__dir__ .'/../_3rd/uflex/src/linkedcollection.php');
+		include(__dir__ .'/../_3rd/uflex/src/cookie.php');
+		include(__dir__ .'/../_3rd/uflex/src/db.php');
+		include(__dir__ .'/../_3rd/uflex/src/db_table.php');
+		include(__dir__ .'/../_3rd/uflex/src/hash.php');
+		include(__dir__ .'/../_3rd/uflex/src/log.php');
+		include(__dir__ .'/../_3rd/uflex/src/userbase.php');
+		include(__dir__ .'/../_3rd/uflex/src/user.php');
+		include(__dir__ .'/../_3rd/uflex/src/session.php');
+	}
 
 
 
