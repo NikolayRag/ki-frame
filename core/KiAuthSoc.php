@@ -57,8 +57,8 @@ Check if social session is valid.
 While logged, calls within Timeout are treated as successfull. That should remove unneccessary freezing for frequent calls.
 ! False-positive logon will occur within Timeout, if user was forced to be logged off at different place.
 */
-	static function start(){
-		self::init();
+	static function start($_settings){
+		self::init($_settings);
 
 
 		self::$token= getA($_SESSION, self::$sessionToken);
