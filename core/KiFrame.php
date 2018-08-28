@@ -17,6 +17,8 @@ There're 3 areas of actual code generation:
 3. Direct code generation and routing context redefinitions, run at custom error handlers, if any. This can override all previously generated code.
 */
 class KiFrame {
+	private static $sqlErrorTable = 'site_log_errors';
+
 	private static $isInited, $isEnded, $startTime;
 
 
@@ -140,7 +142,7 @@ _ctxOrder
 		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB table)
-		KiHandler::errCB(ErrCB\errCBDB('site_log_errors'));
+		KiHandler::errCB(ErrCB\errCBDB(self::$sqlErrorTable));
 
 		KiAuth::init(KC::SOCIAL());
 
