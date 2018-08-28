@@ -21,6 +21,7 @@ Init macro:
 
 
 
+// -todo 23 (ux, auth) +0: introduce entire auth cached timeout
 class KiAuth {
 	private static $sqlA = [
 		'kiAuthGetSocial' => 'SELECT id_users FROM users_social WHERE type=? AND id=?',
@@ -33,18 +34,17 @@ class KiAuth {
 	private static $isInited;
 	private static $isSocUser=false, $mask=0, $rights;
 
+// -todo 40 (auth) +0: add Ki_User class
 	static $isSigned=false, $id=0, $name='', $email='', $photo='';
 
 
 
-// -todo 23 (ux, auth) +0: introduce entire auth cached timeout
 	static function init($_socialCfg){
 		if (self::$isInited)
 			return
 		self::$isInited = True;
 
 
-// -todo 40 (auth) +0: add Ki_User class
 		include(__dir__ .'/ki-rights.php');
 		include(__dir__ .'/KiAuthPass.php');
 		include(__dir__ .'/KiAuthSoc.php');
