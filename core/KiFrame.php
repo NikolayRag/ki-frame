@@ -19,8 +19,6 @@ There're 3 areas of actual code generation:
 class KiFrame {
 	private static $isInited, $isEnded, $startTime;
 
-	private static $user;
-
 
 
 	function __construct(){
@@ -144,7 +142,7 @@ _ctxOrder
 		//additional error callback (to DB table)
 		KiHandler::errCB(ErrCB\errCBDB('site_log_errors'));
 
-		self::$user= new KiAuth(KC::SOCIAL());
+		KiAuth::init(KC::SOCIAL());
 
 
 		return KiRoute::render($_ctxOrder);
@@ -165,43 +163,43 @@ _ctxOrder
 Get available social login URL's. Shortcut for KiAuth socUrlA().
 */
 	static function lUrls(){
-		self::$user->socUrlA();
+		KiAuth::socUrlA();
 	}
 /*
 Callback for social login. Shortcut for KiAuth socCB().
 */
 	static function lSocCB(){
-		self::$user->socCB();
+		KiAuth::socCB();
 	}
 /*
 Register new user with login/pass. Shortcut for KiAuth passRegister().
 */
 	static function lReg($_email, $_pass){
-		self::$user->passRegister($_email, $_pass);
+		KiAuth::passRegister($_email, $_pass);
 	}
 /*
 Login user with login/pass. Shortcut for KiAuth passLogin().
 */
 	static function lIn($_email, $_pass){
-		self::$user->passLogin($_email, $_pass);
+		KiAuth::passLogin($_email, $_pass);
 	}
 /*
 Log out logged use. Shortcut for KiAuth logout().
 */
 	static function lOut(){
-		self::$user->logout();
+		KiAuth::logout();
 	}
 /*
 Request password reset link for registered email. Shortcut for KiAuth passRestore().
 */
 	static function lRestore($_email){
-		self::$user->passRestore($_email);
+		KiAuth::passRestore($_email);
 	}
 /*
 Set new password for registered email, using provided key. Shortcut for KiAuth passNew().
 */
 	static function lPass($_email, $_pass, $_hash){
-		self::$user->passNew($_email, $_pass, $_hash);
+		KiAuth::passNew($_email, $_pass, $_hash);
 	}
 
 
