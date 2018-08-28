@@ -85,7 +85,6 @@ API cb for social logon.
 		if ($socErr)
 			return;
 
-		if (!$xId) // -todo 6 (auth, catch) +0: deal with social callback error
 		$xId= $this->assignedGet();
 		 	return;
 
@@ -215,7 +214,6 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 		if (!KiAuthSoc::start($_socialCfg))
 			return;
 
-		if (!$xId) //  todo 5 (auth, catc) +0: deal with social init error
 		$xId= $this->assignedGet();
 			return;
 
