@@ -64,7 +64,7 @@ class KiAuth {
 
 		($cUser= self::initFlexUser()) || ($cUser= self::initSocUser($_socialCfg));
 		if ($cUser)
-			self::$user = self::applyUser($cUser);
+			self::applyUser($cUser);
 	}
 
 
