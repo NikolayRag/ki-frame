@@ -69,5 +69,10 @@ function sendMail($_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_por
     return $mail->send();
 }
 
+
+
+function dump($_v){
+    echo str_replace(["\n"," "], ["<br>","&nbsp;"], print_r($_v, True));
+}
 ?>
 
