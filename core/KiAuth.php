@@ -143,11 +143,11 @@ Regster new email/pass user and login.
 Log in with email/pass
 */
 	static function passLogin($_email, $_pass){
-        KiAuthPass::login($_email, $_pass);
+        $res = KiAuthPass::login($_email, $_pass);
+        if (!$res)
+	        return KiAuthPass::getError();
 
 		self::$user->apply(KiAuthPass::$user);
-
-        return KiAuthPass::getError();
     }
 
 

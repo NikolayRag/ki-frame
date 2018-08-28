@@ -44,13 +44,13 @@ class KiAuthPass {
 
 
 	static function login($_email, $_pass){
-		self::$user->login($_email, $_pass, true);
+		return self::$user->login($_email, $_pass, true);
 	}
 
 
 
 	static function logout(){
-		self::$user->logout();
+		return self::$user->logout();
 	}
 
 
