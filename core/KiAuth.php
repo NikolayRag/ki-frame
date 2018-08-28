@@ -30,7 +30,16 @@ spl_autoload_register(
     }
 );
 
-include(__dir__ .'/../_3rd/uflex/autoload.php');
+include(__dir__ .'/../_3rd/uflex/src/collection.php');
+include(__dir__ .'/../_3rd/uflex/src/linkedcollection.php');
+include(__dir__ .'/../_3rd/uflex/src/cookie.php');
+include(__dir__ .'/../_3rd/uflex/src/db.php');
+include(__dir__ .'/../_3rd/uflex/src/db_table.php');
+include(__dir__ .'/../_3rd/uflex/src/hash.php');
+include(__dir__ .'/../_3rd/uflex/src/log.php');
+include(__dir__ .'/../_3rd/uflex/src/userbase.php');
+include(__dir__ .'/../_3rd/uflex/src/user.php');
+include(__dir__ .'/../_3rd/uflex/src/session.php');
 include(__dir__ .'/ki-rights.php');
 include(__dir__ .'/KiAuthSoc.php');
 
