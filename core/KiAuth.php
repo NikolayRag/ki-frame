@@ -7,6 +7,33 @@ User data holder
 // -todo 64 (auth) +0: add KiRights class
 class KiUser {
 	var $isSigned=false, $id=0, $name='', $email='', $photo='', $mask=0, $rights;
+
+
+/*
+Apply data from fetched uFlex user.
+*/
+	function apply($_userData){
+		$this->isSigned= true;
+		$this->id= $_userData->ID;
+		$this->email= $_userData->Email;
+
+		($this->name= $_userData->displayName) || ($this->name= $_userData->Email);
+		$this->photo= $_userData->photoURL;
+		$this->mask= $_userData->mask;
+	}
+
+
+
+	function reset(){
+		$this->isSigned= False;
+
+		$this->id= 0;
+		$this->email= '';
+
+		$this->name= '';
+		$this->photo= '';
+		$this->mask= 0;
+	}
 }
 
 
@@ -63,7 +90,7 @@ class KiAuth {
 		self::$user = new KiUser();
 		($cUser= self::initFlexUser()) || ($cUser= self::initSocUser($_socialCfg));
 		if ($cUser)
-			self::applyUser($cUser);
+			self::$user->apply($cUser);
 	}
 
 
@@ -94,7 +121,7 @@ API cb for social logon.
 
 		self::assignedUpdate($xId); //update last logon state
 
-		self::applyUser(KiAuthPass::getData($xId));
+		self::$user->apply(KiAuthPass::getData($xId));
 	}
 
 
@@ -170,21 +197,6 @@ Set new password.
 /*
 	PRIVATE
 */
-
-
-
-/*
-Apply data from fetched uFlex user.
-*/
-	private static function applyUser($_userData){
-		self::$user->isSigned= true;
-		self::$user->id= $_userData->ID;
-		self::$user->email= $_userData->Email;
-
-		(self::$user->name= $_userData->displayName) || (self::$user->name= $_userData->Email);
-		self::$user->photo= $_userData->photoURL;
-		self::$user->mask= $_userData->mask;
-	}
 
 
 
