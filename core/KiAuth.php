@@ -61,7 +61,6 @@ class KiAuth {
 
 
 		self::$user = new KiUser();
-
 		($cUser= self::initFlexUser()) || ($cUser= self::initSocUser($_socialCfg));
 		if ($cUser)
 			self::applyUser($cUser);
@@ -109,7 +108,7 @@ Regster new email/pass user and login.
             'Password'=>$_pass
         ]);
         if (!$res)
-        	return KiAuthPass::flexErrorGetLast();
+        	return KiAuthPass::getError();
 
         return self::passLogin($_email, $_pass);
 }
@@ -122,7 +121,7 @@ Log in with email/pass
 	static function passLogin($_email, $_pass){
         KiAuthPass::login($_email, $_pass);
 
-        return KiAuthPass::flexErrorGetLast();
+        return KiAuthPass::getError();
     }
 
 
@@ -148,7 +147,7 @@ Return hash string OR uflex error code.
 	static function passRestore($_email){
         $res= KiAuthPass::resetPassword($_email);
         if (!$res)
-            return KiAuthPass::flexErrorGetLast();
+            return KiAuthPass::getError();
 
         return $res->Confirmation;
 	}
@@ -161,7 +160,7 @@ Set new password.
 	static function passNew($_email, $_pass, $_hash){
         $res = KiAuthPass::newPassword($_hash,$_pass);
         if (!$res)
-        	return KiAuthPass::flexErrorGetLast();
+        	return KiAuthPass::getError();
 
         return self::passLogin($_email, $_pass);
 	}

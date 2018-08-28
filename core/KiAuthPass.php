@@ -149,7 +149,7 @@ Get code for last (and only) uFlex error, if any.
 
 Return: code id
 */
-	private static function getError(){
+	static function getError(){
 		$err= Null;
 		foreach (self::$user->log->getAllErrors() as $err);
 
@@ -157,7 +157,7 @@ Return: code id
 		if ($err)
 			foreach ($err as $cErr);
 
-		return self::$flexErrorDeref($cErr);
+		return self::flexErrorDeref($cErr);
 	}
 
 
