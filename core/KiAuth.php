@@ -1,4 +1,5 @@
 <?php
+// =todo 38 (sql, check) +0: check KiAuth for use with KiSql
 
 /*
 Deal with user authorization - social and explicit, and rights assignment.
@@ -43,13 +44,15 @@ KiSql::add('kiAuthUpdateLast', 'UPDATE users SET LastLogin=? WHERE ID=?');
 
 
 
-//  todo 23 (ux, auth) +0: introduce entire auth cached timeout
+// -todo 23 (ux, auth) +0: introduce entire auth cached timeout
 class KiAuth {
 	private static $isInited;
 
 	private $isSocUser=false, $flexUser, $mask=0, $rights;
 
+// -todo 40 (auth) +0: add Ki_User class
 	var $isSigned=false, $id=0, $name='', $email='', $photo='';
+
 
 
 	function __construct($_socialCfg){
@@ -82,7 +85,7 @@ API cb for social logon.
 		if ($socErr)
 			return;
 
-		if (!$xId) //  todo 6 (error) +0: deal with error
+		if (!$xId) // -todo 6 (auth, catch) +0: deal with social callback error
 		$xId= $this->assignedGet();
 		 	return;
 
@@ -133,7 +136,7 @@ Logout either.
 			KiAuthSoc::logout() :
 			$this->flexUser->logout();
 
-//  todo 8 (api) -1: vary errors
+//  todo 8 (auth, api) -1: vary logout errors
 		return;
 	}
 
@@ -166,7 +169,11 @@ Set new password.
 
 
 
-/* PRIVATE */
+/*
+	PRIVATE
+*/
+
+
 
 /*
 Apply data from fetched uFlex user.
@@ -208,7 +215,7 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 		if (!KiAuthSoc::start($_socialCfg))
 			return;
 
-		if (!$xId) //  todo 5 (error) +0: deal with error
+		if (!$xId) //  todo 5 (auth, catc) +0: deal with social init error
 		$xId= $this->assignedGet();
 			return;
 
@@ -227,11 +234,10 @@ Return user id.
 		$stmt= KiSql::apply('kiAuthGetSocial', KiAuthSoc::$type, KiAuthSoc::$id);
 		$id_assigned= KiSql::fetch('id_users', 0);
 
-//  todo 7 (ux, socal, unsure) -1: probably update user data from social
 
 		if (!$id_assigned){
-			if (!$userData) //  todo 6 (error) +0: deal with error
 			$userData= KiAuthSoc::fetch();
+			if (!$userData) //  todo 55 (auth, catch) +0: deal with acces user data error
 			 	return;
 
 			$id_assigned= $this->assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id, KiAuthSoc::$firstName, KiAuthSoc::$photoURL);
@@ -240,6 +246,7 @@ Return user id.
 		return $id_assigned;
 	}
 
+//  todo 7 (ux, socal) -1: add function to update user data from social
 
 
 /*
