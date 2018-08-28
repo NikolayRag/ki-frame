@@ -21,22 +21,12 @@ Init macro:
 
 
 
-include(__dir__ .'/../_3rd/uflex/src/collection.php');
-include(__dir__ .'/../_3rd/uflex/src/linkedcollection.php');
-include(__dir__ .'/../_3rd/uflex/src/cookie.php');
-include(__dir__ .'/../_3rd/uflex/src/db.php');
-include(__dir__ .'/../_3rd/uflex/src/db_table.php');
-include(__dir__ .'/../_3rd/uflex/src/hash.php');
-include(__dir__ .'/../_3rd/uflex/src/log.php');
-include(__dir__ .'/../_3rd/uflex/src/userbase.php');
-include(__dir__ .'/../_3rd/uflex/src/user.php');
-include(__dir__ .'/../_3rd/uflex/src/session.php');
 include(__dir__ .'/ki-rights.php');
+include(__dir__ .'/KiAuthPass.php');
 include(__dir__ .'/KiAuthSoc.php');
 
 
 
-KiSql::add('kiAuthGetCount', 'SELECT count(*) FROM Users');
 KiSql::add('kiAuthGetSocial', 'SELECT id_users FROM users_social WHERE type=? AND id=?');
 KiSql::add('kiAuthAdd', 'INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)');
 KiSql::add('kiAuthAddSocial', 'INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)');
@@ -48,7 +38,7 @@ KiSql::add('kiAuthUpdateLast', 'UPDATE users SET LastLogin=? WHERE ID=?');
 class KiAuth {
 	private static $isInited;
 
-	private $isSocUser=false, $flexUser, $mask=0, $rights;
+	private $isSocUser=false, $mask=0, $rights;
 
 // -todo 40 (auth) +0: add Ki_User class
 	var $isSigned=false, $id=0, $name='', $email='', $photo='';
@@ -91,7 +81,7 @@ API cb for social logon.
 
 		$this->assignedUpdate($xId); //update last logon state
 
-		$this->applyUser($this->flexUser->manageUser($xId));
+		$this->applyUser(KiAuthPass::getData($xId));
 	}
 
 
@@ -100,17 +90,12 @@ API cb for social logon.
 Regster new email/pass user and login.
 */
 	function passRegister($_email, $_pass){
-		//prepare username, coz uFlex refuse blank usernames
-        $stmt= KiSql::apply('kiAuthGetCount');
-        $arr= KiSql::fetch();
-
-        $res = $this->flexUser->register([
-            'Username'=> "u_{$arr[0]}",
+        $res = KiAuthPass::register([
             'Email'=>$_email,
             'Password'=>$_pass
         ]);
         if (!$res)
-        	return $this->flexErrorGetLast();
+        	return KiAuthPass::flexErrorGetLast();
 
         return $this->passLogin($_email, $_pass);
 }
@@ -121,9 +106,9 @@ Regster new email/pass user and login.
 Log in with email/pass
 */
 	function passLogin($_email, $_pass){
-        $this->flexUser->login($_email, $_pass, true);
+        KiAuthPass::login($_email, $_pass);
 
-        return $this->flexErrorGetLast();
+        return KiAuthPass::flexErrorGetLast();
     }
 
 
@@ -134,7 +119,7 @@ Logout either.
 	function logout(){
 		$this->isSocUser?
 			KiAuthSoc::logout() :
-			$this->flexUser->logout();
+			KiAuthPass::logout();
 
 //  todo 8 (auth, api) -1: vary logout errors
 		return;
@@ -147,9 +132,9 @@ Get pass restoring hash.
 Return hash string OR uflex error code.
 */
 	function passRestore($_email){
-        $res= $this->flexUser->resetPassword($_email);
+        $res= KiAuthPass::resetPassword($_email);
         if (!$res)
-            return $this->flexErrorGetLast();
+            return KiAuthPass::flexErrorGetLast();
 
         return $res->Confirmation;
 	}
@@ -160,9 +145,9 @@ Return hash string OR uflex error code.
 Set new password.
 */
 	function passNew($_email, $_pass, $_hash){
-        $res = $this->flexUser->newPassword($_hash,['Password'=>$_pass]);
+        $res = KiAuthPass::newPassword($_hash,$_pass);
         if (!$res)
-        	return $this->flexErrorGetLast();
+        	return KiAuthPass::flexErrorGetLast();
 
         return $this->passLogin($_email, $_pass);
 	}
@@ -195,13 +180,10 @@ Apply data from fetched uFlex user.
 Check if logpass user is signed.
 */
 	private function initFlexUser(){
-		$this->flexUser= new \ptejada\uFlex\User();
-		$this->flexUser->config->database->pdo= KiSql::getPDO();
-
-		if (!$this->flexUser->start()->isSigned())
+		if (!KiAuthPass::start(KiSql::getPDO()))
 			return;
 
-		return $this->flexUser;
+		return KiAuthPass::$user;
 	}
 
 
@@ -219,7 +201,7 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 		if (!$xId) //  todo 5 (auth, catc) +0: deal with social init error
 			return;
 
-		return $this->flexUser->manageUser($xId);
+		return KiAuthPass::getData($xId);
 	}
 
 
@@ -269,77 +251,6 @@ Update last logon state.
 */
 	private function assignedUpdate($_id){
 		$stmt= KiSql::apply('kiAuthUpdateLast', time(), $_id);
-	}
-
-
-
-
-
-
-/*
-Since uFlex dont return error codes, we must assign them based on error message.
-Suitable for uFlex v1.0.7.
-*/
-	static $flexErrA= [
-		1=> '/New User Registration Failed/',
-		2=> '/The Changes Could not be made/',
-		3=> '/Account could not be activated/',
-		4=> '/We don\'t have an account with this email/',
-		5=> '/Password could not be changed. The request can\'t be validated/',
-		6=> '/Logging with cookies failed/',
-		7=> '/No Username or Password provided/',
-		8=> '/Your Account has not been Activated\. Check your Email for instructions/',
-		9=> '/Your account has been deactivated\. Please contact Administrator/',
-		10=> '/Wrong Username or Password/',
-		11=> '/Confirmation hash is invalid/',
-		12=> '/Your identification could not be confirmed/',
-		13=> '/Failed to save confirmation request/',
-		14=> '/You need to reset your password to login/',
-		15=> '/Can not register a new user, as user is already logged in\./',
-		16=> '/This Email is already in use/',
-		17=> '/This Username is not available/',
-
-		18=> '/No need to update!/',
-
-		19=> '/(.+)s did not match/',
-		20=> '/(.+) is required\./',
-		21=> '/The (.+) is larger than (.+) characters\./',
-		22=> '/The (.+) is too short\. It should at least be (.+) characters long/',
-		23=> '/The (.+) \"(.+)\" is not valid/'
-	];
-
-
-
-/*
-Get code for last (and only) uFlex error, if any.
-
-Return: code id
-*/
-	private function flexErrorGetLast(){
-		$err= Null;
-		foreach ($this->flexUser->log->getAllErrors() as $err);
-
-		$cErr= Null;
-		if ($err)
-			foreach ($err as $cErr);
-
-		return $this->flexErrorDeref($cErr);
-	}
-
-
-
-/*
-Restore error id from text message.
-*/
-	private function flexErrorDeref($_err){
-		if (!$_err)
-			return;
-
-
-		foreach (self::$flexErrA as $errId=>$cTest){
-			if (preg_match($cTest, $_err))
-				return $errId;
-		}
 	}
 
 }
