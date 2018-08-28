@@ -23,7 +23,7 @@ class KiFrame {
 
 
 
-	function __construct(){
+	static function init(){
 		if (self::$isInited)
 			return;
 		self::$isInited= True;
@@ -332,5 +332,5 @@ Sent email.
 
 class_alias('KiFrame', 'KF');
 
-new KiFrame();
+KiFrame::init();
 ?>
