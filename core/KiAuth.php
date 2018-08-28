@@ -19,16 +19,6 @@ Init macro:
 */
 
 
-spl_autoload_register(
-    function ($class) {
-        $baseDir = __DIR__ . '/../_3rd/php-social/lib';
-        $path = $baseDir . '/' . str_replace('\\', '/', $class) . '.php';
-
-        if (is_file($path)) {
-            require $path;
-        }
-    }
-);
 
 include(__dir__ .'/../_3rd/uflex/src/collection.php');
 include(__dir__ .'/../_3rd/uflex/src/linkedcollection.php');
@@ -55,7 +45,9 @@ KiSql::add('kiAuthUpdateLast', 'UPDATE users SET LastLogin=? WHERE ID=?');
 
 //  todo 23 (ux, auth) +0: introduce entire auth cached timeout
 class KiAuth {
-	private $socUser=false, $flexUser, $mask=0, $rights;
+	private static $isInited;
+
+	private $isSocUser=false, $flexUser, $mask=0, $rights;
 
 	var $isSigned=false, $id=0, $name='', $email='', $photo='';
 
@@ -77,7 +69,7 @@ Return suitable social login URL's.
 		if (!$isSigned)
 			return [];
 
-		return $this->socUser->loginURL();
+		return KiAuthSoc::loginURL();
 	}
 
 
@@ -86,12 +78,12 @@ Return suitable social login URL's.
 API cb for social logon.
 */
 	function socCB(){
-		$socErr= $this->socUser->socCB();
+		$socErr= KiAuthSoc::socCB();
 		if ($socErr)
 			return;
 
-		$xId= $this->assignedGet($this->socUser);
 		if (!$xId) //  todo 6 (error) +0: deal with error
+		$xId= $this->assignedGet();
 		 	return;
 
 		$this->assignedUpdate($xId); //update last logon state
@@ -137,8 +129,8 @@ Log in with email/pass
 Logout either.
 */
 	function logout(){
-		$this->socUser?
-			$this->socUser->logout() :
+		$this->isSocUser?
+			KiAuthSoc::logout() :
 			$this->flexUser->logout();
 
 //  todo 8 (api) -1: vary errors
@@ -212,13 +204,12 @@ Check if social user is signed.
 Soc user init assumes normal user is not logged, and thus user data from assigned one will be fetched, including local userID (differed from social userID's).
 */
 	private function initSocUser($_socialCfg){
-		$this->socUser= new KiAuthSoc($_socialCfg);
-
-		if (!$this->socUser->start())
+		$this->isSocUser= True;
+		if (!KiAuthSoc::start($_socialCfg))
 			return;
 
-		$xId= $this->assignedGet($this->socUser);
 		if (!$xId) //  todo 5 (error) +0: deal with error
+		$xId= $this->assignedGet();
 			return;
 
 		return $this->flexUser->manageUser($xId);
@@ -232,18 +223,18 @@ If none logpass user is assigned, implicit one is created and assigned.
 
 Return user id.
 */
-	private function assignedGet($_soc){
-		$stmt= KiSql::apply('kiAuthGetSocial', $_soc->type, $_soc->id);
+	private function assignedGet(){
+		$stmt= KiSql::apply('kiAuthGetSocial', KiAuthSoc::$type, KiAuthSoc::$id);
 		$id_assigned= KiSql::fetch('id_users', 0);
 
 //  todo 7 (ux, socal, unsure) -1: probably update user data from social
 
 		if (!$id_assigned){
-			$userData= $_soc->fetch();
 			if (!$userData) //  todo 6 (error) +0: deal with error
+			$userData= KiAuthSoc::fetch();
 			 	return;
 
-			$id_assigned= $this->assignedCreate($_soc);
+			$id_assigned= $this->assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id, KiAuthSoc::$firstName, KiAuthSoc::$photoURL);
 		}
 
 		return $id_assigned;
@@ -254,12 +245,12 @@ Return user id.
 /*
 Create implicit logpass user for given social one.
 */
-	private function assignedCreate($_userData){
-		$stmt= KiSql::apply('kiAuthAdd', time(), $_userData->firstName, $_userData->photoUrl);
+	private function assignedCreate($_type,$_id, $_name, $_photo){
+		$stmt= KiSql::apply('kiAuthAdd', time(), $_name, $_photo);
 		$id_assigned= KiSql::lastInsertId();
 
 
-		$stmt= KiSql::apply('kiAuthAddSocial', $this->socUser->type, $this->socUser->id, $id_assigned);
+		$stmt= KiSql::apply('kiAuthAddSocial', $_type, $_id);
 
 		return $id_assigned;
 	}

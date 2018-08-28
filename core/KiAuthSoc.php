@@ -6,8 +6,12 @@ Social logon wrap
 
 spl_autoload_register(
     function ($class) {
-        $baseDir = __DIR__ . '/../_3rd/php-social/lib';
-        $path = $baseDir . '/' . str_replace('\\', '/', $class) . '.php';
+		$cClassA= explode('\\', $class);
+		if ($cClassA[0]!='Social')
+			return;
+
+        $baseDir = __DIR__ . '/../_3rd/php-social/lib/Social';
+        $path = $baseDir . '/' . str_replace('\\', '/', $cClassA[1]) . '.php';
 
         if (is_file($path)) {
             require $path;
@@ -28,8 +32,8 @@ class KiAuthSoc {
 
 	private static $sessionToken='socAuth_token', $sessionStamp='socAuth_stamp', $sessionTimeout=10, $cbName;
 
-	private $token, $factory, $typesA=[];
-	var $error=null, $type=0, $id=0, $firstName='', $photoUrl='';
+	private static $token, $factory, $typesA=[];
+	static $error=null, $type=0, $id=0, $firstName='', $photoUrl='';
 
 
 
@@ -39,11 +43,11 @@ Init fabric for social logon.
 _settings: 
 	List of available services.
 */
-	function __construct($_settings){
+	static function init($_settings){
 		self::$cbName= getA($_settings,'CB');
 
-		$this->typesA= $this->packSettings($_settings);
-		$this->factory= new \Social\Factory($this->typesA);
+		self::$typesA= self::packSettings($_settings);
+		self::$factory= new \Social\Factory(self::$typesA);
 	}
 
 
@@ -53,17 +57,20 @@ Check if social session is valid.
 While logged, calls within Timeout are treated as successfull. That should remove unneccessary freezing for frequent calls.
 ! False-positive logon will occur within Timeout, if user was forced to be logged off at different place.
 */
-	function start(){
-		$this->token= getA($_SESSION, self::$sessionToken);
-		if (!$this->token)
+	static function start(){
+		self::init();
+
+
+		self::$token= getA($_SESSION, self::$sessionToken);
+		if (!self::$token)
 			return;
 
-		$this->type= $this->token->getType();
-		$this->id= $this->token->getIdentifier();
+		self::$type= self::$token->getType();
+		self::$id= self::$token->getIdentifier();
 
 		$stamp= getA($_SESSION, self::$sessionStamp, 0);
 		if (time()-$stamp>self::$sessionTimeout){
-			if (!$this->fetch())
+			if (!self::fetch())
 				return;
 
 	   		$_SESSION[self::$sessionStamp]= time();
@@ -77,17 +84,17 @@ While logged, calls within Timeout are treated as successfull. That should remov
 /*
 Actually fetch user data from social.
 */
-	function fetch(){
-	    $api= $this->factory->createApi($this->token);
+	static function fetch(){
+	    $api= self::$factory->createApi(self::$token);
 		$user= $api->getProfile();
 
 	    if (!$user){
-	        $this->error= $api->getError();
+	        self::$error= $api->getError();
 			return;
 		}
 
-		$this->firstName= $user->firstName;
-		$this->photoUrl= $user->photoUrl;
+		self::$firstName= $user->firstName;
+		self::$photoUrl= $user->photoUrl;
 
 		return true;
 	}
@@ -96,7 +103,7 @@ Actually fetch user data from social.
 /*
 Parse settings, excluding blank ones.
 */
-	function packSettings($_settings){
+	static function packSettings($_settings){
 		$typesA= [];
 
 		if ($_settings->VKID){
@@ -142,12 +149,12 @@ Parse settings, excluding blank ones.
 /*
 Fill authorisation URL's list for available services.
 */
-	function loginURL(){
+	static function loginURL(){
 		$urlA= [];
 
-		foreach ($this->typesA as $type=>$v){
-			$auth= $this->factory->createAuth($type);
-			$url= $auth->getAuthorizeUrl($this->socialURL($type));
+		foreach (self::$typesA as $type=>$v){
+			$auth= self::$factory->createAuth($type);
+			$url= $auth->getAuthorizeUrl(self::socialURL($type));
 
 
 			switch ($type){
@@ -171,7 +178,7 @@ Fill authorisation URL's list for available services.
 /*
 Form auth URL for given type.
 */
-	function socialURL($_type){
+	static function socialURL($_type){
 		return (KiUrl::https()?'https':'http') .'://'. KiUrl::server() .'/'. self::$cbName ."?type=$_type";
 	}
 
@@ -180,22 +187,22 @@ Form auth URL for given type.
 /*
 Callback function for social logons.
 */	
-	function socCB(){
+	static function socCB(){
 	    $type = KiUrl::args()->type;
-	    $auth = $this->factory->createAuth($type);
-	    $this->token = $auth->authenticate(
+	    $auth = self::$factory->createAuth($type);
+	    self::$token = $auth->authenticate(
 	    	KiUrl::args()->all(),
-	    	$this->socialURL($type)
+	    	self::socialURL($type)
 	    );
 
-	    if (!$this->token) {
+	    if (!self::$token) {
 	        return $auth->getError();
 	    }
 
-	    $_SESSION[self::$sessionToken] = $this->token;
+	    $_SESSION[self::$sessionToken] = self::$token;
 
-		$this->type= $this->token->getType();
-		$this->id= $this->token->getIdentifier();
+		self::$type= self::$token->getType();
+		self::$id= self::$token->getIdentifier();
 	}
 
 
@@ -203,7 +210,7 @@ Callback function for social logons.
 /*
 Logout for social logon
 */
-	function logout(){
+	static function logout(){
    		$_SESSION[self::$sessionToken] = array();
    		$_SESSION[self::$sessionStamp] = 0;
 	}
