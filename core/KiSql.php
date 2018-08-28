@@ -17,16 +17,11 @@ class KiSql {
 
 
 
-	function __construct($_host,$_base,$_uname,$_upass){
+	static function init($_host,$_base,$_uname,$_upass){
 		if (self::$isInited)
 			return;
 		self::$isInited= True;
 
-
-/*
-INSERT INTO `site_log_errors` (type, code, `desc`, file, line, id_user, url, agent) VALUES (1,8,'Undefined variable: DB','/mnt/hgfs/Inetpub/www/yell.fm.wrk/core/KiFrame.php',140,0,'/','Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36
-')
-*/
 
 		try {
 			self::$db = new PDO("mysql:host={$_host};dbname={$_base};charset=UTF8", $_uname, $_upass, array(PDO::ATTR_PERSISTENT=>true));

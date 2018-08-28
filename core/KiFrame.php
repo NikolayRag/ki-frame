@@ -137,7 +137,7 @@ _ctxOrder
 
 
 		$dbCfg= KC::DBCFG();
-		new KiSql($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
+		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB table)
 		KiHandler::errCB(ErrCB\errCBDB('site_log_errors'));
