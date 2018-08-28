@@ -20,53 +20,73 @@ spl_autoload_register(
 
 
 use Sinergi\BrowserDetector\Browser;
-//  todo 24 (api, add) +0: other useragent detectors
-//use Sinergi\BrowserDetector\Os;
-//use Sinergi\BrowserDetector\Device;
-//use Sinergi\BrowserDetector\Language;
+use Sinergi\BrowserDetector\Os;
+use Sinergi\BrowserDetector\Device;
+use Sinergi\BrowserDetector\Language;
 
-//  todo 25 (api, add) +0: detect legacy
+//  todo 25 (api, add) +0: detect isLegacy
 
 
 class KiAgent{
-	private static $isInited;
+	private static $isInitedBrowser, $isInitedOs, $isInitedDevice, $isInitedLanguage;
 
-	private static $vBrowser, $vDefault, $vBot;
+	private static $vBrowser, $vDefault, $vBot, $vOs, $vDevice, $vLang;
+
+
+
+	static function os() {
+		self::detectOs();
+		return self::$vOs;
+	}
+
+
+
+	static function device() {
+		self::detectDevice();
+		return self::$vDevice;
+	}
+
+
+
+	static function lang() {
+		self::detectLanguage();
+		return self::$vLang;
+	}
 
 
 
 	static function browser() {
-		self::detect();
+		self::detectBrowser();
 		return self::$vBrowser;
 	}
 
 
 
 	static function isKnown() {
-		self::detect();
+		self::detectBrowser();
 		return (self::$vDefault || self::$vBot);
 	}
 
 
 
 	static function isDefault() {
-		self::detect();
+		self::detectBrowser();
 		return self::$vDefault;
 	}
 
 
 
 	static function isBot() {
-		self::detect();
+		self::detectBrowser();
 		return self::$vBot;
 	}
 
 
 
-	static private function detect() {
-		if (self::$isInited)
+	static private function detectBrowser() {
+		if (self::$isInitedBrowser)
 			return;
-		self::$isInited= True;
+		self::$isInitedBrowser= True;
 
 
 		$cAgent= new Browser();
@@ -83,8 +103,49 @@ class KiAgent{
 			self::$vDefault = True;
 			return;
 		}
+	}
 
 
+
+	static private function detectOs() {
+		if (self::$isInitedOs)
+			return;
+		self::$isInitedOs= True;
+
+
+		$cOs= new Os();
+
+		self::$vOs = [
+			$cOs->getName(),
+			$cOs->getVersion(),
+			$cOs->getIsMobile()
+		];
+	}
+
+
+
+	static private function detectDevice() {
+		if (self::$isInitedDevice)
+			return;
+		self::$isInitedDevice= True;
+
+
+		$cDevice= new Device();
+
+		self::$vDevice = $cDevice->getName();
+	}
+
+
+
+	static private function detectLanguage() {
+		if (self::$isInitedLanguage)
+			return;
+		self::$isInitedLanguage= True;
+
+
+		$cLang= new Language();
+
+		self::$vLang = $cLang->getLanguages();
 	}
 
 }
