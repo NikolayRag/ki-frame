@@ -148,6 +148,8 @@ Log in with email/pass
 	static function passLogin($_email, $_pass){
         KiAuthPass::login($_email, $_pass);
 
+		self::$user->apply(KiAuthPass::$user);
+
         return KiAuthPass::getError();
     }
 
@@ -160,6 +162,8 @@ Logout either.
 		self::$isSocUser?
 			KiAuthSoc::logout() :
 			KiAuthPass::logout();
+
+		self::$user->reset();
 
 //  todo 8 (auth, api) -1: vary logout errors
 		return;
