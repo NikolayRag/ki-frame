@@ -2,23 +2,6 @@
 /*
 Class used for determining incoming connection.
 */
-
-spl_autoload_register(
-    function ($class) {
-		$cClassA= explode('\\', $class);
-		if ($cClassA[0]!='Sinergi' || $cClassA[1]!='BrowserDetector')
-			return;
-
-        $baseDir = __DIR__ . '/../_3rd/php-browser-detector/src';
-        $path = $baseDir . '/' . str_replace('\\', '/', $cClassA[2]) . '.php';
-
-        if (is_file($path))
-            require $path;
-	}
-);
-
-
-
 use Sinergi\BrowserDetector\Browser;
 use Sinergi\BrowserDetector\Os;
 use Sinergi\BrowserDetector\Device;
@@ -28,7 +11,7 @@ use Sinergi\BrowserDetector\Language;
 
 
 class KiAgent{
-	private static $isInitedBrowser, $isInitedOs, $isInitedDevice, $isInitedLanguage;
+	private static $isInited, $isInitedBrowser, $isInitedOs, $isInitedDevice, $isInitedLanguage;
 
 	private static $vBrowser, $vDefault, $vBot, $vOs, $vDevice, $vLang;
 
@@ -88,6 +71,11 @@ class KiAgent{
 			return;
 		self::$isInitedBrowser= True;
 
+		self::init();
+
+		include (__dir__ . '/../_3rd/php-browser-detector/src/Browser.php');
+		include (__dir__ . '/../_3rd/php-browser-detector/src/BrowserDetector.php');
+
 
 		$cAgent= new Browser();
 
@@ -112,6 +100,11 @@ class KiAgent{
 			return;
 		self::$isInitedOs= True;
 
+		self::init();
+
+		include (__dir__ . '/../_3rd/php-browser-detector/src/Os.php');
+		include (__dir__ . '/../_3rd/php-browser-detector/src/OsDetector.php');
+
 
 		$cOs= new Os();
 
@@ -129,6 +122,11 @@ class KiAgent{
 			return;
 		self::$isInitedDevice= True;
 
+		self::init();
+
+		include (__dir__ . '/../_3rd/php-browser-detector/src/Device.php');
+		include (__dir__ . '/../_3rd/php-browser-detector/src/DeviceDetector.php');
+
 
 		$cDevice= new Device();
 
@@ -142,10 +140,29 @@ class KiAgent{
 			return;
 		self::$isInitedLanguage= True;
 
+		self::init();
+
+		include (__dir__ . '/../_3rd/php-browser-detector/src/Language.php');
+		include (__dir__ . '/../_3rd/php-browser-detector/src/LanguageDetector.php');
+		include (__dir__ . '/../_3rd/php-browser-detector/src/AcceptLanguage.php');
+
 
 		$cLang= new Language();
 
 		self::$vLang = $cLang->getLanguages();
+	}
+
+
+
+	static private function init() {
+		if (self::$isInited)
+			return;
+		self::$isInited = True;
+
+
+		include (__dir__ . '/../_3rd/php-browser-detector/src/DetectorInterface.php');
+		include (__dir__ . '/../_3rd/php-browser-detector/src/UserAgent.php');
+		include (__dir__ . '/../_3rd/php-browser-detector/src/InvalidArgumentException.php');
 	}
 
 }
