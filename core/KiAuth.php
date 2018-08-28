@@ -49,11 +49,7 @@ class KiAuth {
 		include(__dir__ .'/KiAuthPass.php');
 		include(__dir__ .'/KiAuthSoc.php');
 
-
-		KiSql::add('kiAuthGetSocial', self::$sqlA['kiAuthGetSocial']);
-		KiSql::add('kiAuthAdd', self::$sqlA['kiAuthAdd']);
-		KiSql::add('kiAuthAddSocial', self::$sqlA['kiAuthAddSocial']);
-		KiSql::add('kiAuthUpdateLast', self::$sqlA['kiAuthUpdateLast']);
+		KiSql::addSome(self::$sqlA);
 
 
 		($user= self::initFlexUser()) || ($user= self::initSocUser($_socialCfg));
