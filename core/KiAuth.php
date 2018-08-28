@@ -86,6 +86,7 @@ API cb for social logon.
 			return;
 
 		$xId= $this->assignedGet();
+		if (!$xId) // -todo 6 (auth, catch) +0: deal with social callback error
 		 	return;
 
 		$this->assignedUpdate($xId); //update last logon state
@@ -215,6 +216,7 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 			return;
 
 		$xId= $this->assignedGet();
+		if (!$xId) //  todo 5 (auth, catc) +0: deal with social init error
 			return;
 
 		return $this->flexUser->manageUser($xId);
