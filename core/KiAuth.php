@@ -130,10 +130,7 @@ API cb for social logon.
 Regster new email/pass user and login.
 */
 	static function passRegister($_email, $_pass){
-        $res = KiAuthPass::register([
-            'Email'=>$_email,
-            'Password'=>$_pass
-        ]);
+        $res = KiAuthPass::register($_email,$_pass);
         if (!$res)
         	return KiAuthPass::getError();
 
