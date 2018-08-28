@@ -2,6 +2,16 @@
 // =todo 38 (sql, check) +0: check KiAuth for use with KiSql
 
 /*
+User data holder
+*/
+// -todo 64 (auth) +0: add KiRights class
+class KiUser {
+	var $isSigned=false, $id=0, $name='', $email='', $photo='', $mask=0, $rights;
+}
+
+
+
+/*
 Deal with user authorization - social and explicit, and rights assignment.
 Actual user data is stored in logpass (uFlex) account.
 Each soc user is assigned to logpass account.
@@ -32,10 +42,9 @@ class KiAuth {
 
 
 	private static $isInited;
-	private static $isSocUser=false, $mask=0, $rights;
+	private static $isSocUser=false;
 
-// -todo 40 (auth) +0: add Ki_User class
-	static $isSigned=false, $id=0, $name='', $email='', $photo='';
+	static $user;
 
 
 
@@ -44,7 +53,6 @@ class KiAuth {
 			return
 		self::$isInited = True;
 
-
 		include(__dir__ .'/ki-rights.php');
 		include(__dir__ .'/KiAuthPass.php');
 		include(__dir__ .'/KiAuthSoc.php');
@@ -52,9 +60,11 @@ class KiAuth {
 		KiSql::addSome(self::$sqlA);
 
 
-		($user= self::initFlexUser()) || ($user= self::initSocUser($_socialCfg));
-		if ($user)
-			self::applyUser($user);
+		self::$user = new KiUser();
+
+		($cUser= self::initFlexUser()) || ($cUser= self::initSocUser($_socialCfg));
+		if ($cUser)
+			self::$user = self::applyUser($cUser);
 	}
 
 
@@ -63,7 +73,7 @@ class KiAuth {
 Return suitable social login URL's.
 */
 	static function socUrlA(){
-		if (!$isSigned)
+		if (!self::$isSigned)
 			return [];
 
 		return KiAuthSoc::loginURL();
@@ -167,15 +177,14 @@ Set new password.
 /*
 Apply data from fetched uFlex user.
 */
-	private static function applyUser($_user){
-		self::$isSigned= true;
+	private static function applyUser($_userData){
+		self::$user->isSigned= true;
+		self::$user->id= $_userData->ID;
+		self::$user->email= $_userData->Email;
 
-		self::$id= $_user->ID;
-		self::$email= $_user->Email;
-
-		(self::$name= $_user->displayName) || (self::$name= $_user->Email);
-		self::$photo= $_user->photoURL;
-		self::$mask= $_user->mask;
+		(self::$user->name= $_userData->displayName) || (self::$user->name= $_userData->Email);
+		self::$user->photo= $_userData->photoURL;
+		self::$user->mask= $_userData->mask;
 	}
 
 
