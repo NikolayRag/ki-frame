@@ -15,14 +15,60 @@ class KiAuthSoc {
 
 
 /*
+Init fabric for social logon.
+
+_settings: 
+	List of available services.
+*/
+	static function init($_settings){
+		if (self::$isInited)
+			return;
+		self::$isInited = True;
+
+
+		spl_autoload_register(
+		    function ($class) {
+				$cClassA= explode('\\', $class);
+				if ($cClassA[0]!='Social')
+					return;
+				
+				array_shift($cClassA);
+
+		        $baseDir = __DIR__ . '/../_3rd/php-social/lib/Social';
+		        $path = $baseDir . '/' . implode('/', $cClassA) . '.php';
+
+		        if (is_file($path)) {
+		            require $path;
+		        }
+		    }
+		);
+		
+		include(__dir__ . '/../_3rd/php-social/lib/Social/Type.php');
+		include(__dir__ . '/../_3rd/php-social/lib/Social/Factory.php');
+
+
+		self::$socIconsA = [
+			\Social\Type::VK=> 'https://vk.com/images/safari_152.png',
+			\Social\Type::MR=>	'',
+			\Social\Type::FB=>	'',
+			\Social\Type::GITHUB=>	'',
+			\Social\Type::TWITTER=>	''
+		];
+
+		self::$cbName= getA($_settings,'CB');
+
+		self::$typesA= self::packSettings($_settings);
+		self::$factory= new \Social\Factory(self::$typesA);
+	}
+
+
+
+/*
 Check if social session is valid.
 While logged, calls within Timeout are treated as successfull. That should remove unneccessary freezing for frequent calls.
 ! False-positive logon will occur within Timeout, if user was forced to be logged off at different place.
 */
-	static function start($_settings){
-		self::init($_settings);
-
-
+	static function start(){
 		self::$token= getA($_SESSION, self::$sessionToken);
 		if (!self::$token)
 			return;
@@ -131,7 +177,7 @@ Fill authorisation URL's list for available services.
 				'icon'=>	self::$socIconsA[$type]
 			];
 		}
-	
+
 		return $urlA;
 	}
 
@@ -177,61 +223,6 @@ Logout for social logon
    		$_SESSION[self::$sessionStamp] = 0;
 	}
 
-
-
-
-
-
-/*
-	Private
-*/
-
-
-
-/*
-Init fabric for social logon.
-
-_settings: 
-	List of available services.
-*/
-	private static function init($_settings){
-		if (self::$isInited)
-			return;
-		self::$isInited = True;
-
-
-		spl_autoload_register(
-		    function ($class) {
-				$cClassA= explode('\\', $class);
-				if ($cClassA[0]!='Social')
-					return;
-
-		        $baseDir = __DIR__ . '/../_3rd/php-social/lib/Social';
-		        $path = $baseDir . '/' . str_replace('\\', '/', $cClassA[1]) . '.php';
-
-		        if (is_file($path)) {
-		            require $path;
-		        }
-		    }
-		);
-		
-		include(__dir__ . '/../_3rd/php-social/lib/Social/Type.php');
-		include(__dir__ . '/../_3rd/php-social/lib/Social/Factory.php');
-
-
-		self::$socIconsA = [
-			\Social\Type::VK=> 'https://vk.com/images/safari_152.png',
-			\Social\Type::MR=>	'',
-			\Social\Type::FB=>	'',
-			\Social\Type::GITHUB=>	'',
-			\Social\Type::TWITTER=>	''
-		];
-
-		self::$cbName= getA($_settings,'CB');
-
-		self::$typesA= self::packSettings($_settings);
-		self::$factory= new \Social\Factory(self::$typesA);
-	}
 
 }
 ?>

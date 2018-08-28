@@ -86,9 +86,11 @@ class KiAuth {
 
 		KiSql::addSome(self::$sqlA);
 
+		KiAuthSoc::init($_socialCfg);
+
 
 		self::$user = new KiUser();
-		($cUser= self::initFlexUser()) || ($cUser= self::initSocUser($_socialCfg));
+		($cUser= self::initFlexUser()) || ($cUser= self::initSocUser());
 		if ($cUser)
 			self::$user->apply($cUser);
 	}
@@ -99,9 +101,6 @@ class KiAuth {
 Return suitable social login URL's.
 */
 	static function socUrlA(){
-		if (!self::$isSigned)
-			return [];
-
 		return KiAuthSoc::loginURL();
 	}
 
@@ -217,9 +216,9 @@ Check if logpass user is signed.
 Check if social user is signed.
 Soc user init assumes normal user is not logged, and thus user data from assigned one will be fetched, including local userID (differed from social userID's).
 */
-	private static function initSocUser($_socialCfg){
+	private static function initSocUser(){
 		self::$isSocUser= True;
-		if (!KiAuthSoc::start($_socialCfg))
+		if (!KiAuthSoc::start())
 			return;
 
 		$xId= self::assignedGet();
