@@ -165,43 +165,43 @@ _ctxOrder
 Get available social login URL's. Shortcut for KiAuth socUrlA().
 */
 	static function lUrls(){
-		KiAuth::socUrlA();
+		return KiAuth::socUrlA();
 	}
 /*
 Callback for social login. Shortcut for KiAuth socCB().
 */
 	static function lSocCB(){
-		KiAuth::socCB();
+		return KiAuth::socCB();
 	}
 /*
 Register new user with login/pass. Shortcut for KiAuth passRegister().
 */
 	static function lReg($_email, $_pass){
-		KiAuth::passRegister($_email, $_pass);
+		return KiAuth::passRegister($_email, $_pass);
 	}
 /*
 Login user with login/pass. Shortcut for KiAuth passLogin().
 */
 	static function lIn($_email, $_pass){
-		KiAuth::passLogin($_email, $_pass);
+		return KiAuth::passLogin($_email, $_pass);
 	}
 /*
 Log out logged use. Shortcut for KiAuth logout().
 */
 	static function lOut(){
-		KiAuth::logout();
+		return KiAuth::logout();
 	}
 /*
 Request password reset link for registered email. Shortcut for KiAuth passRestore().
 */
 	static function lRestore($_email){
-		KiAuth::passRestore($_email);
+		return KiAuth::passRestore($_email);
 	}
 /*
 Set new password for registered email, using provided key. Shortcut for KiAuth passNew().
 */
 	static function lPass($_email, $_pass, $_hash){
-		KiAuth::passNew($_email, $_pass, $_hash);
+		return KiAuth::passNew($_email, $_pass, $_hash);
 	}
 
 
