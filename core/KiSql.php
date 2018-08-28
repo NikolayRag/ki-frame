@@ -61,6 +61,19 @@ $_sql
 
 
 /*
+Add named array of query strings
+*/
+	static function addSome($_tmplA){
+		if (!is_array($_tmplA))
+			return;
+
+		foreach ($_tmplA as $cName => $cSql)
+			self::add($cName, $cSql);
+	}
+
+
+
+/*
 Run stored query.
 
 
