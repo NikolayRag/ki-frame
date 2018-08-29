@@ -65,7 +65,7 @@ Init macro:
 // -todo 23 (ux, auth) +0: introduce entire auth cached timeout
 class KiAuth {
 	private static $sqlA = [
-		'kiAuthGetSocial' => 'SELECT id_users FROM users_social WHERE type=? AND id=?',
+		'kiAuthGetSocial' => 'SELECT id_users FROM users_social WHERE type=?+0 AND id=?',
 		'kiAuthAdd' => 'INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)',
 		'kiAuthAddSocial' => 'INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)',
 		'kiAuthUpdateLast' => 'UPDATE users SET LastLogin=? WHERE ID=?'
