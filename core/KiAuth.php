@@ -110,8 +110,8 @@ Return suitable social login URL's.
 /*
 API cb for social logon.
 */
-	static function socCB(){
-		$socErr= KiAuthSoc::socCB();
+	static function socCB($_type, $_args){
+		$socErr= KiAuthSoc::socCB($_type, $_args);
 		if ($socErr)
 			return;
 

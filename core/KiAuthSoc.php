@@ -196,12 +196,11 @@ Form auth URL for given type.
 /*
 Callback function for social logons.
 */	
-	static function socCB(){
-	    $type = KiUrl::args()->type;
-	    $auth = self::$factory->createAuth($type);
+	static function socCB($_type, $_args){
+	    $auth = self::$factory->createAuth($_type);
 	    self::$token = $auth->authenticate(
-	    	KiUrl::args()->all(),
-	    	self::socialURL($type)
+	    	$_args,
+	    	self::socialURL($_type)
 	    );
 
 	    if (!self::$token) {
