@@ -198,11 +198,10 @@ _newOrder
 Fetch ordered and filtered context.
 */
 	static private function orderSnapshot($_overOrder=False){
-		$ctxA = array_keys(self::$contextA);
-
 		if (!is_array($_overOrder))
 			$_overOrder = self::$contextOrder;
 
+		$ctxA = array_keys(self::$contextA);
 
 		$collectA = [];
 		if (count($_overOrder))
@@ -213,7 +212,9 @@ Fetch ordered and filtered context.
 				$fA = array_filter($ctxA, function ($v) use ($cCtx) {return preg_match("/^$cCtx$/", $v);});
 				$collectA = array_merge($collectA, $fA);
 			}
-
+		else
+			$collectA = $ctxA;
+		
 
 		return array_values( array_unique($collectA) );
 	}
