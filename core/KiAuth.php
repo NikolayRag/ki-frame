@@ -247,7 +247,7 @@ Return user id.
 			if (!$userData) //  todo 55 (auth, catch) +0: deal with acces user data error
 			 	return;
 
-			$id_assigned= self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id, KiAuthSoc::$firstName, KiAuthSoc::$photoURL);
+			$id_assigned= self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id, KiAuthSoc::$firstName, KiAuthSoc::$photoUrl);
 		}
 
 		return $id_assigned;
