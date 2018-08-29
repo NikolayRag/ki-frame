@@ -3,6 +3,7 @@
 Social logon wrap
 */
 
+include(__dir__ . '/../_3rd/php-social/lib/Social/Auth/Token.php');
 
 class KiAuthSoc {
 	static $socIconsA;

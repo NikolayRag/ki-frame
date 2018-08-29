@@ -39,10 +39,6 @@ class KiFrame {
 		KiHandler::errCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
 
 
-		if (!isset($_SESSION) && !headers_sent())
-			session_start();
-
-
 		include(__dir__ .'/support/general.php');
 		include(__dir__ .'/support/LooseObject.php');
 
@@ -57,6 +53,10 @@ class KiFrame {
 		include(__dir__ .'/KiUrl.php');
 		include(__dir__ .'/KiAgent.php');
 		include(__dir__ .'/KiAuth.php');
+
+
+		if (!isset($_SESSION) && !headers_sent())
+			session_start();
 	}
 
 

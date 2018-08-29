@@ -1,6 +1,10 @@
 <?php
 // =todo 38 (sql, check) +0: check KiAuth for use with KiSql
 
+include(__dir__ .'/ki-rights.php');
+include(__dir__ .'/KiAuthPass.php');
+include(__dir__ .'/KiAuthSoc.php');
+
 /*
 User data holder
 */
@@ -80,9 +84,6 @@ class KiAuth {
 			return
 		self::$isInited = True;
 
-		include(__dir__ .'/ki-rights.php');
-		include(__dir__ .'/KiAuthPass.php');
-		include(__dir__ .'/KiAuthSoc.php');
 
 		KiSql::addSome(self::$sqlA);
 
