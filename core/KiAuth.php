@@ -156,9 +156,8 @@ Log in with email/pass
 Logout either.
 */
 	static function logout(){
-		self::$isSocUser?
-			KiAuthSoc::logout() :
-			KiAuthPass::logout();
+		KiAuthSoc::logout();
+		KiAuthPass::logout();
 
 		self::$user->reset();
 
