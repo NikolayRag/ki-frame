@@ -70,7 +70,7 @@ While logged, calls within Timeout are treated as successfull. That should remov
 */
 	static function start(){
 		self::$token= getA($_SESSION, self::$sessionToken);
-		if (!self::$token)
+		if (!self::$token || !(self::$token instanceof Social\Auth\Token))
 			return;
 
 		self::$type= self::$token->getType();
