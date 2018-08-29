@@ -237,13 +237,12 @@ If none logpass user is assigned, implicit one is created and assigned.
 Return user id.
 */
 	private static function assignedGet(){
-		$stmt= KiSql::apply('kiAuthGetSocial', KiAuthSoc::$type, KiAuthSoc::$id);
+		KiSql::apply('kiAuthGetSocial', KiAuthSoc::$type, KiAuthSoc::$id);
 		$id_assigned= KiSql::fetch('id_users', 0);
 
 
 		if (!$id_assigned){
-			$userData= KiAuthSoc::fetch();
-			if (!$userData) //  todo 55 (auth, catch) +0: deal with acces user data error
+			if (!KiAuthSoc::fetch()) //  todo 55 (auth, catch) +0: deal with acces user data error
 			 	return;
 
 			$id_assigned= self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id, KiAuthSoc::$firstName, KiAuthSoc::$photoUrl);
@@ -259,11 +258,10 @@ Return user id.
 Create implicit logpass user for given social one.
 */
 	private static function assignedCreate($_type,$_id, $_name, $_photo){
-		$stmt= KiSql::apply('kiAuthAdd', time(), $_name, $_photo);
+		KiSql::apply('kiAuthAdd', time(), $_name, $_photo);
 		$id_assigned= KiSql::lastInsertId();
 
-
-		$stmt= KiSql::apply('kiAuthAddSocial', $_type, $_id);
+		KiSql::apply('kiAuthAddSocial', $_type, $_id, $id_assigned);
 
 		return $id_assigned;
 	}
@@ -274,7 +272,7 @@ Create implicit logpass user for given social one.
 Update last logon state.
 */
 	private static function assignedUpdate($_id){
-		$stmt= KiSql::apply('kiAuthUpdateLast', time(), $_id);
+		KiSql::apply('kiAuthUpdateLast', time(), $_id);
 	}
 
 }
