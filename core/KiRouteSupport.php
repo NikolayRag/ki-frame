@@ -37,13 +37,22 @@ Run prepared code and variables into KiHandler
 Solve registered code generators for specified context.
 */
 	private function runContent($_src, $_vars){
-		if (is_callable($_src))
-			return call_user_func($_src, (object)$_vars);
+		if (is_callable($_src)){
+			ob_start(); //nest buffer
+
+			$res = call_user_func($_src, (object)$_vars);
+			if (!is_string($res))
+				$res = '';
+
+			return ob_get_clean() . $res;
+		}
 
 
 		if (is_file($_src)){
 			ob_start(); //nest buffer
+
 			include($_src);
+
 			return ob_get_clean();
 		}
 
