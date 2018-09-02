@@ -49,10 +49,13 @@ Get path array.
 /*
 Get variables array, including both GET and POST.
 */
-	static function args(){
+	static function args($_arg=False){
 		self::init();
 
-		return self::$vArgs;
+		if (!$_arg)
+			return self::$vArgs;
+
+		return self::$vArgs->$_arg;
 	}
 
 
