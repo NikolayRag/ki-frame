@@ -91,12 +91,13 @@ class Ki_RouteBind {
 			return;
 
 
+		$cUrlA = $this->urlA;
+		if (!$is404)
+			array_shift($cUrlA);
+
 		$lost = False;
 		$varsA = [];
-		foreach ($this->urlA as $cUrl) {
-			if ($cUrl===False) //skip no-match marker
-				continue;
-
+		foreach ($cUrlA as $cUrl) {
 			$found = False;
 			if (is_callable($cUrl)){ //function binding
 				$fRes = $cUrl();
@@ -105,7 +106,7 @@ class Ki_RouteBind {
 					if (is_array($fRes))
 						$varsA = array_merge($varsA, $fRes);
 				}
-			} else { //regex binding
+			} else if (is_string($cUrl)){ //regex binding
 				$cRegex = str_replace('/', '\/', $cUrl);
 				$cRes = [];
 				
@@ -113,6 +114,8 @@ class Ki_RouteBind {
 					$found = True;
 					$varsA = array_merge($varsA, $cRes);
 				}
+			} else if ($cUrl){
+				$found = True;
 			}
 
 

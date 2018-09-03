@@ -64,7 +64,7 @@ If nothing is bound to '' (404 case), it will implicitely be assigned to blank p
 
 
 $_url
-	Match function or URL match regex.
+	Match function, URL match regex, or static value.
 	Array accepted, where ALL elements must match.
 
 	If function supplied returns False, None or 0, then there's no match. Any other return triggers set match.
@@ -76,7 +76,7 @@ $_url
 	Tricky regex matches like "^(?!.foo$)" (all but '/foo') are fully allowed.
 
 	If first (or only) value specified is False, match is used in case of no 'normal' matches found.
-	Notice, that if there any wide mask bound match, like '.*', it could become impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
+	Notice, that if there any wide mask bound match, like '.*' or True, it could become impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
 
 
 
