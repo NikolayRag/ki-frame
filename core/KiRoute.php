@@ -98,7 +98,7 @@ $_headers
 			$_url = [$_url];
 
 
-		$cKey = array_search($_url, self::$bindSrcA);
+		$cKey = array_search($_url, self::$bindSrcA, True);
 		if ($cKey === False){
 			$cKey = count(self::$bindSrcA);
 			self::$bindSrcA[] = $_url;
