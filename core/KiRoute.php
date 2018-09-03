@@ -75,7 +75,7 @@ $_url
 	Named capture (?P<name>value) is allowed to scan variables.
 	Tricky regex matches like "^(?!.foo$)" (all but '/foo') are fully allowed.
 
-	If first (or only) value specified is False, match is used in case of no 'normal' matches found.
+	If first (or only) value specified is 404, match is used in case of no 'normal' matches found.
 	Notice, that if there any wide mask bound match, like '.*' or True, it could become impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
 
 
@@ -106,7 +106,7 @@ $_headers
 
 
 		//detect 404 case
-		$is404 = ($_url[0]===False);
+		$is404 = ($_url[0]===404);
 		if ($is404)
 			array_shift($_url);
 
