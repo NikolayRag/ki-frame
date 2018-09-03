@@ -105,8 +105,13 @@ $_headers
 		}
 
 
+		//detect 404 case
+		$is404 = ($_url[0]===False);
+		if ($is404)
+			array_shift($_url);
+
 		if (!array_key_exists($cKey, self::$bindA))
-			self::$bindA[$cKey] = new Ki_RouteBind($_url);
+			self::$bindA[$cKey] = new Ki_RouteBind($_url, [], $is404);
 		$cBind = self::$bindA[$cKey];
 
 
@@ -164,7 +169,7 @@ _newOrder
 		$orderCtx = self::orderSnapshot($_newOrder);
 		$matches = self::matchUrl();
 		if (!count($matches))
-			$matches = self::matchUrl(False);
+			$matches = self::matchUrl(True);
 
 		
 		//implicit bindings
@@ -224,12 +229,12 @@ Fetch ordered and filtered context.
 /*
 Detect all matching URL bindings.
 */
-	static private function matchUrl($_not404=True){
+	static private function matchUrl($_do404=False){
 		$bondA = [];
 
 		//collect detected url's
 		foreach (self::$bindA as $cBind)
-			if ($cBind->match($_not404))
+			if ($cBind->match($_do404))
 				$bondA[] = $cBind;
 
 		return $bondA;

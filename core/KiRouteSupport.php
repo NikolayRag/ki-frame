@@ -71,33 +71,30 @@ Context bind class
 */
 // -todo 57 (code) +0: expand Ki_RouteBind into normal class.
 class Ki_RouteBind {
-	var $urlA=[], $ctxA=[], $return=0, $headersA;
+	var $is404, $urlA=[], $ctxA=[], $return=0, $headersA;
 	var $varsA=[];
 
 
-	function __construct($_urlA, $_ctx=[]){
+	function __construct($_urlA, $_ctx=[], $_is404=False){
 		$this->urlA = $_urlA;
 		$this->ctxA = $_ctx;
 		$this->return = 0;
 		$this->headersA = [];
+
+		$this->is404 = $_is404;
 	}
 
 
 
-	function match($_not404=True){
+	function match($_do404=False){
 		//skip excess match type
-		$not404 = !($this->urlA[0]===False);
-		if ($_not404 xor $not404)
+		if ($_do404 != $this->is404)
 			return;
 
 
-		$cUrlA = $this->urlA;
-		if (!$not404)
-			array_shift($cUrlA);
-
 		$lost = False;
 		$varsA = [];
-		foreach ($cUrlA as $cUrl) {
+		foreach ($this->urlA as $cUrl) {
 			$found = False;
 			if (is_callable($cUrl)){ //function binding
 				$fRes = $cUrl();
