@@ -86,13 +86,13 @@ class Ki_RouteBind {
 
 	function match($_not404=True){
 		//skip excess match type
-		$is404 = !($this->urlA[0]===False);
-		if ($_not404 xor $is404)
+		$not404 = !($this->urlA[0]===False);
+		if ($_not404 xor $not404)
 			return;
 
 
 		$cUrlA = $this->urlA;
-		if (!$is404)
+		if (!$not404)
 			array_shift($cUrlA);
 
 		$lost = False;
