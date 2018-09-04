@@ -67,17 +67,17 @@ $_url
 	Match function, URL match regex, or static value.
 	Array accepted, where ALL elements must match.
 
-	If function supplied returns False, None or 0, then there's no match. Any other return triggers set match.
-	If array is returned, it's used as 'variables' argument for context functions.
+	If function supplied returns non-strict False, then there's no match. Any other return value triggers match.
+	If array is returned, it's passed as 'variables' argument to bond context functions, if any.
 	
-	URL passed for regex match, always starting with root '/'.
-	Regex may have '/' unescaped slashes.
-	Named capture (?P<name>value) is allowed to scan variables.
-	Tricky regex matches like "^(?!.foo$)" (all but '/foo') are fully allowed.
+	String regexp passed for match URI, starting either with unescaped '/' or '?'. Unescaped '/' are also allowed anywhere in regex.
+	If started with '/', URL path is matched. Path string to match is everything after server name, starting with '/', and without arguments.
+	If started with '?', arguments are matched. Any successfull match counts. WRONG useage: matching several arguments at once will fail constantly, like '?a=1&b=1'. Use several matches instead: [.., '?a=1', '?b=1']. 
+	Named capture (?P<name>value) is allowed to scan variables. Captured value is passed then within named array into bond context functions, if any. Matching several different named variables within one binding will pass all of them as arguments. When regex wide mask matches several URL arguments, only first match defines variable=>value pair.
+	Tricky regex matches like "/(?!foo$).*" (all but '/foo') are fully allowed.
 
 	If first (or only) value specified is 404, match is used in case of no 'normal' matches found.
 	Notice, that if there any wide mask bound match, like '.*' or True, it could become impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
-
 
 
 $_ctx
