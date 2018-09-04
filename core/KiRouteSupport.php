@@ -104,12 +104,25 @@ class Ki_RouteBind {
 						$varsA = array_merge($varsA, $fRes);
 				}
 			} else if (is_string($cUrl)){ //regex binding
-				$cRegex = str_replace('/', '\/', $cUrl);
-				$cRes = [];
-				
-				if (preg_match("/^$cRegex$/", KiUrl::uri(), $cRes)){
-					$found = True;
-					$varsA = array_merge($varsA, $cRes);
+				if ($cUrl[0]=='/'){ //path
+					$cRegex = str_replace('/', '\/', $cUrl);
+					$cRes = [];
+					
+					if (preg_match("/^$cRegex$/", KiUrl::path(True), $cRes)){
+						$found = True;
+						$varsA = array_merge($varsA, $cRes);
+					}
+				}
+				if ($cUrl[0]=='?'){ //arg
+					foreach (KiUrl::args()->all() as $cName => $cVal) {
+						$cRes = [];
+						
+						if (preg_match("/^\\$cUrl$/", "?$cName=$cVal", $cRes)){
+							$found = True;
+							$varsA = array_merge($varsA, $cRes);
+						}
+
+					}
 				}
 			} else if ($cUrl){
 				$found = True;

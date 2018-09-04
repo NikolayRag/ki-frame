@@ -38,9 +38,12 @@ Get request string, always started with '/'.
 /*
 Get path array.
 */
-	static function path(){
+	static function path($_asStr=False){
 		self::init();
 
+		if ($_asStr)
+			return '/' . implode('/', self::$vPath);
+		
 		return self::$vPath;
 	}
 
