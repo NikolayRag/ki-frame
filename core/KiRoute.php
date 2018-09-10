@@ -46,7 +46,9 @@ $_src
 			$_src = [$_src];
 
 		if (!array_key_exists($_ctx, self::$contextA))
-			$cCtx = self::$contextA[$_ctx] = new Ki_RouteCtx();
+			self::$contextA[$_ctx] = new Ki_RouteCtx();
+		$cCtx = self::$contextA[$_ctx];
+
 
 		foreach ($_src as $cSrc) {
 			if (array_search($cSrc, $cCtx->codeA) !== False)
