@@ -42,7 +42,7 @@ asStr
 /*
 Get request string, always started with '/'.
 */
-	static function uri(){
+	static function url(){
 		self::init();
 
 		return self::$vUri;

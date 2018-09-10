@@ -243,14 +243,26 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 
 
 
-	static function uPath(){
-		return KiUrl::path();
+	static function uMethod($_asStr=False){
+		return KiUrl::method($_asStr);
 	}
 
 
 
-	static function uArgs(){
-		return KiUrl::args();
+	static function uUrl(){
+		return KiUrl::url();
+	}
+
+
+
+	static function uPath($_asStr=False){
+		return KiUrl::path($_asStr);
+	}
+
+
+
+	static function uArgs($_arg=False){
+		return KiUrl::args($_arg);
 	}
 
 
