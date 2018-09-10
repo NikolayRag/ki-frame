@@ -208,10 +208,10 @@ Clean explicit output.
 		$cnt= 0;
 
 		foreach (self::$errPoolA as $cErr){
-			if ($_countErrors && $cErr['etype']==1)
+			if ($_countErrors && $cErr['etype']==self::ERRR)
 				$cnt++;
 
-			if ($_countXcption && $cErr['etype']==2)
+			if ($_countXcption && $cErr['etype']==self::XCPT)
 				$cnt++;
 		}
 
