@@ -32,7 +32,7 @@ $_ctx
 
 
 $_src
-	One of three: function, filename, string.
+	Array or one of three: function, filename, string.
 
 	Function is called to generate content.
 	If existing .php filename is given instead of function, it's imported.
@@ -42,14 +42,19 @@ $_src
 	Anything other than string returned treated as error and ignored in output.
 */
 	static function context($_ctx, $_src){
+		if (!is_array($_src))
+			$_src = [$_src];
+
 		if (!array_key_exists($_ctx, self::$contextA))
-			self::$contextA[$_ctx] = new Ki_RouteCtx();
+			$cCtx = self::$contextA[$_ctx] = new Ki_RouteCtx();
 
-		if (array_search($_src, self::$contextA[$_ctx]->codeA) !== False)
-			return;
+		foreach ($_src as $cSrc) {
+			if (array_search($cSrc, $cCtx->codeA) !== False)
+				continue;
 
-		self::$contextA[$_ctx]->name = $_ctx;
-		self::$contextA[$_ctx]->codeA[] = $_src;
+			$cCtx->name = $_ctx;
+			$cCtx->codeA[] = $cSrc;
+		}
 	}
 
 
