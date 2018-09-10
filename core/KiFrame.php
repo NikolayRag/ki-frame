@@ -161,6 +161,12 @@ _ctxOrder
 
 
 
+	static function user(){
+		return KiAuth::$user;
+	}
+
+
+
 /*
 Get available social login URL's. Shortcut for KiAuth socUrlA().
 */
