@@ -103,7 +103,7 @@ class Ki_RouteBind {
 					if (is_array($fRes))
 						$varsA = array_merge($varsA, $fRes);
 				}
-			} else if (is_string($cUrl)){ //regex binding
+			} else if (is_string($cUrl) and ($cUrl[0]=='/' or $cUrl[0]=='?')){ //regex binding
 				if ($cUrl[0]=='/'){ //path
 					$cRegex = str_replace('/', '\/', $cUrl);
 					$cRes = [];
@@ -124,7 +124,7 @@ class Ki_RouteBind {
 
 					}
 				}
-			} else if ($cUrl){
+			} else if (!!$cUrl){
 				$found = True;
 			}
 
