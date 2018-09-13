@@ -1,44 +1,10 @@
 <?php
 // =todo 38 (sql, check) +0: check KiAuth for use with KiSql
 
+include(__dir__ .'/KiAuthUser.php');
 include(__dir__ .'/ki-rights.php');
 include(__dir__ .'/KiAuthPass.php');
 include(__dir__ .'/KiAuthSoc.php');
-
-/*
-User data holder
-*/
-// -todo 64 (auth) +0: add KiRights class
-class KiUser {
-	var $isSigned=false, $id=0, $name='', $email='', $photo='', $mask=0, $rights;
-
-
-/*
-Apply data from fetched uFlex user.
-*/
-	function apply($_userData){
-		$this->isSigned= true;
-		$this->id= $_userData->ID;
-		$this->email= $_userData->Email;
-
-		($this->name= $_userData->displayName) || ($this->name= $_userData->Email);
-		$this->photo= $_userData->photoURL;
-		$this->mask= $_userData->mask;
-	}
-
-
-
-	function reset(){
-		$this->isSigned= False;
-
-		$this->id= 0;
-		$this->email= '';
-
-		$this->name= '';
-		$this->photo= '';
-		$this->mask= 0;
-	}
-}
 
 
 
