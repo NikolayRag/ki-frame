@@ -28,7 +28,7 @@ Apply data from fetched uFlex user.
 		$this->photo= $_userData->photoURL;
 		$this->mask= $_userData->mask;
 
-		$this->account = new KiAccount($_userData->ID);
+		$this->account->fetch($_userData->ID);
 	}
 
 
@@ -54,12 +54,11 @@ class KiAccount {
 	private static $isInited;
 
 	private static $fieldsA;
-	private $id, $accountA;
+	private $id=0, $accountA;
 
 
 
-	function __construct($_id=0){
-		$this->id = $_id;
+	function __construct(){
 		$this->init();
 
 
@@ -67,11 +66,18 @@ class KiAccount {
 		foreach (self::$fieldsA as $fName=>$fVal)
 			$this->accountA[$fName] = '';
 
-		if (!$_id)
+	}
+
+
+
+	function fetch($_id=0){
+		$this->id = $_id;
+
+		if (!$this->id)
 			return;
 
 
-		KiSql::apply('getAccount', $_id);
+		KiSql::apply('getAccount', $this->id);
 		while ($cFieldsA = KiSql::fetch()){
 			$fName = array_search($cFieldsA['id_field'], self::$fieldsA);
 			$this->accountA[$fName] = $cFieldsA['value'];
