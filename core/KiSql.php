@@ -126,7 +126,7 @@ $_def
 	Default value for wrong column name case.
 
 */
-	static function fetch($_col=false,$_def=false){
+	static function fetch($_col=false,$_def=[]){
 		self::$lastRow= self::$stmt->fetch();
 		if ($_col===false)
 		  return self::$lastRow;
