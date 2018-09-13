@@ -31,7 +31,7 @@ class KiAuthPass {
 
 	static function register($_email, $_pass){
 		//prepare username, coz uFlex refuse blank usernames
-        $stmt= KiSql::apply('kiAuthGetCount');
+        KiSql::apply('kiAuthGetCount');
         $arr= KiSql::fetch();
 
 		return self::$user->register([
