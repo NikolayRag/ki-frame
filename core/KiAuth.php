@@ -1,5 +1,6 @@
 <?php
-// =todo 38 (sql, check) +0: check KiAuth for use with KiSql
+// -todo 65 (add, auth) +0: append logged social user to existing logpass
+// -todo 66 (add, auth) +0: append social user to logged logpass
 
 include(__dir__ .'/KiAuthUser.php');
 include(__dir__ .'/ki-rights.php');
@@ -12,7 +13,7 @@ include(__dir__ .'/KiAuthSoc.php');
 Deal with user authorization - social and explicit, and rights assignment.
 Actual user data is stored in logpass (uFlex) account.
 Each soc user is assigned to logpass account.
-Blank logpass account is assigned implicitely to new successfull soc login, and is not valid to log in with loginn/password actually.
+Blank logpass account is assigned implicitely to new successfull soc login, and is not valid to log in with login/password actually.
 
 ! No implicit check is applied to restrict interference of soc/logpass user,
 if one calls authorization methods outside this class.	

@@ -258,6 +258,7 @@ Collect all URL contexts in specified order
 //  todo 56 (unsure, feature) +0: maybe call same contexts several matches separately
 		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtx) {
+// -todo 69 (routing, feature) +0: allow False context to be specified where no output needed
 				if (array_search($cCtx, $_order) === False)
 					continue;
 
