@@ -6,12 +6,12 @@ User data holder
 class KiUser {
 // -todo 70 (auth) +0: move custom fields to account
 	var $isSigned=false, $id=0, $name='', $email='', $photo='', $mask=0, $rights;
-	var $account;
+	var $accountO;
 
 
 
 	function __construct(){
-		$this->account = new KiAccount();
+		$this->accountO = new KiAccount();
 	}
 
 
@@ -28,7 +28,7 @@ Apply data from fetched uFlex user.
 		$this->photo= $_userData->photoURL;
 		$this->mask= $_userData->mask;
 
-		$this->account->fetch($_userData->ID);
+		$this->accountO->fetch($_userData->ID);
 	}
 
 
@@ -42,6 +42,12 @@ Apply data from fetched uFlex user.
 		$this->name= '';
 		$this->photo= '';
 		$this->mask= 0;
+	}
+
+
+
+	function account($_field){
+		return $this->accountO->get($_field);
 	}
 }
 
