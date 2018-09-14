@@ -83,7 +83,7 @@ class KiAuthPass {
 
 
 	private static function init(){
-		KiSql::add('kiAuthGetCount', 'SELECT count(*) FROM Users');
+		KiSql::add('kiAuthGetCount', 'SELECT MAX(id) FROM Users');
 
 
 		//include(__dir__ .'/../_3rd/uflex/autoload.php');
