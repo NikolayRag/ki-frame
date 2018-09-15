@@ -49,6 +49,12 @@ Apply data from fetched uFlex user.
 	function account($_field){
 		return $this->accountO->get($_field);
 	}
+
+
+
+	function accountSet($_field){
+		return $this->accountO->set($_field);
+	}
 }
 
 
