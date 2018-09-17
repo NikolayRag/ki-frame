@@ -1,4 +1,7 @@
 <?
+include(__dir__ .'/kiUserRights.php');
+
+
 /*
 User data holder
 */
