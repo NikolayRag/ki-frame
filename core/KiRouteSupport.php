@@ -41,23 +41,21 @@ Solve registered code generators for specified context.
 			ob_start(); //nest buffer
 
 			$res = call_user_func($_src, (object)$_vars);
-			if (!is_string($res))
-				$res = '';
 
-			return ob_get_clean() . $res;
+			return ob_get_clean() . (string)$res;
 		}
 
 
 		if (is_file($_src)){
 			ob_start(); //nest buffer
 
-			include($_src);
+			$res = include($_src);
 
 			return ob_get_clean();
 		}
 
 
-		return $_src;
+		return (string)$_src;
 	}
 }
 
