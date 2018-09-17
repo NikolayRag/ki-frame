@@ -20,7 +20,7 @@ class LooseObject {
 	private $obj, $default;
 
 	function __construct($_obj=[], $_default=false){
-		$this->obj= $_obj;
+		$this->obj= (array)(object)$_obj;
 		$this->default= $_default;
 	}
 
@@ -29,10 +29,7 @@ class LooseObject {
 	}
 
 	public function __get($_property) {
-		if (array_key_exists($_property, $this->obj))
-		  return $this->obj[$_property];
-		else
-		  return $this->default;
+		return getA($this->obj, $_property, $this->default);
 	}
 
 	function all(){
