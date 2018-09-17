@@ -1,0 +1,41 @@
+1: L-core
+	
+	core/init.php
+		ki-error.php -	(no)error hook
+		init_err.php -	default error handlers
+
+		ki-config.php - local config
+		ki-const.php -	constants engine
+		init_c.php - 	default constants
+
+		ki-sql.php - 	sql overlay
+		ki-dict.php - 	dictionary engine
+		
+		ki-url.php - 	parse URL
+		ki-client.php - determine client
+
+
+		[uFlex] - 	user authentication
+		ki-rights.php - abstract rights
+
+
+		
+
+2: L-extend
+
+	error handlers
+	constants
+	sql templates
+	dictionary
+	right groups
+
+3: L-logic
+
+	REST assignment
+	URL assignment
+	UI templates
+	
+
+4: Depends
+	uFlex
+	
