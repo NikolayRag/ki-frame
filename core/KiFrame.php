@@ -144,7 +144,8 @@ _ctxOrder
 		//additional error callback (to DB table)
 		KiHandler::errCB(ErrCB\errCBDB(self::$sqlErrorTable));
 
-		KiAuth::init(KC::SOCIAL());
+		($socCfg = KC::SOCIAL()) || ($socCfg = new LooseObject);
+		KiAuth::init($socCfg);
 
 
 		return KiRoute::render($_ctxOrder);

@@ -56,7 +56,7 @@ _settings:
 			\Social\Type::TWITTER=>	''
 		];
 
-		self::$cbName= getA($_settings,'CB');
+		self::$cbName= $_settings->CB;
 
 		self::$typesA= self::packSettings($_settings);
 		self::$factory= new \Social\Factory(self::$typesA);
