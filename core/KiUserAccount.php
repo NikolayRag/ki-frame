@@ -50,6 +50,7 @@ class KiAccount {
 
 		KiSql::apply('getAccountFields');
 
+		self::$fieldsA = [];
 		while ($cRow= KiSql::fetch())
 			self::$fieldsA[$cRow['name']] = $cRow['id'];
 	}
