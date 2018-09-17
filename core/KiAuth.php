@@ -2,7 +2,7 @@
 // -todo 65 (add, auth) +0: append logged social user to existing logpass
 // -todo 66 (add, auth) +0: append social user to logged logpass
 
-include(__dir__ .'/KiAuthUser.php');
+include(__dir__ .'/KiUser.php');
 include(__dir__ .'/ki-rights.php');
 include(__dir__ .'/KiAuthPass.php');
 include(__dir__ .'/KiAuthSoc.php');

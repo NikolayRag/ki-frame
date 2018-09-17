@@ -2,9 +2,8 @@
 /*
 User data holder
 */
-// -todo 64 (auth) +0: add KiRights class
 class KiUser {
-// -todo 70 (auth) +0: move custom fields to account
+// -todo 70 (auth) +0: move custom fields (photo, name) to account
 	var $isSigned=false, $id=0, $name='', $email='', $photo='', $mask=0, $rights;
 	var $accountO;
 
