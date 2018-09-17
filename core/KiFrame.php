@@ -138,14 +138,13 @@ _ctxOrder
 		self::$isEnded = True;
 
 
-		($dbCfg= KC::DBCFG()) || ($dbCfg= new LooseObject);
+		$dbCfg= new LooseObject(KC::DBCFG());
 		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB table)
 		KiHandler::errCB(ErrCB\errCBDB(self::$sqlErrorTable));
 
-		($socCfg = KC::SOCIAL()) || ($socCfg = new LooseObject);
-		KiAuth::init($socCfg);
+		KiAuth::init(new LooseObject(KC::SOCIAL()));
 
 
 		return KiRoute::render($_ctxOrder);
