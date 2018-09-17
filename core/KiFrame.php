@@ -138,7 +138,7 @@ _ctxOrder
 		self::$isEnded = True;
 
 
-		$dbCfg= KC::DBCFG();
+		($dbCfg= KC::DBCFG()) || ($dbCfg= new LooseObject);
 		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB table)

@@ -7,6 +7,9 @@ Support SQL templates reusing
 */
 
 class KiSql {
+	static $msgError = 'No DB was connected';
+
+
 	private static $isInited, $callsCnt=0;
 
 	private static $db, $stmt;
@@ -80,6 +83,12 @@ $_tmpl
 
 */
 	static function apply($_tmpl){
+		if (!self::$db){
+			throw new Exception(self::$msgError);
+			return;
+		}
+
+
 		$sqVars= func_get_args();
 //		foreach ($sqVars as $sqVal)
 //		  if (!count($sqVal))
@@ -127,6 +136,12 @@ $_def
 
 */
 	static function fetch($_col=false,$_def=[]){
+		if (!self::$db){
+			throw new Exception(self::$msgError);
+			return;
+		}
+
+
 		self::$lastRow= self::$stmt->fetch();
 		if ($_col===false)
 		  return self::$lastRow;
@@ -139,6 +154,12 @@ $_def
 Return last inserted ID.
 */
 	static function lastInsertId(){
+		if (!self::$db){
+			throw new Exception(self::$msgError);
+			return;
+		}
+
+
 		return self::$db->lastInsertId();
 	}
 
