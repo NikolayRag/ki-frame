@@ -13,11 +13,7 @@ class KiRights {
 
 
 
-	private $groupsA;
-
-
-
-	static function init($_socialCfg){
+	static function init(){
 		if (self::$isInited)
 			return
 		self::$isInited = True;
