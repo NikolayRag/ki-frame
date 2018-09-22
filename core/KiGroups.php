@@ -1,6 +1,6 @@
 <?
 
-//  todo 81 (groups) +0: add KiGroups class
+// =todo 81 (groups) +0: add KiGroups class
 class KiGroups {
 	private static $isInited;
 

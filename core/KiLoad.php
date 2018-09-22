@@ -1,5 +1,5 @@
 <?
-//  todo 80 (load) +0: add KiLoad upload and download class
+// =todo 80 (load) +0: add KiLoad upload and download class
 class KiLoad {
 	private static $isInited;
 

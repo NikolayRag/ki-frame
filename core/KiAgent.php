@@ -7,7 +7,7 @@ use Sinergi\BrowserDetector\Os;
 use Sinergi\BrowserDetector\Device;
 use Sinergi\BrowserDetector\Language;
 
-//  todo 25 (api, add) +0: detect isLegacy
+//  todo 25 (ux, agent) +0: detect isLegacy
 
 
 class KiAgent{

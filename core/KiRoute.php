@@ -276,10 +276,10 @@ Collect all URL contexts in specified order
 	static private function orderRun($_bindA, $_order){
 		$fContextA = [];
 		//filter contexts out
-//  todo 56 (unsure, feature) +0: maybe call same contexts several matches separately
+//  todo 56 (ux, unsure) -1: maybe call same contexts several matches separately
 		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtx) {
-// -todo 69 (routing, feature) +0: allow False context to be specified where no output needed
+// -todo 69 (ux, routing) +0: allow False context to be specified where no output needed
 				if (array_search($cCtx, $_order) === False)
 					continue;
 
