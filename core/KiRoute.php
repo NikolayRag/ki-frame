@@ -195,7 +195,7 @@ _newOrder
 		$runA = self::orderRun($matches, $orderCtx);
 
 		foreach ($runA as $cCtxName)
-			self::$contextA[$cCtxName]->run();
+			self::$contextA[$cCtxName]->runCtx();
 	}
 
 
