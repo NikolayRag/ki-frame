@@ -61,7 +61,7 @@ function sendMail($_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_por
 
 
 function dump($_v){
-    echo str_replace(["\n"," "], ["<br>","&nbsp;"], print_r($_v, True));
+    echo str_replace(["\n"," ","\t"], ["<br>","&nbsp;","&nbsp;&nbsp;&nbsp;&nbsp;"], print_r($_v, True));
 }
 ?>
 
