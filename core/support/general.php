@@ -31,17 +31,6 @@ function first(){
 	return $cVal; //return last anyway
 }
 
-function redirect($url) {
-    header('Location: ' . $url);
-
-    $content = sprintf(
-        '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta http-equiv="refresh" content="1;url=%1$s" /><title>Redirecting...</title></head><body>Redirecting...</body></html>',
-        htmlspecialchars($url, ENT_QUOTES, 'UTF-8')
-    );
-
-    echo $content;
-}
-
 
 
 /*
