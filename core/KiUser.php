@@ -1,5 +1,6 @@
 <?
 include(__dir__ .'/kiUserAccount.php');
+include(__dir__ .'/kiUserGroups.php');
 include(__dir__ .'/kiUserRights.php');
 
 
@@ -10,11 +11,14 @@ class KiUser {
 // -todo 70 (auth) +0: move custom fields (photo, name) to account
 	var $isSigned=false, $id=0, $name='', $email='', $photo='', $mask=0, $rights;
 	var $accountO;
+	var $groupsO;
 
 
 
 	function __construct(){
 		$this->accountO = new KiAccount();
+
+		$this->groupsO = new KiGroups();
 	}
 
 
@@ -32,6 +36,7 @@ Apply data from fetched uFlex user.
 		$this->mask= $_userData->mask;
 
 		$this->accountO->fetch($_userData->ID);
+		$this->groupsO->fetch($_userData->ID);
 	}
 
 
@@ -58,6 +63,12 @@ Apply data from fetched uFlex user.
 
 	function accountSet($_field){
 		return $this->accountO->set($_field);
+	}
+
+
+
+	function groups(){
+		return $this->groupsO->get();
 	}
 }
 ?>
