@@ -6,12 +6,14 @@ class KiAccount {
 	private static $isInited;
 
 	private static $fieldsA;
+
+
 	private $id=0, $accountA;
 
 
 
 	function __construct(){
-		$this->init();
+		self::init();
 
 
 		$this->accountA = [];
@@ -38,7 +40,7 @@ class KiAccount {
 
 
 
-	function init(){
+	static function init(){
 		if (self::$isInited)
 			return
 		self::$isInited = True;
