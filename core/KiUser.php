@@ -68,8 +68,9 @@ Apply data from fetched uFlex user.
 
 
 
-	function groups(){
-		return $this->groupsO->get();
+	function groups($_idA){
+		return $this->groupsO->get($_idA);
+	}
 
 
 

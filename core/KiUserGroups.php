@@ -54,8 +54,25 @@ Fetch all groups definitions needed.
 
 
 
-	function get(){
-		return $this->assignedA;
+/*
+Get specified groups.
+Get all groups if none specfied.
+*/
+	function get($_idA=[]){
+		if ($_idA==[])
+			return $this->assignedA;
+
+
+		if (!is_array($_idA))
+			$_idA = [$_idA];
+
+		$outA = [];
+		foreach ($this->assignedA as $cGrp)
+			if (array_search($cGrp->id, $_idA)!==False)
+				$outA[] = $cGrp->id;
+
+
+		return $outA;
 	}
 
 
