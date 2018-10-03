@@ -7,7 +7,7 @@ Support SQL templates reusing
 */
 
 class KiSql {
-	static $msgError = 'No DB was connected';
+	const MsgError = 'No DB was connected';
 
 
 	private static $isInited, $callsCnt=0;
@@ -87,7 +87,7 @@ $_tmpl
 
 
 		if (!self::$db){
-			throw new Exception(self::$msgError);
+			throw new Exception(self::MsgError);
 			return;
 		}
 
@@ -140,7 +140,7 @@ $_col
 
 
 		if (!self::$db){
-			throw new Exception(self::$msgError);
+			throw new Exception(self::MsgError);
 			return $defRet;
 		}
 
@@ -161,7 +161,7 @@ Return last inserted ID.
 */
 	static function lastInsertId(){
 		if (!self::$db){
-			throw new Exception(self::$msgError);
+			throw new Exception(self::MsgError);
 			return;
 		}
 
