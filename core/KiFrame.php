@@ -51,8 +51,9 @@ class KiFrame {
 		include(__dir__ .'/ki-dict.php');
 
 		include(__dir__ .'/KiUrl.php');
-		include(__dir__ .'/KiAgent.php');
 		include(__dir__ .'/KiAuth.php');
+
+		include(__dir__ .'/KiAgent.php');
 
 
 		if (!isset($_SESSION) && !headers_sent())
