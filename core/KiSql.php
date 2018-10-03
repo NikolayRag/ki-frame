@@ -83,6 +83,9 @@ $_tmpl
 
 */
 	static function apply($_tmpl){
+		self::$stmt = Null;
+
+
 		if (!self::$db){
 			throw new Exception(self::$msgError);
 			return;
@@ -92,7 +95,7 @@ $_tmpl
 		$sqVars= func_get_args();
 		foreach ($sqVars as $sqVal)
 		  if (is_array($sqVal) && !count($sqVal))
-		    return false;
+		    return;
 
 		$bindVars= array();
 		$searchPos= 1;
@@ -110,15 +113,16 @@ $_tmpl
 			self::$sqlTemplateA[$_tmpl]
 		);
 
-
 		self::$callsCnt+= 1;
-		self::$stmt= self::$db->prepare($TSqlA);
-		$lastSucc= self::$stmt->execute($bindVars);
-		if (!$lastSucc)
-			throw new Exception( self::$stmt->errorInfo()[2] );
+		$cStmt = self::$db->prepare($TSqlA);
+		if (!$cStmt->execute($bindVars)){
+			throw new Exception( $cStmt->errorInfo()[2] );
+			return;
+		}
 
 
-		return $lastSucc;
+		self::$stmt = $cStmt;
+		return True;
 	}
 
 
@@ -130,24 +134,25 @@ Get data from last query.
 $_col
 	Column name.
 	If omited, result array is returned
-
-
-$_def
-	Default value for wrong column name case.
-
 */
-	static function fetch($_col=false,$_def=[]){
+	static function fetch($_col=false){
+		$defRet = $_col===False? [] : Null;
+
+
 		if (!self::$db){
 			throw new Exception(self::$msgError);
-			return;
+			return $defRet;
 		}
+
+		if (self::$stmt===Null)
+			return $defRet;
 
 
 		self::$lastRow= self::$stmt->fetch();
 		if ($_col===false)
 		  return self::$lastRow;
 
-		return getA(self::$lastRow,$_col,$_def);
+		return getA(self::$lastRow,$_col,Null);
 	}
 
 
