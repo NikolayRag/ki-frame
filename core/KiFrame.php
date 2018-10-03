@@ -39,22 +39,20 @@ class KiFrame {
 		//general error callback (to file)
 		KiHandler::errCB(ErrCB\errCBFile(__dir__ .self::ERROR_FILE));
 
+//support
 		include(__dir__ .'/support/general.php');
 		include(__dir__ .'/support/LooseObject.php');
-
-
 		include(__dir__ .'/KiConst.php');
-		include(__dir__ .'/KiRoute.php');
-
-
-		include(__dir__ .'/KiSql.php');
-		include(__dir__ .'/ki-dict.php');
-
 		include(__dir__ .'/KiUrl.php');
+		include(__dir__ .'/KiSql.php');
+
+//core
+		include(__dir__ .'/KiRoute.php');
 		include(__dir__ .'/KiAuth.php');
 
+//extentions
 		include(__dir__ .'/KiAgent.php');
-
+		include(__dir__ .'/ki-dict.php');
 
 		if (!isset($_SESSION) && !headers_sent())
 			session_start();
