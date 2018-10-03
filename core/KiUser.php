@@ -9,9 +9,8 @@ User data holder
 */
 class KiUser {
 // -todo 70 (auth) +0: move custom fields (photo, name) to account
-	var $isSigned=false, $id=0, $name='', $email='', $photo='', $mask=0, $rights;
-	var $accountO;
-	var $groupsO;
+	var $isSigned=false, $id=0, $name='', $email='', $photo='', $mask=0;
+	var $accountO, $rightsO, $groupsO;
 
 
 
@@ -19,6 +18,8 @@ class KiUser {
 		$this->accountO = new KiAccount();
 
 		$this->groupsO = new KiGroups();
+
+		$this->rightsO = new KiRights($this);
 	}
 
 
@@ -69,6 +70,11 @@ Apply data from fetched uFlex user.
 
 	function groups(){
 		return $this->groupsO->get();
+
+
+
+	function rights(){
+		return $this->rightsO;
 	}
 }
 ?>
