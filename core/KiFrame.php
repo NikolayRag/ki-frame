@@ -177,6 +177,15 @@ Access bond matched variables, shortcut to KiRoute::contextData().
 
 
 /*
+Define named function for checking rights later.
+*/
+	static function right($_name, $_fn){
+		return KiRights::define($_name, $_fn);
+	}
+
+
+
+/*
 Get available social login URL's. Shortcut for KiAuth socUrlA().
 */
 	static function lUrls(){
