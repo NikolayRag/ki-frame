@@ -90,9 +90,9 @@ $_tmpl
 
 
 		$sqVars= func_get_args();
-//		foreach ($sqVars as $sqVal)
-//		  if (!count($sqVal))
-//		    return false;
+		foreach ($sqVars as $sqVal)
+		  if (is_array($sqVal) && !count($sqVal))
+		    return false;
 
 		$bindVars= array();
 		$searchPos= 1;
