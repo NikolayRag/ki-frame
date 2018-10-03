@@ -100,11 +100,12 @@ $_tmpl
 			'/\?/',
 			static function ($_in) use ($sqVars,&$bindVars,&$searchPos) {
 				$nextV= $sqVars[$searchPos++];
-				if (is_array($nextV))
-				  $bindVars= array_merge($bindVars,$nextV);
-				else
-				  $bindVars[]= $nextV;
-				return str_repeat('?,',count($nextV)-1) .'?';
+				if (!is_array($nextV))
+					$nextV = [$nextV];
+
+				$bindVars= array_merge($bindVars,$nextV);
+
+				return implode(array_fill(0, count($nextV), '?'), ',');
 			},
 			self::$sqlTemplateA[$_tmpl]
 		);
