@@ -167,6 +167,9 @@ Access bond matched variables, shortcut to KiRoute::contextData().
 
 
 
+/*
+Current active user, logged or not.
+*/
 	static function user(){
 		return KiAuth::$user;
 	}

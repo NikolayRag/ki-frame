@@ -98,7 +98,8 @@ $_tmpl
 		    return;
 
 		$bindVars= array();
-		$searchPos= 1;
+		$searchPos= 1; //skip first arg
+		//replace '?' within specified template based on provided variable: arrays expands into multiple '?,?,...'
 		$TSqlA= preg_replace_callback(
 			'/\?/',
 			static function ($_in) use ($sqVars,&$bindVars,&$searchPos) {

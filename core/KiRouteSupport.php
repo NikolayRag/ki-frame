@@ -2,7 +2,7 @@
 /*
 Context object
 */
-// =todo 60 (refactor) +0: expand Ki_RouteCtx into normal class
+// -todo 60 (refactor) +0: expand Ki_RouteCtx into normal class
 class Ki_RouteCtx {
 	var $name='', $codeA=[], $headersA=[], $return=0;
 	var $varsA=[];
@@ -67,7 +67,7 @@ Solve registered code generators for specified context.
 /*
 Context bind class
 */
-// =todo 57 (refactor) +0: expand Ki_RouteBind into normal class.
+// -todo 57 (refactor) +0: expand Ki_RouteBind into normal class.
 class Ki_RouteBind {
 	var $is404, $urlA=[], $ctxA=[], $return=0, $headersA;
 	var $varsA=[];

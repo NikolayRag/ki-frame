@@ -2,6 +2,7 @@
 /*
 User Account holder
 */
+// -todo 91 (account) +0: split KiAccount to account-managing and user-assignment
 class KiAccount {
 	private static $isInited;
 

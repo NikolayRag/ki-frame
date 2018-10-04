@@ -1,20 +1,14 @@
 <?
 /*
-Entry point to KiFrame.
-Used as a singletone class.
+Motivation:
 
-Core modules:
-+- db, data layer
-+ error handler and shutdown
-+- authoring, rights
-+ routing
-Support modules:
-+ constants
-+ url
-+ agent
-- dictionary
-- caching
+KiFrame is developed as a second-edge framework to suite own needs, formulated without strict reference to any existing frameworks, though corresponding to widely used stable standarts and method, which have passed proof-of-use.
 
+
+
+KiFrame is mainly used as a singletone class.
+
+Bundles suppliead are:
 
 
 core
@@ -48,12 +42,25 @@ core
 	KiLoad
 		Upload and Download support.
 
+
 suit
-	basic frontend wrap - all direct addressed default page, logon routines, 404
+	basic frontend wrap for non-ajax flow
+		default page
+		404
+		logon routines
+		upload by form routines
+
+
 pack
-	basic complete template - ajax logon, page structure, style
+	ajax template
+		logon
+		upload
+		download
+		page templates
+		style
+
 live
-	working basic cms
+	working cms
 */
 include(__dir__ .'/KiFrame.php');
 
