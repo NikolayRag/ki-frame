@@ -138,12 +138,14 @@ _ctxOrder
 		self::$isEnded = True;
 
 
+// -todo 77 (clean, ux) +0: allow no-db case
 		$dbCfg= new LooseObject(KC::DBCFG());
 		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB table)
 		KiHandler::errCB(ErrCB\errCBDB(self::$sqlErrorTable));
 
+// -todo 78 (clean, ux) +0: allow no-auth case
 		KiAuth::init(new LooseObject(KC::SOCIAL()));
 
 
@@ -152,6 +154,12 @@ _ctxOrder
 
 
 
+/*
+Access bond matched variables, shortcut to KiRoute::contextData().
+*/
+	static function rData(){
+		return KiRoute::contextData();
+	}
 
 
 

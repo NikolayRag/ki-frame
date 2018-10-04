@@ -1,6 +1,7 @@
 <?php
-// -todo 65 (add, auth) +0: append logged social user to existing logpass
-// -todo 66 (add, auth) +0: append social user to logged logpass
+// -todo 65 (ux, auth) +0: append logged social user to existing logpass
+// -todo 66 (ux, auth) +0: append social user to logged logpass
+//  todo 7 (ux, socal) -1: add function to update user data from social
 
 include(__dir__ .'/KiUser.php');
 include(__dir__ .'/KiAuthPass.php');
@@ -82,7 +83,7 @@ API cb for social logon.
 			return;
 
 		$xId= self::assignedGet();
-		if (!$xId) // -todo 6 (auth, catch) +0: deal with social callback error
+		if (!$xId) // -todo 6 (clean, auth) +0: deal with social callback error
 		 	return;
 
 		self::assignedUpdate($xId); //update last logon state
@@ -127,7 +128,7 @@ Logout either.
 
 		self::$user->reset();
 
-//  todo 8 (auth, api) -1: vary logout errors
+//  todo 8 (clean, auth) -1: vary logout errors
 		return;
 	}
 
@@ -188,7 +189,7 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 			return;
 
 		$xId= self::assignedGet();
-		if (!$xId) //  todo 5 (auth, catc) +0: deal with social init error
+		if (!$xId) //  todo 5 (clean, auth) +0: deal with social init error
 			return;
 
 		return KiAuthPass::getData($xId);
@@ -208,7 +209,7 @@ Return user id.
 
 
 		if (!$id_assigned){
-			if (!KiAuthSoc::fetch()) //  todo 55 (auth, catch) +0: deal with acces user data error
+			if (!KiAuthSoc::fetch()) //  todo 55 (clean, auth) +0: deal with acces user data error
 			 	return;
 
 			$id_assigned= self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id, KiAuthSoc::$firstName, KiAuthSoc::$photoUrl);
@@ -217,7 +218,6 @@ Return user id.
 		return $id_assigned;
 	}
 
-//  todo 7 (ux, socal) -1: add function to update user data from social
 
 
 /*

@@ -19,6 +19,7 @@ Virtually, there're following levels of complexity in managing content generatio
 class KiRoute {
 	private static $contextA=[], $contextOrder=[], $bindSrcA=[], $bindA=[];
 
+	private static $cContext;
 
 
 /*
@@ -82,6 +83,9 @@ $_url
 	If started with '?', arguments are matched. Any successfull match counts. WRONG useage: matching several arguments at once will fail constantly, like '?a=1&b=1'. Use several matches instead: [.., '?a=1', '?b=1']. 
 	Named capture (?P<name>value) is allowed to scan variables. Captured value is passed then within named array into bond context functions, if any. Matching several different named variables within one binding will pass all of them as arguments. When regex wide mask matches several URL arguments, only first match defines variable=>value pair.
 	Tricky regex matches like "/(?!foo$).*" (all but '/foo') are fully allowed.
+
+	Variables matched are accessed at runtime by ::contextData()
+
 
 	If first (or only) value specified is 404, match is used in case of no 'normal' matches found.
 	Notice, that if there any wide mask bound match, like '.*' or True, it could become impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
@@ -194,8 +198,25 @@ _newOrder
 
 		$runA = self::orderRun($matches, $orderCtx);
 
-		foreach ($runA as $cCtxName)
-			self::$contextA[$cCtxName]->run();
+		foreach ($runA as $cCtxName){
+			KiRoute::$cContext = self::$contextA[$cCtxName];
+			KiRoute::$cContext->runCtx();
+			KiRoute::$cContext = Null;
+		}
+	}
+
+
+
+/*
+Provide current context variables, available only for bond code runtime.
+Variables are NOT safe, they could be modified while runtime.
+*/
+	static function contextData(){
+		$cVars = [];
+		if (KiRoute::$cContext)
+			$cVars = KiRoute::$cContext->varsA;
+
+		return new LooseObject($cVars);
 	}
 
 
@@ -255,10 +276,10 @@ Collect all URL contexts in specified order
 	static private function orderRun($_bindA, $_order){
 		$fContextA = [];
 		//filter contexts out
-//  todo 56 (unsure, feature) +0: maybe call same contexts several matches separately
+//  todo 56 (ux, unsure) -1: maybe call same contexts several matches separately
 		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtx) {
-// -todo 69 (routing, feature) +0: allow False context to be specified where no output needed
+// -todo 69 (ux, routing) +0: allow False context to be specified where no output needed
 				if (array_search($cCtx, $_order) === False)
 					continue;
 

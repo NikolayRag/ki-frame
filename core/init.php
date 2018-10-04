@@ -18,7 +18,36 @@ Support modules:
 
 
 core
-	basic routing, authoring, error handle and support classes - URL, agent, constants, SQL, dictionary
+	KiFrame
+		Core init and entry.
+	KiHandler
+		Error, exception and exit handler, form actual headers and return data.
+	KiRoute
+		Routing matrix, URLs to declared context generators.
+	KiAuth
+		User authorisation, by log/pass or by social oAuth logon.
+
+	KiRights
+		Defined right support.
+	KiGroup
+		User group assignment support.
+	KiData
+		Database relation model.
+
+	KiConst
+		Global constants.
+	KiURL
+		URL parser.
+	KiAgent
+		Browser, os, device detector and classifier.
+	KiSQL
+		SQL wrapper.
+	KiDict
+		Multilingual dictionary.
+
+	KiLoad
+		Upload and Download support.
+
 suit
 	basic frontend wrap - all direct addressed default page, logon routines, 404
 pack
