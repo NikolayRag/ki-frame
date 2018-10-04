@@ -60,6 +60,12 @@ Apply data from fetched uFlex user.
 
 
 
+	function accountState(){
+		return $this->accountO->getState();
+	}
+
+
+
 	function accountSet($_field){
 		return $this->accountO->set($_field);
 	}

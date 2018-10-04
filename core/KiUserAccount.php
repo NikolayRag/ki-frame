@@ -8,7 +8,7 @@ class KiAccount {
 	private static $fieldsA;
 
 
-	private $id=0, $accountA;
+	private $id=0, $accountA, $state;
 
 
 
@@ -33,6 +33,8 @@ class KiAccount {
 
 		KiSql::apply('getAccount', $this->id);
 		while ($cFieldsA = KiSql::fetch()){
+			$this->state = True;
+
 			$fName = array_search($cFieldsA['id_field'], self::$fieldsA);
 			$this->accountA[$fName] = $cFieldsA['value'];
 		}
@@ -78,6 +80,12 @@ class KiAccount {
 			if ($this->id)
 				KiSql::apply('setAccount', $this->id, $cId, $_data[$fName]);
 		}
+	}
+
+
+
+	function getState(){
+		return $this->state;
 	}
 }
 ?>
