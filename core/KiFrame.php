@@ -32,12 +32,11 @@ class KiFrame {
 
 		self::$startTime= microtime(true);
 
-
+//initial handlers
 		include(__dir__ .'/KiHandler.php');
-
-		include(__dir__ .'/init_errorh.php');
+		include(__dir__ .'/KiError.php');
 		//general error callback (to file)
-		KiHandler::errCB(ErrCB\errCBFile(__dir__ .self::ERROR_FILE));
+		KiHandler::errCB(KiError::errCBFile(__dir__ .self::ERROR_FILE));
 
 //support
 		include(__dir__ .'/support/general.php');
@@ -142,7 +141,7 @@ _ctxOrder
 		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB table)
-		KiHandler::errCB(ErrCB\errCBDB(self::ERROR_SQL_TABLE));
+		KiHandler::errCB(KiError::errCBDB(self::ERROR_SQL_TABLE));
 
 // -todo 78 (clean, ux) +0: allow no-auth case
 		KiAuth::init(new LooseObject(KC::SOCIAL()));
