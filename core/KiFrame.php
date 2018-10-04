@@ -22,6 +22,8 @@ class KiFrame {
 
 	private static $isInited, $isEnded, $startTime;
 
+	private static $dictO;
+
 
 
 	static function init(){
@@ -51,7 +53,10 @@ class KiFrame {
 
 //extentions
 		include(__dir__ .'/KiAgent.php');
-		include(__dir__ .'/ki-dict.php');
+		include(__dir__ .'/KiDict.php');
+
+
+		self::$dictO = new KiDict();
 
 		if (!isset($_SESSION) && !headers_sent())
 			session_start();
@@ -350,6 +355,15 @@ Sent email.
 		$_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_port=465
 	){
 		sendMail($_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_port);
+	}
+
+
+
+/*
+Global dictionary shortcut.
+*/
+	static function dict(){
+		return self::$dictO;
 	}
 }
 
