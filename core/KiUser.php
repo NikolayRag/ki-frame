@@ -54,6 +54,9 @@ Apply data from fetched uFlex user.
 
 		$this->name= '';
 		$this->photo= '';
+
+		$this->accountO = new KiAccount();
+		$this->groupsO = new KiGroups();
 	}
 
 
