@@ -41,34 +41,35 @@ class KiSql {
 
 
 /*
-Store query string.
+Store array of named queries.
 
 
-$_tmpl
-	Template name to store.
+$_tmplA
+	[Name=>Template] array to store.
+	Arguments to bind are marked as '?'.
 
 
-$_sql
-	Query string.
-	Arguments should be marked as '?'.
+$_bindA
+	Early binding array: '%' markers within templates are replaced with provided value sequentally or '' if insufficient values.
+
+// -todo 96 (sql, fix) +0: make early binding safe
+	NOTICE! Early binding is not safe.
 */
-	static function add($_tmpl, $_sql){
-		self::$sqlTemplateA[$_tmpl]= $_sql;
+	static function add($_tmplA, $_bindA=False){
+		foreach ($_tmplA as $cName => $cSql){
+			$cSqlBond = [];
+			foreach (explode('%',$cSql) as $i=>$cPart){
+				$cSqlBond[] = $cPart;
+				$cSqlBond[] = getA($_bindA, $i, '%');
+			}
+			array_pop($cSqlBond); //last subst is exceed
+
+			self::$sqlTemplateA[$cName] = implode('', $cSqlBond);
+		}
 	}
 
 
-
-/*
-Add named array of query strings
-*/
-	static function addSome($_tmplA){
-		if (!is_array($_tmplA))
-			return;
-
-		foreach ($_tmplA as $cName => $cSql)
-			self::add($cName, $cSql);
-	}
-
+// -todo 97 (sql) +0: switch to prepared statement extended objects
 
 
 /*

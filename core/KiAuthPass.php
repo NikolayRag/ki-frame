@@ -3,6 +3,11 @@
 Authorize by log/pass.
 */
 class KiAuthPass {
+	private static $DBA = [
+		'kiAuthGetCount' => 'SELECT MAX(id) FROM Users'
+	];
+
+
 	private static $isInited;
 
 	static $user;
@@ -83,7 +88,7 @@ class KiAuthPass {
 
 
 	private static function init(){
-		KiSql::add('kiAuthGetCount', 'SELECT MAX(id) FROM Users');
+		KiSql::add(self::$DBA);
 
 
 		//include(__dir__ .'/../_3rd/uflex/autoload.php');

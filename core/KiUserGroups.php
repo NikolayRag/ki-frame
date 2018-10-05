@@ -5,6 +5,13 @@ Grouping is not used by itself within KiFrame.
 */
 // -todo 90 (groups) +0: split KiGroups to group-managing and user-managing
 class KiGroups {
+	private static $DBA = [
+		'getGroupsClasses' => 'SELECT * from users_groups_classes',
+		'getGroupsUser' => 'SELECT * from users_groups_assign WHERE id_user=?',
+		'getGroups' => 'SELECT * from users_groups WHERE id IN (?)'
+	];
+
+
 	private static $isInited;
 
 	private static $classesA, $groupsA;
@@ -105,12 +112,10 @@ Get all groups if none specfied.
 		self::$isInited = True;
 
 
-		KiSql::add('getGroupsClasses', 'SELECT * from users_groups_classes');
-		KiSql::add('getGroupsUser', 'SELECT * from users_groups_assign WHERE id_user=?');
-		KiSql::add('getGroups', 'SELECT * from users_groups WHERE id IN (?)');
+		KiSql::add(self::$DBA);
+
 
 		KiSql::apply('getGroupsClasses');
-
 		
 		self::$groupsA = []; //fill groups as requested
 

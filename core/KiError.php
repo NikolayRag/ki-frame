@@ -6,6 +6,11 @@ Creates and returns function suitable for KiHandler->errCB()
 
 
 class KiError {
+	private static $DBA = [
+			'errcbdbNew' => "INSERT INTO % (type, code, `desc`, file, line, id_user, url, agent) VALUES (?,?,?,?,?,?,?,?)",
+			'errcbdbAdd' => "INSERT INTO % (type, code, `desc`, file, line, id, n) VALUES (?,?,?,?,?,?,?)"
+		];
+
 
 /*
 	Return function that stores error array info specified file.
@@ -56,8 +61,8 @@ $_table
 			sequental number of error at one runtime instance
 */
 	static function errCBDB($_table){
-		\KiSql::add('errcbdbNew', "INSERT INTO $_table (type, code, `desc`, file, line, id_user, url, agent) VALUES (?,?,?,?,?,?,?,?)");
-		\KiSql::add('errcbdbAdd',  "INSERT INTO $_table (type, code, `desc`, file, line, id, n) VALUES (?,?,?,?,?,?,?)");
+		KiSql::add(self::$DBA, [$_table]);
+
 
 		return function($_errPool) {
 			$maxId = 0;

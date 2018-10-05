@@ -4,6 +4,13 @@ User Account holder
 */
 // -todo 91 (account) +0: split KiAccount to account-managing and user-assignment
 class KiAccount {
+	private static $DBA = [
+		'getAccountFields' => 'SELECT * from users_account_fields',
+		'getAccount' => 'SELECT * from users_account WHERE id_user=?',
+		'setAccount' => 'REPLACE INTO users_account (id_user,id_field,value) VALUES (?,?,?)'
+	];
+
+
 	private static $isInited;
 
 	private static $fieldsA;
@@ -49,9 +56,8 @@ class KiAccount {
 		self::$isInited = True;
 
 
-		KiSql::add('getAccountFields', 'SELECT * from users_account_fields');
-		KiSql::add('getAccount', 'SELECT * from users_account WHERE id_user=?');
-		KiSql::add('setAccount', 'REPLACE INTO users_account (id_user,id_field,value) VALUES (?,?,?)');
+		KiSql::add(self::$DBA);
+
 
 		KiSql::apply('getAccountFields');
 
