@@ -81,8 +81,6 @@ While logged, calls within Timeout are treated as successfull. That should remov
 		if (time()-$stamp>self::$sessionTimeout){
 			if (!self::fetch())
 				return;
-
-	   		$_SESSION[self::$sessionStamp]= time();
 		}
 
 		return True;
@@ -105,6 +103,7 @@ Actually fetch user data from social.
 		self::$firstName= $user->firstName;
 		self::$photoUrl= $user->photoUrl;
 
+   		$_SESSION[self::$sessionStamp]= time();
 		return true;
 	}
 
@@ -211,6 +210,8 @@ Callback function for social logons.
 
 		self::$type= self::$token->getType();
 		self::$id= self::$token->getIdentifier();
+
+		self::fetch();
 	}
 
 
