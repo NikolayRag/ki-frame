@@ -38,7 +38,6 @@ class KiAuth {
 
 
 	private static $isInited;
-	private static $isSocUser=false;
 
 	static $user;
 
@@ -182,7 +181,6 @@ Check if social user is signed.
 Soc user init assumes normal user is not logged, and thus user data from assigned one will be fetched, including local userID (differed from social userID's).
 */
 	private static function initSocUser(){
-		self::$isSocUser= True;
 		if (!KiAuthSoc::start())
 			return;
 
