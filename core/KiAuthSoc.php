@@ -6,9 +6,16 @@ Social logon wrap
 include(__dir__ . '/../_3rd/php-social/lib/Social/Auth/Token.php');
 
 class KiAuthSoc {
+	const 
+		SessTimeout=10,
+		SessToken='socAuth_token',
+		SessStamp='socAuth_stamp',
+		SessData='socAuth_data';
+
+
 	static $socIconsA;
 
-	private static $sessionToken='socAuth_token', $sessionStamp='socAuth_stamp', $sessionTimeout=10, $cbName;
+	private static $cbName;
 
 	private static $isInited, $token, $factory, $typesA=[];
 	static $error=null, $type=0, $id=0, $liveName='', $livePhoto='';
@@ -70,20 +77,14 @@ While logged, calls within Timeout are treated as successfull. That should remov
 ! False-positive logon will occur within Timeout, if user was forced to be logged off at different place.
 */
 	static function start(){
-		self::$token= getA($_SESSION, self::$sessionToken);
+		self::$token= getA($_SESSION, self::SessToken);
 		if (!self::$token || !(self::$token instanceof Social\Auth\Token))
 			return;
 
 		self::$type= self::$token->getType();
 		self::$id= self::$token->getIdentifier();
 
-		$stamp= getA($_SESSION, self::$sessionStamp, 0);
-		if (time()-$stamp>self::$sessionTimeout){
-			if (!self::fetch())
-				return;
-		}
-
-		return True;
+		return self::fetch();
 	}
 
 
@@ -92,18 +93,33 @@ While logged, calls within Timeout are treated as successfull. That should remov
 Actually fetch user data from social.
 */
 	static function fetch(){
-	    $api= self::$factory->createApi(self::$token);
-		$user= $api->getProfile();
+		$stamp = getA($_SESSION, self::SessStamp, 0);
+		if (time()-$stamp>self::SessTimeout){
 
-	    if (!$user){
-	        self::$error= $api->getError();
-			return;
+		    $api = self::$factory->createApi(self::$token);
+			$user = $api->getProfile();
+
+		    if (!$user){
+		        self::$error = $api->getError();
+				return;
+			}
+
+
+			$_SESSION[self::SessData] = [
+				'liveName' => $user->firstName,
+				'livePhoto' => $user->photoUrl
+			];
+
+
+	   		$_SESSION[self::SessStamp] = time();
 		}
 
-		self::$liveName= $user->liveName;
-		self::$livePhoto= $user->livePhoto;
 
-   		$_SESSION[self::$sessionStamp]= time();
+		$data = $_SESSION[self::SessData];
+
+		self::$liveName = $data['liveName'];
+		self::$livePhoto = $data['livePhoto'];
+
 		return true;
 	}
 
@@ -206,12 +222,12 @@ Callback function for social logons.
 	        return $auth->getError();
 	    }
 
-	    $_SESSION[self::$sessionToken] = self::$token;
+	    $_SESSION[self::SessToken] = self::$token;
 
 		self::$type= self::$token->getType();
 		self::$id= self::$token->getIdentifier();
 
-		self::fetch();
+		return self::fetch();
 	}
 
 
@@ -220,8 +236,8 @@ Callback function for social logons.
 Logout for social logon
 */
 	static function logout(){
-   		$_SESSION[self::$sessionToken] = array();
-   		$_SESSION[self::$sessionStamp] = 0;
+   		$_SESSION[self::SessToken] = array();
+   		$_SESSION[self::SessStamp] = 0;
 	}
 
 
