@@ -18,11 +18,7 @@ class KiUser {
 
 //  todo 84 (account) +0: support applied ID at KiUser creation
 	function __construct(){
-		$this->accountO = new KiAccount();
-
-		$this->groupsO = new KiGroups();
-
-		$this->rightsO = new KiRights($this);
+		$this->reset();
 	}
 
 
@@ -57,6 +53,7 @@ Apply data from fetched uFlex user.
 
 		$this->accountO = new KiAccount();
 		$this->groupsO = new KiGroups();
+		$this->rightsO = new KiRights($this);
 	}
 
 
