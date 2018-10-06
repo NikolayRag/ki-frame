@@ -8,11 +8,9 @@ include(__dir__ .'/kiUserRights.php');
 User data holder
 */
 class KiUser {
-// -todo 70 (auth) +0: move custom fields (photo, name) to account
-// -todo 92 (auth) +0: add implicit social (photo, name) fields in addition
 //  todo 7 (ux, socal) -1: add function to update user data from social
-	var $isSigned=false, $id=0, $name='', $email='', $photo='';
 	var $accountO, $rightsO, $groupsO;
+	var $isSigned=false, $id=0, $liveEmail='', $livePhoto='', $liveName='';
 
 
 
@@ -26,30 +24,25 @@ class KiUser {
 /*
 Apply data from fetched uFlex user.
 */
-	function apply($_userData){
-		$this->isSigned= true;
-		$this->id= $_userData->ID;
+	function apply($_id, $_liveEmail='', $_livePhoto='', $_liveName=''){
+		$this->isSigned = true;
+		$this->id = $_id;
+		$this->liveEmail = $_liveEmail;
+		$this->livePhoto = $_livePhoto;
+		$this->liveName = $_liveName;
 
-// -todo 83 (account) +0: move email (protected), display name and photo url to account
-		$this->email= $_userData->Email;
-
-		($this->name= $_userData->displayName) || ($this->name= $_userData->Email);
-		$this->photo= $_userData->photoURL;
-
-		$this->accountO->fetch($_userData->ID);
-		$this->groupsO->fetch($_userData->ID);
+		$this->accountO->fetch($_id);
+		$this->groupsO->fetch($_id);
 	}
 
 
 
 	function reset(){
 		$this->isSigned= False;
-
 		$this->id= 0;
-		$this->email= '';
-
-		$this->name= '';
-		$this->photo= '';
+		$this->liveEmail = '';
+		$this->livePhoto = '';
+		$this->liveName = '';
 
 		$this->accountO = new KiAccount();
 		$this->groupsO = new KiGroups();

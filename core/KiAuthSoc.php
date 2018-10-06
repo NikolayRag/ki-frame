@@ -11,7 +11,7 @@ class KiAuthSoc {
 	private static $sessionToken='socAuth_token', $sessionStamp='socAuth_stamp', $sessionTimeout=10, $cbName;
 
 	private static $isInited, $token, $factory, $typesA=[];
-	static $error=null, $type=0, $id=0, $firstName='', $photoUrl='';
+	static $error=null, $type=0, $id=0, $liveName='', $livePhoto='';
 
 
 
@@ -100,8 +100,8 @@ Actually fetch user data from social.
 			return;
 		}
 
-		self::$firstName= $user->firstName;
-		self::$photoUrl= $user->photoUrl;
+		self::$liveName= $user->liveName;
+		self::$livePhoto= $user->livePhoto;
 
    		$_SESSION[self::$sessionStamp]= time();
 		return true;

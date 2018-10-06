@@ -31,7 +31,7 @@ Init macro:
 class KiAuth {
 	private static $DBA = [
 		'kiAuthGetSocial' => 'SELECT id_users FROM users_social WHERE type=?+0 AND id=?',
-		'kiAuthAdd' => 'INSERT INTO users (auto_social,RegDate,displayName,photoURL) VALUES (1,?,?,?)',
+		'kiAuthAdd' => 'INSERT INTO users (auto_social,RegDate) VALUES (1,?)',
 		'kiAuthAddSocial' => 'INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)',
 		'kiAuthUpdateLast' => 'UPDATE users SET LastLogin=? WHERE ID=?'
 	];
@@ -57,7 +57,7 @@ class KiAuth {
 		self::$user = new KiUser();
 		($cUser= self::initFlexUser()) || ($cUser= self::initSocUser());
 		if ($cUser)
-			self::$user->apply($cUser);
+			self::$user->apply($cUser->ID, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto);
 	}
 
 
@@ -85,7 +85,10 @@ API cb for social logon.
 
 		self::assignedUpdate($xId); //update last logon state
 
-		self::$user->apply(KiAuthPass::getData($xId));
+
+		$cUser = KiAuthPass::getData($xId);
+
+		self::$user->apply($xId, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto);
 	}
 
 
@@ -111,7 +114,7 @@ Log in with email/pass
         if (!$res)
 	        return KiAuthPass::getError();
 
-		self::$user->apply(KiAuthPass::$user);
+		self::$user->apply(KiAuthPass::$user->ID, $_email, '', '');
     }
 
 
@@ -201,12 +204,8 @@ Return user id.
 		$id_assigned= KiSql::fetch('id_users', 0);
 
 
-		if (!$id_assigned){
-			if (!KiAuthSoc::fetch()) //  todo 55 (clean, auth) +0: deal with acces user data error
-			 	return;
-
-			$id_assigned= self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id, KiAuthSoc::$firstName, KiAuthSoc::$photoUrl);
-		}
+		if (!$id_assigned)
+			$id_assigned= self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id);
 
 		return $id_assigned;
 	}
@@ -216,8 +215,8 @@ Return user id.
 /*
 Create implicit logpass user for given social one.
 */
-	private static function assignedCreate($_type,$_id, $_name, $_photo){
-		KiSql::apply('kiAuthAdd', time(), $_name, $_photo);
+	private static function assignedCreate($_type,$_id){
+		KiSql::apply('kiAuthAdd', time());
 		$id_assigned= KiSql::lastInsertId();
 
 		KiSql::apply('kiAuthAddSocial', $_type, $_id, $id_assigned);
