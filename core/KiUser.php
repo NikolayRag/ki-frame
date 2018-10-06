@@ -9,8 +9,8 @@ User data holder
 */
 class KiUser {
 //  todo 7 (ux, socal) -1: add function to update user data from social
-	var $accountO, $rightsO, $groupsO;
 	var $isSigned=false, $id=0, $liveEmail='', $livePhoto='', $liveName='';
+	private $accountO, $rightsO, $groupsO;
 
 
 
