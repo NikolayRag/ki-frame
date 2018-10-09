@@ -227,7 +227,7 @@ Callback function for social logons.
 		self::$type= self::$token->getType();
 		self::$id= self::$token->getIdentifier();
 
-		return self::fetch();
+		self::fetch();
 	}
 
 
