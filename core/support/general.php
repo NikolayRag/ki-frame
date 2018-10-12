@@ -55,7 +55,9 @@ function sendMail($_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_por
     $mail->Subject = $_subj;
     $mail->msgHTML($_body);
 
-    return $mail->send();
+    $mail->send();
+
+    return $mail->ErrorInfo;
 }
 
 
