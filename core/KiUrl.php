@@ -9,7 +9,7 @@ class KiUrl {
 	const GET=1, POST=2, PUT=3, DELETE=4;
 
 	static private $isInited;
-	static private $vMethod, $vUri, $vPath, $vArgs, $vServer, $isHttps;
+	static private $vMethod, $vUri, $vArgs, $vServer, $isHttps;
 
 
 
@@ -40,26 +40,17 @@ asStr
 
 
 /*
-Get request string, always started with '/'.
-*/
-	static function url(){
-		self::init();
-
-		return self::$vUri;
-	}
-
-
-
-/*
 Get path array.
 */
 	static function path($_asStr=False){
 		self::init();
 
 		if ($_asStr)
-			return '/' . implode('/', self::$vPath);
+			return implode('?', self::$vUri);
 
-		return self::$vPath;
+		return array_slice(
+			explode("/", self::$vUri[0]), 1
+		);;
 	}
 
 
@@ -117,17 +108,17 @@ Get HTTPS flag.
 		self::$vServer = $_SERVER['SERVER_NAME'];
 
 
+		self::$vUri = explode("?", preg_replace('[/+]', '/', "/${_SERVER["REQUEST_URI"]}"));
+
+
 		self::$vArgs = new LooseObject();
 
 		foreach ($_POST as $pName=>$pVal)
 			self::$vArgs->$pName = $pVal;
 
-		self::$vUri = preg_replace('[/+]', '/', "/${_SERVER["REQUEST_URI"]}");
-		$uriA = explode("?", self::$vUri);
-
 		//Fill vArgs
-		if (isset($uriA[1]))
-		  foreach(explode("&",$uriA[1]) as $x){
+		if (isset(self::$vUri[1]))
+		  foreach(explode("&",self::$vUri[1]) as $x){
 			$xSpl = explode("=",$x);
 			$get = isset($xSpl[1])? urldecode($xSpl[1]) :False;
 
@@ -138,9 +129,6 @@ Get HTTPS flag.
 		  }
 
 
-		self::$vPath = array_slice(
-			explode("/", $uriA[0]), 1
-		);
 
 	}
 }
