@@ -296,6 +296,12 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 
 
 
+	static function uAlias($_path,$_args=True){
+		return KiUrl::alias($_path,$_args);
+	}
+
+
+
 
 
 
