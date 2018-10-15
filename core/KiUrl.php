@@ -9,7 +9,7 @@ class KiUrl {
 	const GET=1, POST=2, PUT=3, DELETE=4;
 
 	static private $isInited;
-	static private $vMethod, $vUri, $vArgs, $vServer, $isHttps;
+	static private $vMethod, $vPath, $vArgs, $vServer, $isHttps;
 
 
 
@@ -46,10 +46,10 @@ Get path array.
 		self::init();
 
 		if ($_asStr)
-			return implode('?', self::$vUri);
+			return self::$vPath;
 
 		return array_slice(
-			explode("/", self::$vUri[0]), 1
+			explode("/", self::$vPath), 1
 		);;
 	}
 
@@ -108,7 +108,8 @@ Get HTTPS flag.
 		self::$vServer = $_SERVER['SERVER_NAME'];
 
 
-		self::$vUri = explode("?", preg_replace('[/+]', '/', "/${_SERVER["REQUEST_URI"]}"));
+		$urlA = explode("?", preg_replace('[/+]', '/', "/${_SERVER["REQUEST_URI"]}"));
+		self::$vPath = $urlA[0];
 
 
 		self::$vArgs = new LooseObject();
@@ -117,8 +118,8 @@ Get HTTPS flag.
 			self::$vArgs->$pName = $pVal;
 
 		//Fill vArgs
-		if (isset(self::$vUri[1]))
-		  foreach(explode("&",self::$vUri[1]) as $x){
+		if (isset($urlA[1]))
+		  foreach(explode("&",$urlA[1]) as $x){
 			$xSpl = explode("=",$x);
 			$get = isset($xSpl[1])? urldecode($xSpl[1]) :False;
 
