@@ -87,6 +87,9 @@ class KiAccount {
 			if ($this->id)
 				KiSql::apply('setAccount', $this->id, $cId, $_data[$fName]);
 		}
+
+
+		$this->state = True;
 	}
 
 
