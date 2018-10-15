@@ -24,12 +24,12 @@ class KiUser {
 /*
 Apply data from fetched uFlex user.
 */
-	function apply($_id, $_liveEmail='', $_livePhoto='', $_liveName=''){
+	function apply($_id, $_liveEmail='', $_liveName='', $_livePhoto=''){
 		$this->isSigned = true;
 		$this->id = $_id;
 		$this->liveEmail = $_liveEmail;
-		$this->livePhoto = $_livePhoto;
 		$this->liveName = $_liveName;
+		$this->livePhoto = $_livePhoto;
 
 		$this->accountO->fetch($_id);
 		$this->groupsO->fetch($_id);
@@ -41,8 +41,8 @@ Apply data from fetched uFlex user.
 		$this->isSigned= False;
 		$this->id= 0;
 		$this->liveEmail = '';
-		$this->livePhoto = '';
 		$this->liveName = '';
+		$this->livePhoto = '';
 
 		$this->accountO = new KiAccount();
 		$this->groupsO = new KiGroups();
