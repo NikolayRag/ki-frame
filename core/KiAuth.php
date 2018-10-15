@@ -77,11 +77,11 @@ API cb for social logon.
 	static function socCB($_type, $_args){
 		$socErr= KiAuthSoc::socCB($_type, $_args);
 		if ($socErr)
-			return;
+			return $socErr;
 
 		$xId= self::assignedGet();
 		if (!$xId) // -todo 6 (clean, auth) +0: deal with social callback error
-		 	return;
+		 	return True;
 
 		self::assignedUpdate($xId); //update last logon state
 
