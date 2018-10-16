@@ -57,7 +57,7 @@ class KiAuth {
 		self::$user = new KiUser();
 		($cUser= self::initFlexUser()) || ($cUser= self::initSocUser());
 		if ($cUser)
-			self::$user->apply($cUser->ID, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto);
+			self::$user->apply($cUser->ID, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto, $cUser->auto_social);
 	}
 
 
@@ -88,7 +88,7 @@ API cb for social logon.
 
 		$cUser = KiAuthPass::getData($xId);
 
-		self::$user->apply($xId, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto);
+		self::$user->apply($xId, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto, $cUser->auto_social);
 	}
 
 

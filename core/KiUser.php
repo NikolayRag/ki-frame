@@ -9,7 +9,7 @@ User data holder
 */
 class KiUser {
 //  todo 7 (ux, socal) -1: add function to update user data from social
-	var $isSigned=false, $id=0, $liveEmail='', $livePhoto='', $liveName='';
+	var $isSigned=false, $id=0, $liveEmail='', $livePhoto='', $liveName='', $liveOrphan=0;
 	private $accountO, $rightsO, $groupsO;
 
 
@@ -24,12 +24,13 @@ class KiUser {
 /*
 Apply data from fetched uFlex user.
 */
-	function apply($_id, $_liveEmail='', $_liveName='', $_livePhoto=''){
+	function apply($_id, $_liveEmail='', $_liveName='', $_livePhoto='', $_liveOrphan=0){
 		$this->isSigned = true;
 		$this->id = $_id;
 		$this->liveEmail = $_liveEmail;
 		$this->liveName = $_liveName;
 		$this->livePhoto = $_livePhoto;
+		$this->liveOrphan = $_liveOrphan;
 
 		$this->accountO->fetch($_id);
 		$this->groupsO->fetch($_id);
@@ -43,6 +44,7 @@ Apply data from fetched uFlex user.
 		$this->liveEmail = '';
 		$this->liveName = '';
 		$this->livePhoto = '';
+		$this->liveOrphan = 0;
 
 		$this->accountO = new KiAccount();
 		$this->groupsO = new KiGroups();
