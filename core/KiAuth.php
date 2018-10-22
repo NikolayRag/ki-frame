@@ -30,8 +30,8 @@ Init macro:
 // -todo 23 (ux, auth) +0: introduce entire auth cached timeout
 class KiAuth {
 	private static $DBA = [
-		'kiAuthGetSocial' => 'SELECT id_users FROM users_social WHERE type=?+0 AND id=?',
-		'kiAuthAdd' => 'INSERT INTO users (auto_social,RegDate) VALUES (1,?)',
+		'kiAuthGetSocial' => 'SELECT id_users,auto FROM users_social WHERE type=?+0 AND id=?',
+		'kiAuthAdd' => 'INSERT INTO users (RegDate) VALUES (?)',
 		'kiAuthAddSocial' => 'INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)',
 		'kiAuthUpdateLast' => 'UPDATE users SET LastLogin=? WHERE ID=?'
 	];
@@ -55,9 +55,7 @@ class KiAuth {
 
 
 		self::$user = new KiUser();
-		($cUser= self::initFlexUser()) || ($cUser= self::initSocUser());
-		if ($cUser)
-			self::$user->apply($cUser->ID, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto, $cUser->auto_social);
+		self::initFlexUser() || self::initSocUser();
 	}
 
 
@@ -79,16 +77,17 @@ API cb for social logon.
 		if ($socErr)
 			return $socErr;
 
-		$xId= self::assignedGet();
-		if (!$xId) // -todo 6 (clean, auth) +0: deal with social callback error
+		$socBind = self::assignedGet();
+		if (!$socBind) // -todo 6 (clean, auth) +0: deal with social callback error
 		 	return True;
 
+		$xId = $socBind['id_users'];
 		self::assignedUpdate($xId); //update last logon state
 
 
 		$cUser = KiAuthPass::getData($xId);
 
-		self::$user->apply($xId, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto, $cUser->auto_social);
+		self::$user->apply($xId, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto, $socBind['auto']);
 	}
 
 
@@ -114,7 +113,7 @@ Log in with email/pass
         if (!$res)
 	        return KiAuthPass::getError();
 
-		self::$user->apply(KiAuthPass::$user->ID, $_email, '', '');
+		self::$user->apply(KiAuthPass::$user->ID, $_email);
     }
 
 
@@ -171,7 +170,12 @@ Set new password.
 Check if logpass user is signed.
 */
 	private static function initFlexUser(){
-		return KiAuthPass::start(KiSql::getPDO());
+		$cUser = KiAuthPass::start(KiSql::getPDO());
+		if (!$cUser)
+			return;
+
+		self::$user->apply($cUser->ID, $cUser->Email);
+		return True;
 	}
 
 
@@ -184,11 +188,19 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 		if (!KiAuthSoc::start())
 			return;
 
-		$xId= self::assignedGet();
-		if (!$xId) //  todo 5 (clean, auth) +0: deal with social init error
+		$socBind = self::assignedGet();
+		if (!$socBind) //  todo 5 (clean, auth) +0: deal with social init error
 			return;
 
-		return KiAuthPass::getData($xId);
+		$xId = $socBind['id_users'];
+		$cUser = KiAuthPass::getData($xId);
+		if (!$cUser)
+			return;
+
+
+		self::$user->apply($xId, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto, $socBind['auto']);
+
+		return True;
 	}
 
 
@@ -201,13 +213,16 @@ Return user id.
 */
 	private static function assignedGet(){
 		KiSql::apply('kiAuthGetSocial', KiAuthSoc::$type, KiAuthSoc::$id);
-		$id_assigned= KiSql::fetch('id_users', 0);
+		$socialBind = KiSql::fetch();
 
 
-		if (!$id_assigned)
-			$id_assigned= self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id);
+		if (!$socialBind)
+			$socialBind = [
+				'id_users' => self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id),
+				'auto' => 1
+			];
 
-		return $id_assigned;
+		return $socialBind;
 	}
 
 
