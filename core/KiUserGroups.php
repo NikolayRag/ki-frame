@@ -21,11 +21,15 @@ class KiGroups {
 
 
 
-	function __construct(){
+	function __construct($_id){
 		self::init();
 
 
 		$this->assignedA = [];
+
+		$this->id = $_id;
+		if ($_id)
+			$this->fetch($_id);
 	}
 
 
@@ -34,13 +38,7 @@ class KiGroups {
 Fetch groups assignment for user.
 Fetch all groups definitions needed.
 */
-	function fetch($_id=0){
-		$this->id = $_id;
-
-		if (!$this->id)
-			return;
-
-
+	function fetch($_id){
 		KiSql::apply('getGroupsUser', $this->id);
 		$assignedA = [];
 		while ($cVal = KiSql::fetch())

@@ -4,51 +4,49 @@ include(__dir__ .'/kiUserGroups.php');
 include(__dir__ .'/kiUserRights.php');
 
 
+
 /*
 User data holder
 */
 class KiUser {
-//  todo 7 (ux, socal) -1: add function to update user data from social
-	var $isSigned=false, $id=0, $liveEmail='', $livePhoto='', $liveName='', $liveOrphan=0;
+	private $id=0;
 	private $accountO, $rightsO, $groupsO;
 
 
 
-//  todo 84 (account) +0: support applied ID at KiUser creation
-	function __construct(){
-		$this->reset();
+/*
+Initialize user.
+Account fields, groups assignment and rights are fetched and applied.
+*/
+	function __construct($_id=0, $_fields=[]){
+		$this->id = $_id;
+
+		$this->apply($_fields);
 	}
 
 
 
 /*
-Apply data from fetched uFlex user.
+Apply account data from named array.
 */
-	function apply($_id, $_liveEmail='', $_liveName='', $_livePhoto='', $_liveOrphan=0){
-		$this->isSigned = true;
-		$this->id = $_id;
-		$this->liveEmail = $_liveEmail;
-		$this->liveName = $_liveName;
-		$this->livePhoto = $_livePhoto;
-		$this->liveOrphan = $_liveOrphan;
+	function apply($_fields){
+		$this->accountO = new KiAccount($this->id);
+		$this->groupsO = new KiGroups($this->id);
+		$this->rightsO = new KiRights($this);
 
-		$this->accountO->fetch($_id);
-		$this->groupsO->fetch($_id);
+		$this->accountO->set($_fields, False);
 	}
 
 
 
-	function reset(){
-		$this->isSigned= False;
-		$this->id= 0;
-		$this->liveEmail = '';
-		$this->liveName = '';
-		$this->livePhoto = '';
-		$this->liveOrphan = 0;
+	function __get($_name){
+		switch ($_name){
+			case 'isSigned':
+				return $this->id && ($this->id == KF::user()->id);
 
-		$this->accountO = new KiAccount();
-		$this->groupsO = new KiGroups();
-		$this->rightsO = new KiRights($this);
+			case 'id':
+				return $this->id;
+		}
 	}
 
 

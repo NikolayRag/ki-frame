@@ -54,8 +54,9 @@ class KiAuth {
 		KiAuthSoc::init($_socialCfg);
 
 
-		self::$user = new KiUser();
 		self::initFlexUser() || self::initSocUser();
+		if (!self::$user)
+			self::$user = new KiUser();
 	}
 
 
@@ -87,7 +88,14 @@ API cb for social logon.
 
 		$cUser = KiAuthPass::getData($xId);
 
-		self::$user->apply($xId, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto, $socBind['auto']);
+		self::$user = new KiUser($xId, [
+			'autoEmail' => $cUser->Email,
+			'autoSocial' => $socBind['auto'],
+			'autoName' => KiAuthSoc::$liveName,
+			'autoPhoto' => KiAuthSoc::$livePhoto,
+			'autoType' => KiAuthSoc::$type,
+			'autoId' =>KiAuthSoc::$id
+		]);
 	}
 
 
@@ -113,7 +121,9 @@ Log in with email/pass
         if (!$res)
 	        return KiAuthPass::getError();
 
-		self::$user->apply(KiAuthPass::$user->ID, $_email);
+		self::$user = new KiUser(KiAuthPass::$user->ID, [
+			'autoEmail' => $_email
+		]);
     }
 
 
@@ -125,7 +135,7 @@ Logout either.
 		KiAuthSoc::logout();
 		KiAuthPass::logout();
 
-		self::$user->reset();
+		self::$user = new KiUser();
 
 //  todo 8 (clean, auth) -1: vary logout errors
 		return;
@@ -174,7 +184,10 @@ Check if logpass user is signed.
 		if (!$cUser)
 			return;
 
-		self::$user->apply($cUser->ID, $cUser->Email);
+		self::$user = new KiUser($cUser->ID, [
+			'autoEmail' => $cUser->Email
+		]);
+
 		return True;
 	}
 
@@ -198,7 +211,14 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 			return;
 
 
-		self::$user->apply($xId, $cUser->Email, KiAuthSoc::$liveName, KiAuthSoc::$livePhoto, $socBind['auto']);
+		self::$user = new KiUser($xId, [
+			'autoEmail' => $cUser->Email,
+			'autoSocial' => $socBind['auto'],
+			'autoName' => KiAuthSoc::$liveName,
+			'autoPhoto' => KiAuthSoc::$livePhoto,
+			'autoType' => KiAuthSoc::$type,
+			'autoId' =>KiAuthSoc::$id
+		]);
 
 		return True;
 	}
@@ -219,7 +239,7 @@ Return user id.
 		if (!$socialBind)
 			$socialBind = [
 				'id_users' => self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id),
-				'auto' => 1
+				'autoSocial' => 1
 			];
 
 		return $socialBind;

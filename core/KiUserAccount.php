@@ -20,7 +20,7 @@ class KiAccount {
 
 
 
-	function __construct(){
+	function __construct($_id){
 		self::init();
 
 
@@ -28,17 +28,16 @@ class KiAccount {
 		foreach (self::$fieldsA as $fName=>$fVal)
 			$this->accountA[$fName] = '';
 
+
+		$this->id = $_id;
+
+		if ($_id)
+			$this->fetch($_id);
 	}
 
 
 
-	function fetch($_id=0){
-		$this->id = $_id;
-
-		if (!$this->id)
-			return;
-
-
+	function fetch($_id){
 		KiSql::apply('getAccount', $this->id);
 		while ($cFieldsA = KiSql::fetch()){
 			$this->state = True;
@@ -75,17 +74,21 @@ class KiAccount {
 		return getA($this->accountA, $_name, '');
 	}
 
-	function set($_data=False){
+
+
+	function set($_data=False, $store=True){
 		if (!$_data)
 			return $this->accountA;
 
 		if (!is_array($_data))
 			return;
 
-		foreach (self::$fieldsA as $fName=>$cId){
-			$this->accountA[$fName] = $_data[$fName];
-			if ($this->id)
-				KiSql::apply('setAccount', $this->id, $cId, $_data[$fName]);
+
+		foreach ($_data as $n=>$v){
+			$this->accountA[$n] = $v;
+
+			if ($store and $this->id and array_key_exists($n, self::$fieldsA))
+				KiSql::apply('setAccount', $this->id, self::$fieldsA[$n], $v);
 		}
 
 
