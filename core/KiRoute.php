@@ -17,7 +17,7 @@ Virtually, there're following levels of complexity in managing content generatio
 
 
 class KiRoute {
-	private static $contextA=[], $contextOrder=[], $bindSrcA=[], $bindA=[];
+	private static $contextA=[], $bindSrcA=[], $bindA=[];
 
 	private static $cContext;
 
@@ -142,33 +142,6 @@ $_headers
 
 
 /*
-Define context order for corresponding matches, when several contents match some URL.
-
-Regex may be used to specify set of contexts, which will go as they were defined.
-Regex used is implicitely expanded to full-string form (^...&).
-When wide mask used, all matching context are switched off further match.
-That is, if there's ['c1', 'c2', 'd2'] contexts defined, ordering with ['.2', 'c\d'] will result in ['c2', 'd2', 'c1'] since 'c2' is grabbed with '.2' match.  Using '.*' anywhere on order, will place all remaining contexts without sorting.
-
-If particular context don't match, it is ignored.
-All matching contexts will be used if no order specified.
-
-
-$_ctxA
-	Array of contexts.
-	Default context may be refered as ''.
-*/
-	static function order($_ctxA=False){
-		if (is_array($_ctxA))
-			self::$contextOrder = $_ctxA;
-
-		return self::$contextOrder;
-	}
-
-
-
-
-
-/*
 Finalize: actually run matching route collection.
 This is called once for entire http request.
 
@@ -229,16 +202,24 @@ Variables are NOT safe, they could be modified while runtime, though their lifet
 
 /*
 Fetch ordered and filtered context.
+
+String or regex may be used to specify set of contexts, which will go as they were defined.
+Regex used is implicitely expanded to full-string form (^...&).
+When wide mask used, all matching context are switched off further match.
+That is, if there's ['c1', 'c2', 'd2'] contexts defined, ordering with ['.2', 'c\d'] will result in ['c2', 'd2', 'c1'] since 'c2' is grabbed with '.2' match.  Using '.*' anywhere on order, will place all remaining contexts without sorting.
+
+If particular context don't match, it is ignored.
+All matching contexts will be used if no order specified.
 */
-	static private function orderSnapshot($_overOrder=False){
-		if (!is_array($_overOrder))
-			$_overOrder = self::$contextOrder;
+	static private function orderSnapshot($_order=[]){
+		if (!is_array($_order))
+			$_order = [];
 
 		$ctxA = array_keys(self::$contextA);
 
 		$collectA = [];
-		if (count($_overOrder))
-			foreach ($_overOrder as $cCtx){
+		if (count($_order))
+			foreach ($_order as $cCtx){
 				if (!is_string($cCtx)) //type check
 					continue;
 

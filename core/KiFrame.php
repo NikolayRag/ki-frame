@@ -121,15 +121,6 @@ Add context to URL, shortcut for KiRoute::bind()
 
 
 /*
-Order contexts, shortcut for KiRoute::order()
-*/
-	static function rOut($_ctxA=False){
-		return KiRoute::order($_ctxA);
-	}
-
-
-
-/*
 Finalize definition and render routing, shortcut for KiRoute::render()
 
 _ctxOrder
