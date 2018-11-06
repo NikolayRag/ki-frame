@@ -1,6 +1,5 @@
 <?php
-// -todo 65 (ux, auth) +0: append logged social user to existing logpass
-// -todo 66 (ux, auth) +0: append social user to logged logpass
+// =todo 65 (feature, auth) +0: append social user and logpass
 include(__dir__ .'/KiUser.php');
 include(__dir__ .'/KiAuthPass.php');
 include(__dir__ .'/KiAuthSoc.php');

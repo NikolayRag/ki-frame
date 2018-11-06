@@ -148,7 +148,7 @@ _ctxOrder
 		//additional error callback (to DB table)
 		KiHandler::errCB(KiError::errCBDB(self::ERROR_SQL_TABLE));
 
-// -todo 78 (clean, ux) +0: allow no-auth case
+// -todo 78 (clean, ux) +0: allow social-only and no-auth case
 		KiAuth::init(new LooseObject(KC::SOCIAL()));
 
 

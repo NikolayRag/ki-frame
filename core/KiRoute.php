@@ -209,7 +209,7 @@ _newOrder
 
 /*
 Provide current context variables, available only for bond code runtime.
-Variables are NOT safe, they could be modified while runtime.
+Variables are NOT safe, they could be modified while runtime, though their lifetime is limited to context execution.
 */
 	static function contextData(){
 		$cVars = [];
