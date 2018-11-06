@@ -186,7 +186,7 @@ _newOrder
 		//implicit bindings
 		if (!count($matches)){
 			//bound '/' to all binding
-			if (KiUrl::uri()=='/')
+			if (KiUrl::path(True)=='/')
 				$matches = [new Ki_RouteBind(['/'],$orderCtx)];
 			
 			//'not found'

@@ -50,7 +50,7 @@ Get path array.
 
 		return array_slice(
 			explode("/", self::$vPath), 1
-		);;
+		);
 	}
 
 
