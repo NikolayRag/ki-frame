@@ -70,7 +70,7 @@ $_table
 			foreach ($_errPool as $cKey => $cVal) {
 				$eType= (array_key_exists('etype', $cVal) && $cVal['etype']==2)?2:1;
 				if (!$cKey){
-					\KiSql::apply('errcbdbNew', $eType, $cVal['type'], $cVal['message'], $cVal['file'], $cVal['line'], /*$USER->id*/ 0, $_SERVER["REQUEST_URI"], getA($_SERVER,'HTTP_USER_AGENT','fake'));
+					\KiSql::apply('errcbdbNew', $eType, $cVal['type'], $cVal['message'], $cVal['file'], $cVal['line'], KF::user()->id, $_SERVER["REQUEST_URI"], getA($_SERVER,'HTTP_USER_AGENT','fake'));
 					$maxId= \KiSql::lastInsertId();
 				} else {
 					\KiSql::apply('errcbdbAdd', $eType, $cVal['type'], $cVal['message'], $cVal['file'], $cVal['line'], $maxId, $cKey);
