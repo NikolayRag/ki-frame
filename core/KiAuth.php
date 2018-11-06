@@ -179,7 +179,11 @@ Set new password.
 Check if logpass user is signed.
 */
 	private static function initFlexUser(){
-		$cUser = KiAuthPass::start(KiSql::getPDO());
+		$cDB = KiSql::getPDO();
+		if (!$cDB)
+			return;
+
+		$cUser = KiAuthPass::start($cDB);
 		if (!$cUser)
 			return;
 

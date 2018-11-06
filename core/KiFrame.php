@@ -141,7 +141,6 @@ _ctxOrder
 		self::$isEnded = True;
 
 
-// -todo 77 (clean, ux) +0: allow no-db case
 		$dbCfg= new LooseObject(KC::DBCFG());
 		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 

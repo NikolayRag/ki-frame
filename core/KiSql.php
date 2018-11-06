@@ -27,11 +27,14 @@ class KiSql {
 
 
 		try {
-			self::$db = new PDO("mysql:host={$_host};dbname={$_base};charset=UTF8", $_uname, $_upass, array(PDO::ATTR_PERSISTENT=>true));
+			if ($_host and $_base)
+				self::$db = new PDO("mysql:host={$_host};dbname={$_base};charset=UTF8", $_uname, $_upass, array(PDO::ATTR_PERSISTENT=>true));
 		}
 		catch( PDOException $Exception ) {
 			self::$dbErr= $Exception->getCode();
 			self::$dbErrText= $Exception->getMessage();
+
+			self::$db = Null;
 		}
 
 		if (self::$db)
@@ -87,10 +90,8 @@ $_tmpl
 		self::$stmt = Null;
 
 
-		if (!self::$db){
-			throw new Exception(self::MsgError);
+		if (!self::$db)
 			return;
-		}
 
 
 		$sqVars= func_get_args();
@@ -141,10 +142,8 @@ $_col
 		$defRet = $_col===False? [] : Null;
 
 
-		if (!self::$db){
-			throw new Exception(self::MsgError);
+		if (!self::$db)
 			return $defRet;
-		}
 
 		if (self::$stmt===Null)
 			return $defRet;
@@ -162,11 +161,8 @@ $_col
 Return last inserted ID.
 */
 	static function lastInsertId(){
-		if (!self::$db){
-			throw new Exception(self::MsgError);
+		if (!self::$db)
 			return;
-		}
-
 
 		return self::$db->lastInsertId();
 	}
