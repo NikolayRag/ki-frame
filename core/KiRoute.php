@@ -223,7 +223,7 @@ All matching contexts will be used if no order specified.
 				if (!is_string($cCtx)) //type check
 					continue;
 
-				$fA = array_filter($ctxA, function ($v) use ($cCtx) {return preg_match("/^$cCtx$/", $v);});
+				$fA = array_filter($ctxA, function ($v) use ($cCtx) {return fnmatch($cCtx, $v);});
 				$collectA = array_merge($collectA, $fA);
 			}
 		else
