@@ -29,7 +29,7 @@ Order for multiple same-context code is the same as they were declared.
 
 
 $_ctx
-	String or number for context to be named.
+	String for context to be named.
 
 
 $_src
@@ -43,6 +43,9 @@ $_src
 	Anything other than string returned treated as error and ignored in output.
 */
 	static function context($_ctx, $_src){
+		if (!is_string($_ctx))
+			$_ctx = (string)$_ctx;
+
 		if (!is_array($_src))
 			$_src = [$_src];
 
