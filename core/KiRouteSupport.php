@@ -67,27 +67,20 @@ Solve registered code generators for specified context.
 Context bind class
 */
 class Ki_RouteBind {
-	var $is404, $urlA=[], $ctxA=[], $return=0, $headersA;
+	var $urlA=[], $ctxA=[], $return=0, $headersA;
 	var $varsA=[];
 
 
-	function __construct($_urlA, $_ctx=[], $_is404=False){
+	function __construct($_urlA, $_ctx=[]){
 		$this->urlA = $_urlA;
 		$this->ctxA = $_ctx;
 		$this->return = 0;
 		$this->headersA = [];
-
-		$this->is404 = $_is404;
 	}
 
 
 
-	function match($_do404=False){
-		//skip excess match type
-		if ($_do404 != $this->is404)
-			return;
-
-
+	function match(){
 		$lost = False;
 		$varsA = [];
 		foreach ($this->urlA as $cUrl) {

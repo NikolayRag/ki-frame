@@ -17,7 +17,7 @@ Virtually, there're following levels of complexity in managing content generatio
 
 
 class KiRoute {
-	private static $contextA=[], $bindSrcA=[], $bindA=[];
+	private static $contextA=[], $bindA=[], $bind404A=[];
 
 	private static $cContext;
 
@@ -111,28 +111,16 @@ $_headers
 		if (!is_array($_url))
 			$_url = [$_url];
 
-
-		$cKey = array_search($_url, self::$bindSrcA, True);
-		if ($cKey === False){
-			$cKey = count(self::$bindSrcA);
-			self::$bindSrcA[] = $_url;
-		}
-
-
 		//detect 404 case
 		$is404 = ($_url[0]===404);
 		if ($is404)
 			array_shift($_url);
 
-		if (!array_key_exists($cKey, self::$bindA))
-			self::$bindA[$cKey] = new Ki_RouteBind($_url, [], $is404);
-		$cBind = self::$bindA[$cKey];
-
-
 
 		if (!is_array($_ctx))
 			$_ctx = [$_ctx];
-		$cBind->ctxA = array_merge($cBind->ctxA, $_ctx);
+
+		$cBind = new Ki_RouteBind($_url, $_ctx);
 
 
 		if ($_code)
@@ -140,6 +128,12 @@ $_headers
 		
 		foreach ($_headersA as $hName=>$hVal)
 			$cBind->headersA[$hName] = $hVal;
+
+
+		if ($is404)
+			self::$bind404A[] = $cBind;
+		else
+			self::$bindA[] = $cBind;
 	}
 
 
@@ -248,11 +242,12 @@ If specified, only listed in array will be run at all.
 Detect all matching URL bindings.
 */
 	static private function matchUrl($_do404=False){
-		$bondA = [];
+		$bindA = $_do404? self::$bind404A : self::$bindA;
 
 		//collect detected url's
-		foreach (self::$bindA as $cBind)
-			if ($cBind->match($_do404))
+		$bondA = [];
+		foreach ($bindA as $cBind)
+			if ($cBind->match())
 				$bondA[] = $cBind;
 
 		return $bondA;
