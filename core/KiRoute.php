@@ -146,8 +146,18 @@ Finalize: actually run matching route collection.
 This is called once for entire http request.
 
 _newOrder
-	Array may be supplied to reorder output contexts.
-	Remember again only those listed in array will be run at all.
+	Array of glob patterns may be used to specify contexts, which will go in order they matched.
+
+	Matched contexts are switched off further match.
+	That is, if there's ['c1', 'c2', 'd2'] contexts defined, ordering with ['*2', 'c?'] will result in ['c2', 'd2', 'c1'] since 'c2' is matched first.
+
+	Using '*' anywhere on order, will place all remaining contexts without sorting in order they were defined.
+
+	If non-empty array is provided, any context which didnt match will be ignored.
+
+	If particular context don't match, it is ignored.
+
+	All matching contexts will be used if no order specified.
 */
 	static function render($_newOrder=False){
 		$orderCtx = self::orderSnapshot($_newOrder);
@@ -159,7 +169,7 @@ _newOrder
 		//implicit bindings
 		if (!count($matches)){
 			//bound '/' to all binding
-			if (KiUrl::path(True)=='/')
+			if (KiUrl::path(True)=='/') //  todo 116 (check) -1: check
 				$matches = [new Ki_RouteBind(['/'],$orderCtx)];
 			
 			//'not found'
@@ -172,6 +182,7 @@ _newOrder
 		$runA = self::orderRun($matches, $orderCtx);
 
 		foreach ($runA as $cCtxName){
+// -todo 117 (refactor) +0: use self:: for all KiRoute::
 			KiRoute::$cContext = self::$contextA[$cCtxName];
 			KiRoute::$cContext->runCtx();
 			KiRoute::$cContext = Null;
@@ -203,13 +214,8 @@ Variables are NOT safe, they could be modified while runtime, though their lifet
 /*
 Fetch ordered and filtered context.
 
-String or regex may be used to specify set of contexts, which will go as they were defined.
-Regex used is implicitely expanded to full-string form (^...&).
-When wide mask used, all matching context are switched off further match.
-That is, if there's ['c1', 'c2', 'd2'] contexts defined, ordering with ['.2', 'c\d'] will result in ['c2', 'd2', 'c1'] since 'c2' is grabbed with '.2' match.  Using '.*' anywhere on order, will place all remaining contexts without sorting.
-
-If particular context don't match, it is ignored.
-All matching contexts will be used if no order specified.
+Array may be supplied to reorder output contexts.
+If specified, only listed in array will be run at all.
 */
 	static private function orderSnapshot($_order=[]){
 		if (!is_array($_order))
@@ -257,10 +263,9 @@ Collect all URL contexts in specified order
 	static private function orderRun($_bindA, $_order){
 		$fContextA = [];
 		//filter contexts out
-//  todo 56 (ux, unsure) -1: maybe call same contexts several matches separately
+
 		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtx) {
-// -todo 69 (ux, routing) +0: allow False context to be specified where no output needed
 				if (array_search($cCtx, $_order) === False)
 					continue;
 
