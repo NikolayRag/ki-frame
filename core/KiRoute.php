@@ -179,10 +179,9 @@ _newOrder
 		$runA = self::orderRun($matches, $orderCtx);
 
 		foreach ($runA as $cCtxName){
-// -todo 117 (refactor) +0: use self:: for all KiRoute::
-			KiRoute::$cContext = self::$contextA[$cCtxName];
-			KiRoute::$cContext->runCtx();
-			KiRoute::$cContext = Null;
+			self::$cContext = self::$contextA[$cCtxName];
+			self::$cContext->runCtx();
+			self::$cContext = Null;
 		}
 	}
 
@@ -194,8 +193,8 @@ Variables are NOT safe, they could be modified while runtime, though their lifet
 */
 	static function contextData(){
 		$cVars = [];
-		if (KiRoute::$cContext)
-			$cVars = KiRoute::$cContext->varsA;
+		if (self::$cContext)
+			$cVars = self::$cContext->varsA;
 
 		return new LooseObject($cVars);
 	}
