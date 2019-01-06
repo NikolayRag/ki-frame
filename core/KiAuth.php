@@ -30,7 +30,7 @@ Init macro:
 class KiAuth {
 	private static $DBA = [
 		'kiAuthGetSocial' => 'SELECT id_users,auto FROM users_social WHERE type=?+0 AND id=?',
-		'kiAuthAdd' => 'INSERT INTO users (RegDate) VALUES (?)',
+		'kiAuthAdd' => 'INSERT INTO users (RegDate,autosocial) VALUES (?,1)',
 		'kiAuthAddSocial' => 'INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)',
 		'kiAuthUpdateLast' => 'UPDATE users SET LastLogin=? WHERE ID=?'
 	];
@@ -77,19 +77,18 @@ API cb for social logon.
 		if ($socErr)
 			return $socErr;
 
-		$socBind = self::assignedGet();
-		if (!$socBind) // -todo 6 (clean, auth) +0: deal with social callback error
+		$id_user = self::assignedGet();
+		if (!$id_user) // -todo 6 (clean, auth) +0: deal with social callback error
 		 	return True;
 
-		$xId = $socBind['id_users'];
-		self::assignedUpdate($xId); //update last logon state
+		self::assignedUpdate($id_user); //update last logon state
 
 
-		$cUser = KiAuthPass::getData($xId);
+		$cUser = KiAuthPass::getData($id_user);
 
-		self::$user = new KiUser($xId, [
+		self::$user = new KiUser($id_user, [
 			'autoEmail' => $cUser->Email,
-			'autoSocial' => $socBind['auto'],
+			'autoSocial' => $cUser->autosocial,
 			'autoName' => KiAuthSoc::$liveName,
 			'autoPhoto' => KiAuthSoc::$livePhoto,
 			'autoType' => KiAuthSoc::$type,
@@ -204,19 +203,18 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 		if (!KiAuthSoc::start())
 			return;
 
-		$socBind = self::assignedGet();
-		if (!$socBind) //  todo 5 (clean, auth) +0: deal with social init error
+		$id_user = self::assignedGet();
+		if (!$id_user) //  todo 5 (clean, auth) +0: deal with social init error
 			return;
 
-		$xId = $socBind['id_users'];
-		$cUser = KiAuthPass::getData($xId);
+		$cUser = KiAuthPass::getData($id_user);
 		if (!$cUser)
 			return;
 
 
-		self::$user = new KiUser($xId, [
+		self::$user = new KiUser($id_user, [
 			'autoEmail' => $cUser->Email,
-			'autoSocial' => $socBind['auto'],
+			'autoSocial' => $cUser->autosocial,
 			'autoName' => KiAuthSoc::$liveName,
 			'autoPhoto' => KiAuthSoc::$livePhoto,
 			'autoType' => KiAuthSoc::$type,
@@ -237,15 +235,11 @@ Return user id.
 	private static function assignedGet(){
 		KiSql::apply('kiAuthGetSocial', KiAuthSoc::$type, KiAuthSoc::$id);
 		$socialBind = KiSql::fetch();
+		$id_user = $socialBind['id_users'];
+		if (!$id_user)
+			$id_user = self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id);
 
-
-		if (!$socialBind)
-			$socialBind = [
-				'id_users' => self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id),
-				'autoSocial' => 1
-			];
-
-		return $socialBind;
+		return $id_user;
 	}
 
 
