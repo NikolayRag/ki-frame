@@ -195,15 +195,21 @@ Callback for social login. Shortcut for KiAuth socCB().
 	}
 /*
 Register new user with login/pass. Shortcut for KiAuth passRegister().
+
+$_bind
+	Set to bind logpass to current autosocial user.
 */
-	static function lReg($_email, $_pass){
-		return KiAuth::passRegister($_email, $_pass);
+	static function lReg($_email, $_pass, $_bind=False){
+		return KiAuth::passRegister($_email, $_pass, $_bind);
 	}
 /*
 Login user with login/pass. Shortcut for KiAuth passLogin().
+
+$_bind
+	Set to bind logpass to current autosocial user.
 */
-	static function lIn($_email, $_pass){
-		return KiAuth::passLogin($_email, $_pass);
+	static function lIn($_email, $_pass, $_bind=False){
+		return KiAuth::passLogin($_email, $_pass, $_bind);
 	}
 /*
 Log out logged use. Shortcut for KiAuth logout().

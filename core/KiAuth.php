@@ -1,5 +1,5 @@
 <?php
-// =todo 65 (feature, auth) +0: append social user and logpass
+// =todo 65 (feature, auth) +0: append additional users to signed user
 include(__dir__ .'/KiUser.php');
 include(__dir__ .'/KiAuthPass.php');
 include(__dir__ .'/KiAuthSoc.php');
@@ -101,12 +101,12 @@ API cb for social logon.
 /*
 Regster new email/pass user and login.
 */
-	static function passRegister($_email, $_pass){
+	static function passRegister($_email, $_pass, $_bind=False){
         $res = KiAuthPass::register($_email,$_pass);
         if (!$res)
         	return KiAuthPass::getError();
 
-        return self::passLogin($_email, $_pass);
+        return self::passLogin($_email, $_pass, $_bind);
 }
 
 
@@ -114,14 +114,24 @@ Regster new email/pass user and login.
 /*
 Log in with email/pass
 */
-	static function passLogin($_email, $_pass){
+	static function passLogin($_email, $_pass, $_bind=False){
+		if (!$_bind && self::$user->id!=0)
+			return;
+
+
         $res = KiAuthPass::login($_email, $_pass);
         if (!$res)
 	        return KiAuthPass::getError();
 
-		self::$user = new KiUser(KiAuthPass::$user->ID, [
+
+		$newUser = new KiUser(KiAuthPass::$user->ID, [
 			'autoEmail' => $_email
 		]);
+
+		if (self::$user->isSigned && self::$user->isAuto)
+			self::rebindUser($newUser);
+
+		self::$user = $newUser;
     }
 
 
@@ -222,6 +232,14 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 		]);
 
 		return True;
+	}
+
+
+
+/*
+Replace signed autosocial user with given logpass user.
+*/
+	private static function rebindUser($_toUser){
 	}
 
 
