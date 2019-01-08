@@ -46,6 +46,9 @@ Apply account data from named array.
 
 			case 'id':
 				return $this->id;
+
+			case 'isAuto':
+				return $this->account('autoSocial');
 		}
 	}
 
