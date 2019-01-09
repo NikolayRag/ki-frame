@@ -5,8 +5,8 @@ Manage abstract user groups.
 // -todo 90 (groups) +0: split KiGroups to group-managing and user-managing
 class KiGroups {
 	private static $DBA = [
-		'getGroups' => 'SELECT * from users_groups WHERE id_user=?',
-		'getGroupsList' => 'SELECT * from users_groups_list WHERE id IN (?)'
+		'getGroups' => 'SELECT * FROM users_groups WHERE id_user=?',
+		'getGroupsList' => 'SELECT * from users_groups_list'
 	];
 
 
@@ -34,45 +34,31 @@ class KiGroups {
 
 /*
 Fetch groups assignment for user.
-Fetch all groups definitions needed.
 */
 	function fetch($_id){
 		KiSql::apply('getGroups', $this->id);
-		$assignedA = [];
+
 		while ($cVal = KiSql::fetch())
-			$assignedA[] = $cVal['id_group'];
-
-	
-		$reqGroupsA = array_diff($assignedA, array_keys(self::$groupsA));
-
-		KiSql::apply('getGroupsList', $reqGroupsA);
-		while ($cVal = KiSql::fetch())
-			self::$groupsA[$cVal['id']] = (object)['id'=>$cVal['id'], 'name'=>$cVal['name']];
-
-
-		$this->assignedA = [];
-		foreach ($assignedA as $cId)
-			$this->assignedA[] = self::$groupsA[$cId];
+			$this->assignedA[$cVal['id_group']] = True;
 	}
 
 
 
 /*
-Get specified groups.
-Get all groups if none specfied.
+Get groups list for specified list.
 */
-	function get($_idA=[]){
-		if ($_idA==[])
-			return $this->assignedA;
+	function get($_idA=False){
+		if ($_idA===False)
+			return $this->get(array_keys($this->assignedA));
 
 
 		if (!is_array($_idA))
 			$_idA = [$_idA];
 
 		$outA = [];
-		foreach ($this->assignedA as $cGrp)
-			if (array_search($cGrp->id, $_idA)!==False)
-				$outA[] = $cGrp->id;
+		foreach ($_idA as $cId)
+			if (getA($this->assignedA, $cId))
+				$outA[$cId] = self::$groupsA[$cId];
 
 
 		return $outA;
@@ -110,7 +96,16 @@ Get all groups if none specfied.
 
 		KiSql::add(self::$DBA);
 
-		self::$groupsA = []; //fill groups as requested
+
+		//Fetch all groups definitions
+		self::$groupsA = [];
+
+		KiSql::apply('getGroupsList');
+		while ($cVal = KiSql::fetch())
+			self::$groupsA[$cVal['id']] = (object)[
+				'id'=>$cVal['id'],
+				'name'=>$cVal['name']
+			];
 	}
 }
 
