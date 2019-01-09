@@ -1,13 +1,12 @@
 <?
 /*
 Manage abstract user groups.
-Grouping is not used by itself within KiFrame.
 */
 // -todo 90 (groups) +0: split KiGroups to group-managing and user-managing
 class KiGroups {
 	private static $DBA = [
-		'getGroupsUser' => 'SELECT * from users_groups_assign WHERE id_user=?',
-		'getGroups' => 'SELECT * from users_groups WHERE id IN (?)'
+		'getGroups' => 'SELECT * from users_groups WHERE id_user=?',
+		'getGroupsList' => 'SELECT * from users_groups_list WHERE id IN (?)'
 	];
 
 
@@ -38,7 +37,7 @@ Fetch groups assignment for user.
 Fetch all groups definitions needed.
 */
 	function fetch($_id){
-		KiSql::apply('getGroupsUser', $this->id);
+		KiSql::apply('getGroups', $this->id);
 		$assignedA = [];
 		while ($cVal = KiSql::fetch())
 			$assignedA[] = $cVal['id_group'];
@@ -46,7 +45,7 @@ Fetch all groups definitions needed.
 	
 		$reqGroupsA = array_diff($assignedA, array_keys(self::$groupsA));
 
-		KiSql::apply('getGroups', $reqGroupsA);
+		KiSql::apply('getGroupsList', $reqGroupsA);
 		while ($cVal = KiSql::fetch())
 			self::$groupsA[$cVal['id']] = (object)['id'=>$cVal['id'], 'name'=>$cVal['name']];
 
