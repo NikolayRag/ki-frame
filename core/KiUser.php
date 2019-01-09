@@ -79,6 +79,18 @@ Apply account data from named array.
 
 
 
+	function groupSet($_idA){
+		return $this->groupsO->set($_idA);
+	}
+
+
+
+	function groupDel($_idA){
+		return $this->groupsO->del($_idA);
+	}
+
+
+
 	function rights(){
 		return $this->rightsO;
 	}

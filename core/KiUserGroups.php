@@ -6,6 +6,8 @@ Manage abstract user groups.
 class KiGroups {
 	private static $DBA = [
 		'getGroups' => 'SELECT * FROM users_groups WHERE id_user=?',
+		'setGroups' => 'REPLACE INTO users_groups (id_group,id_user) VALUES (?,?)',
+		'delGroups' => 'DELETE FROM users_groups WHERE id_group=? AND id_user=?',
 		'getGroupsList' => 'SELECT * from users_groups_list'
 	];
 
@@ -66,8 +68,30 @@ Get groups list for specified list.
 
 
 
-//  todo 85 (groups) +0: add KiGroups->set()
-	function set(){
+	function set($_groupIdA){
+		if (!is_array($_groupIdA))
+			$_groupIdA = [$_groupIdA];
+
+
+		foreach ($_groupIdA as $cGroupId){
+			KiSql::apply('setGroups', $cGroupId, $this->id);
+
+			$this->assignedA[$cGroupId] = True;
+		}
+	}
+
+
+
+	function del($_groupId){
+		if (!is_array($_groupIdA))
+			$_groupIdA = [$_groupIdA];
+
+
+		foreach ($_groupIdA as $cGroupId){
+			KiSql::apply('delGroups', $cGroupId, $this->id);
+
+			unset($this->assignedA[$cGroupId]);
+		}
 	}
 
 
