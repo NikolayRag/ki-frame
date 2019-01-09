@@ -73,7 +73,7 @@ Apply account data from named array.
 
 
 
-	function groups($_idA){
+	function groupGet($_idA=False){
 		return $this->groupsO->get($_idA);
 	}
 
