@@ -104,7 +104,7 @@ Get all groups if none specfied.
 
 	static function init(){
 		if (self::$isInited)
-			return
+			return;
 		self::$isInited = True;
 
 

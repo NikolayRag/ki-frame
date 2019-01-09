@@ -51,7 +51,7 @@ class KiAccount {
 
 	static function init(){
 		if (self::$isInited)
-			return
+			return;
 		self::$isInited = True;
 
 

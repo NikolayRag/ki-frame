@@ -49,7 +49,7 @@ Right is checked then, running bond function, with user itsels as argument follo
 
 	static function init(){
 		if (self::$isInited)
-			return
+			return;
 		self::$isInited = True;
 	}
 }

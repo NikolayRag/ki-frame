@@ -44,7 +44,7 @@ class KiAuth {
 
 	static function init($_socialCfg){
 		if (self::$isInited)
-			return
+			return;
 		self::$isInited = True;
 
 
