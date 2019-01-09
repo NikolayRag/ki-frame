@@ -6,7 +6,6 @@ Grouping is not used by itself within KiFrame.
 // -todo 90 (groups) +0: split KiGroups to group-managing and user-managing
 class KiGroups {
 	private static $DBA = [
-		'getGroupsClasses' => 'SELECT * from users_groups_classes',
 		'getGroupsUser' => 'SELECT * from users_groups_assign WHERE id_user=?',
 		'getGroups' => 'SELECT * from users_groups WHERE id IN (?)'
 	];
@@ -14,7 +13,7 @@ class KiGroups {
 
 	private static $isInited;
 
-	private static $classesA, $groupsA;
+	private static $groupsA;
 
 
 	private $id=0, $assignedA;
@@ -49,7 +48,7 @@ Fetch all groups definitions needed.
 
 		KiSql::apply('getGroups', $reqGroupsA);
 		while ($cVal = KiSql::fetch())
-			self::$groupsA[$cVal['id']] = (object)['id'=>$cVal['id'], 'name'=>$cVal['name'], 'class'=>self::$classesA[$cVal['id_class']]];
+			self::$groupsA[$cVal['id']] = (object)['id'=>$cVal['id'], 'name'=>$cVal['name']];
 
 
 		$this->assignedA = [];
@@ -112,14 +111,7 @@ Get all groups if none specfied.
 
 		KiSql::add(self::$DBA);
 
-
-		KiSql::apply('getGroupsClasses');
-		
 		self::$groupsA = []; //fill groups as requested
-
-		self::$classesA = [];
-		while ($cRow= KiSql::fetch())
-			self::$classesA[$cRow['id']] = (object)['id'=>$cRow['id'], 'class'=>$cRow['class']];
 	}
 }
 
