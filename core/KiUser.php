@@ -48,7 +48,7 @@ Apply account data from named array.
 				return $this->id;
 
 			case 'isAuto':
-				return $this->account('autoSocial');
+				return $this->id and $this->account('autoBind')==$this->id;
 		}
 	}
 

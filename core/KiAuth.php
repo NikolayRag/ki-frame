@@ -90,11 +90,11 @@ API cb for social logon.
 
 		self::$user = new KiUser($idUser['id_users'], [
 			'autoEmail' => $cUser->Email,
-			'autoSocial' => $idUser['id_users_auto'],
+			'autoBind' => $idUser['id_users_auto'],
 			'autoName' => KiAuthSoc::$liveName,
 			'autoPhoto' => KiAuthSoc::$livePhoto,
 			'autoType' => KiAuthSoc::$type,
-			'autoId' =>KiAuthSoc::$id
+			'autoSocialId' =>KiAuthSoc::$id
 		]);
 	}
 
@@ -226,11 +226,11 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 
 		self::$user = new KiUser($idUser['id_users'], [
 			'autoEmail' => $cUser->Email,
-			'autoSocial' => $idUser['id_users_auto'],
+			'autoBind' => $idUser['id_users_auto'],
 			'autoName' => KiAuthSoc::$liveName,
 			'autoPhoto' => KiAuthSoc::$livePhoto,
 			'autoType' => KiAuthSoc::$type,
-			'autoId' =>KiAuthSoc::$id
+			'autoSocialId' =>KiAuthSoc::$id
 		]);
 
 		return True;
