@@ -29,10 +29,12 @@ Init macro:
 // -todo 23 (ux, auth) +0: introduce entire auth cached timeout
 class KiAuth {
 	private static $DBA = [
-		'kiAuthUpdateLast' => 'UPDATE users SET LastLogin=? WHERE ID=?'
 		'kiAuthGetSocial' => 'SELECT id_users,id_users_auto FROM users_social WHERE type=?+0 AND id=?',
 		'kiAuthAdd' => 'INSERT INTO users (RegDate) VALUES (?)',
 		'kiAuthAddSocial' => 'INSERT INTO users_social (type,id,id_users,id_users_auto) VALUES (?,?,?,?)',
+		'kiAuthUpdateLast' => 'UPDATE users SET LastLogin=? WHERE ID=?',
+
+		'kiAuthSwitchSocial' => 'UPDATE users_social SET id_users=? WHERE id_users=?',
 	];
 
 
@@ -242,6 +244,9 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 Replace signed autosocial user with given logpass user.
 */
 	private static function rebindUser($_toUser){
+		KiSql::apply('kiAuthSwitchSocial', $_toUser->id, self::$user->id);
+
+		self::$user->copy($_toUser);
 	}
 
 
