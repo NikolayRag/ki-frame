@@ -55,8 +55,8 @@ Apply account data from named array.
 
 
 // -todo 76 (clean, auth) +0: make account get/set reliable
-	function account($_field){
-		return $this->accountO->get($_field);
+	function account($_field=False, $_default=''){
+		return $this->accountO->get($_field, $_default);
 	}
 
 
@@ -93,6 +93,23 @@ Apply account data from named array.
 
 	function rights(){
 		return $this->rightsO;
+	}
+
+
+
+/*
+Copy user data to other user:
+group assignments are joined,
+account data is copied if not set.
+*/
+	function copy($_to){
+		$_to->groupSet( array_keys($this->groupGet()) );
+
+		//merge user accounts, target preferred
+		foreach ($this->account() as $aId=>$aVal) {
+			if ($_to->account($aId, False)===False)
+				$_to->accountSet([$aId=>$aVal]);
+		}
 	}
 }
 ?>
