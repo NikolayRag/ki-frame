@@ -66,13 +66,16 @@ class KiAccount {
 
 
 
-	function get($_name=False){
-		if (!is_string($_name))
+//  todo 128 (clean, account) +0: decide about named or id'd account get/set 
+	function get($_id=False, $_default=''){
+		if ($_id===False)
 			return $this->accountA;
 
-		$id = array_search($_name, self::$fieldsA);
-		if ($id!==False)
-			return getA($this->accountA, $id, '');
+		if (is_string($_id))
+			$_id = array_search($_id, self::$fieldsA);
+
+		if ($_id!==False)
+			return getA($this->accountA, $_id, $_default);
 	}
 
 
@@ -85,11 +88,15 @@ class KiAccount {
 			return;
 
 
-		foreach ($_data as $cName=>$cVal){
-			$cId = array_search($cName, self::$fieldsA);
+		foreach ($_data as $cId=>$cVal){
+			$n = $cId;
+
+			if (is_string($cId))
+				$cId = array_search($cId, self::$fieldsA);
+
 
 			if ($cId===False){
-				self::$fieldsA[] = $cName;
+				self::$fieldsA[] = $n;
 
 				end(self::$fieldsA);
 				$cId = key(self::$fieldsA);
