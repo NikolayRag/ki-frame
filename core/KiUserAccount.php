@@ -25,8 +25,8 @@ class KiAccount {
 
 
 		$this->accountA = [];
-		foreach (self::$fieldsA as $fName=>$fVal)
-			$this->accountA[$fName] = '';
+		foreach (self::$fieldsA as $fId=>$fName)
+			$this->accountA[$fId] = '';
 
 
 		$this->id = $_id;
@@ -42,8 +42,7 @@ class KiAccount {
 		while ($cFieldsA = KiSql::fetch()){
 			$this->state = True;
 
-			$fName = array_search($cFieldsA['id_field'], self::$fieldsA);
-			$this->accountA[$fName] = $cFieldsA['value'];
+			$this->accountA[$cFieldsA['id_field']] = $cFieldsA['value'];
 		}
 	}
 
@@ -62,7 +61,7 @@ class KiAccount {
 
 		self::$fieldsA = [];
 		while ($cRow= KiSql::fetch())
-			self::$fieldsA[$cRow['name']] = $cRow['id'];
+			self::$fieldsA[$cRow['id']] = $cRow['name'];
 	}
 
 
@@ -71,7 +70,9 @@ class KiAccount {
 		if (!is_string($_name))
 			return $this->accountA;
 
-		return getA($this->accountA, $_name, '');
+		$id = array_search($_name, self::$fieldsA);
+		if ($id!==False)
+			return getA($this->accountA, $id, '');
 	}
 
 
@@ -84,11 +85,21 @@ class KiAccount {
 			return;
 
 
-		foreach ($_data as $n=>$v){
-			$this->accountA[$n] = $v;
+		foreach ($_data as $cName=>$cVal){
+			$cId = array_search($cName, self::$fieldsA);
 
-			if ($store and $this->id and array_key_exists($n, self::$fieldsA))
-				KiSql::apply('setAccount', $this->id, self::$fieldsA[$n], $v);
+			if ($cId===False){
+				self::$fieldsA[] = $cName;
+
+				end(self::$fieldsA);
+				$cId = key(self::$fieldsA);
+			}
+
+
+			$this->accountA[$cId] = $cVal;
+
+			if ($store and $this->id)
+				KiSql::apply('setAccount', $this->id, $cId, $cVal);
 		}
 
 
