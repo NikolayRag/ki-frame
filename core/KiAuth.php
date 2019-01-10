@@ -29,10 +29,10 @@ Init macro:
 // -todo 23 (ux, auth) +0: introduce entire auth cached timeout
 class KiAuth {
 	private static $DBA = [
-		'kiAuthGetSocial' => 'SELECT id_users FROM users_social WHERE type=?+0 AND id=?',
-		'kiAuthAdd' => 'INSERT INTO users (RegDate,autosocial) VALUES (?,1)',
-		'kiAuthAddSocial' => 'INSERT INTO users_social (type,id,id_users) VALUES (?,?,?)',
 		'kiAuthUpdateLast' => 'UPDATE users SET LastLogin=? WHERE ID=?'
+		'kiAuthGetSocial' => 'SELECT id_users,id_users_auto FROM users_social WHERE type=?+0 AND id=?',
+		'kiAuthAdd' => 'INSERT INTO users (RegDate) VALUES (?)',
+		'kiAuthAddSocial' => 'INSERT INTO users_social (type,id,id_users,id_users_auto) VALUES (?,?,?,?)',
 	];
 
 
@@ -77,18 +77,20 @@ API cb for social logon.
 		if ($socErr)
 			return $socErr;
 
-		$id_user = self::assignedGet();
-		if (!$id_user) // -todo 6 (clean, auth) +0: deal with social callback error
+		$idUser = self::assignedGet();
+		if (!$idUser['id_users']) // -todo 6 (clean, auth) +0: deal with social callback error
 		 	return True;
 
-		self::assignedUpdate($id_user); //update last logon state
+		self::assignedUpdate($idUser['id_users']); //update last logon state
 
 
-		$cUser = KiAuthPass::getData($id_user);
+		$cUser = KiAuthPass::getData($idUser['id_users']);
+		if (!$cUser)
+			return;
 
-		self::$user = new KiUser($id_user, [
+		self::$user = new KiUser($idUser['id_users'], [
 			'autoEmail' => $cUser->Email,
-			'autoSocial' => $cUser->autosocial,
+			'autoSocial' => $idUser['id_users_auto'],
 			'autoName' => KiAuthSoc::$liveName,
 			'autoPhoto' => KiAuthSoc::$livePhoto,
 			'autoType' => KiAuthSoc::$type,
@@ -213,18 +215,18 @@ Soc user init assumes normal user is not logged, and thus user data from assigne
 		if (!KiAuthSoc::start())
 			return;
 
-		$id_user = self::assignedGet();
-		if (!$id_user) //  todo 5 (clean, auth) +0: deal with social init error
+		$idUser = self::assignedGet();
+		if (!$idUser['id_users']) //  todo 5 (clean, auth) +0: deal with social init error
 			return;
 
-		$cUser = KiAuthPass::getData($id_user);
+		$cUser = KiAuthPass::getData($idUser['id_users']);
 		if (!$cUser)
 			return;
 
 
-		self::$user = new KiUser($id_user, [
+		self::$user = new KiUser($idUser['id_users'], [
 			'autoEmail' => $cUser->Email,
-			'autoSocial' => $cUser->autosocial,
+			'autoSocial' => $idUser['id_users_auto'],
 			'autoName' => KiAuthSoc::$liveName,
 			'autoPhoto' => KiAuthSoc::$livePhoto,
 			'autoType' => KiAuthSoc::$type,
@@ -248,16 +250,20 @@ Replace signed autosocial user with given logpass user.
 Fetch assigned logpass user for given social.
 If none logpass user is assigned, implicit one is created and assigned.
 
-Return user id.
+Return [userId, autoId].
 */
 	private static function assignedGet(){
 		KiSql::apply('kiAuthGetSocial', KiAuthSoc::$type, KiAuthSoc::$id);
 		$socialBind = KiSql::fetch();
-		$id_user = $socialBind['id_users'];
-		if (!$id_user)
-			$id_user = self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id);
+		if (!$socialBind){
+			$newId = self::assignedCreate(KiAuthSoc::$type, KiAuthSoc::$id);
+			$socialBind = [
+				'id_users'=>$newId,
+				'id_users_auto'=>$newId
+			];
+		}
 
-		return $id_user;
+		return $socialBind;
 	}
 
 
@@ -269,7 +275,7 @@ Create implicit logpass user for given social one.
 		KiSql::apply('kiAuthAdd', time());
 		$id_assigned= KiSql::lastInsertId();
 
-		KiSql::apply('kiAuthAddSocial', $_type, $_id, $id_assigned);
+		KiSql::apply('kiAuthAddSocial', $_type, $_id, $id_assigned, $id_assigned);
 
 		return $id_assigned;
 	}
