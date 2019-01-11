@@ -132,7 +132,7 @@ Log in with email/pass
 			'autoEmail' => $_email
 		]);
 
-		if (self::$user->isSigned && self::$user->isAuto)
+		if (self::$user->isSigned && self::isAutoSocial())
 			self::rebindUser($newUser);
 
 		self::$user = $newUser;
@@ -178,6 +178,15 @@ Set new password.
         	return KiAuthPass::getError();
 
         return self::passLogin($_email, $_pass);
+	}
+
+
+
+/*
+Check if current social logged user have no binding
+*/
+	static function isAutoSocial(){
+		return self::$user->id and self::$user->account('autoBind')==self::$user->id;
 	}
 
 
