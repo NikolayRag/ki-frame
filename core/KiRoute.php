@@ -263,15 +263,15 @@ Collect all URL contexts in specified order
 		//filter contexts out
 
 		foreach ($_bindA as $cBind){ //all actual bindings
-			foreach ($cBind->ctxA as $cCtx) {
-				if (array_search($cCtx, $_order) === False)
+			foreach ($cBind->ctxA as $cCtxName) {
+				if (array_search($cCtxName, $_order) === False)
 					continue;
 
 
-				array_push($fContextA, $cCtx);
+				array_push($fContextA, $cCtxName);
 
 				//update stored context object
-				$cCtx = self::$contextA[$cCtx];
+				$cCtx = self::$contextA[$cCtxName];
 				$cCtx->headersA = array_merge($cBind->headersA, $cCtx->headersA);
 
 				if ($cBind->return)
