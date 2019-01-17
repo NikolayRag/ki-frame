@@ -157,6 +157,10 @@ _newOrder
 	All matching contexts will be used if no order specified.
 */
 	static function render($_newOrder=False){
+		if (!is_array($_newOrder))
+			$_newOrder = [];
+
+
 		$orderCtx = self::orderSnapshot($_newOrder);
 		$matches = self::matchUrl();
 		if (!count($matches))
@@ -213,15 +217,12 @@ Fetch ordered and filtered context.
 Array may be supplied to reorder output contexts.
 If specified, only listed in array will be run at all.
 */
-	static private function orderSnapshot($_order=[]){
-		if (!is_array($_order))
-			$_order = [];
-
+	static private function orderSnapshot($_orderA){
 		$ctxA = array_keys(self::$contextA);
 
 		$collectA = [];
-		if (count($_order))
-			foreach ($_order as $cCtx){
+		if (count($_orderA))
+			foreach ($_orderA as $cCtx){
 				if (!is_string($cCtx)) //type check
 					continue;
 
