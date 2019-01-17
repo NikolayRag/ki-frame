@@ -161,7 +161,6 @@ _newOrder
 			$_newOrder = [];
 
 
-		$orderCtx = self::orderSnapshot($_newOrder);
 		$matches = self::matchUrl();
 		if (!count($matches))
 			$matches = self::matchUrl(True);
@@ -182,7 +181,8 @@ _newOrder
 
 
 
-		$runCtxA = self::orderRun($matches, $orderCtx);
+		$orderCtxA = self::contextGetOrder($_newOrder);
+		$runCtxA = self::orderRun($matches, $orderCtxA);
 
 		foreach ($runCtxA as $cCtx){
 			self::$cContext = $cCtx;
@@ -219,7 +219,7 @@ Fetch ordered and filtered context.
 Array may be supplied to reorder output contexts.
 If specified, only listed in array will be run at all.
 */
-	static private function orderSnapshot($_orderA){
+	static private function contextGetOrder($_orderA){
 		$ctxA = array_keys(self::$contextA);
 
 		$collectA = [];
