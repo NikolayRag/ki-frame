@@ -184,6 +184,11 @@ _newOrder
 		$orderCtxA = self::contextGetOrder($_newOrder);
 		$runCtxA = self::orderRun($matches, $orderCtxA);
 
+		//Trigger inlined code
+		if (!$_newOrder or array_search('*', $_newOrder)!==False)
+			$runCtxA = array_merge($runCtxA, self::contextInline($matches));
+
+
 		foreach ($runCtxA as $cCtx){
 			self::$cContext = $cCtx;
 			self::$cContext->runCtx();
@@ -236,6 +241,18 @@ If specified, only listed in array will be run at all.
 		
 
 		return array_values( array_unique($collectA) );
+	}
+
+
+
+/*
+Collect anonymous context objects.
+*/
+	static private function contextInline($_bindA){
+		$outContextA = [];
+
+
+		return $outContextA;
 	}
 
 
