@@ -169,12 +169,14 @@ _newOrder
 		
 		//implicit bindings
 		if (!count($matches)){
+/*
 			//bound '/' to all binding
 			if (KiUrl::path(True)=='/') //  todo 116 (check) -1: check
 				$matches = [new Ki_RouteBind(['/'],$orderCtx)];
 			
 			//'not found'
 			else
+*/
 				KiHandler::setReturn(404);
 		}
 
