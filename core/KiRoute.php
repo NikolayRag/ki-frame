@@ -180,10 +180,10 @@ _newOrder
 
 
 
-		$runA = self::orderRun($matches, $orderCtx);
+		$runCtxA = self::orderRun($matches, $orderCtx);
 
-		foreach ($runA as $cCtxName){
-			self::$cContext = self::$contextA[$cCtxName];
+		foreach ($runCtxA as $cCtx){
+			self::$cContext = $cCtx;
 			self::$cContext->runCtx();
 			self::$cContext = Null;
 		}
@@ -285,9 +285,9 @@ Collect all URL contexts in specified order
 		$outContextA = [];
 
  		//sort context with previously specified order
-		foreach ($_order as $cCtx)
-			if (in_array($cCtx, $fContextA))
-				array_push($outContextA, $cCtx);
+		foreach ($_order as $cCtxName)
+			if (in_array($cCtxName, $fContextA))
+				array_push($outContextA, self::$contextA[$cCtxName]);
 
 
 		return $outContextA;
