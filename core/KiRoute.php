@@ -216,18 +216,18 @@ If specified, only listed in array will be run at all.
 	static private function contextGetOrder($_orderA){
 		$ctxA = array_keys(self::$contextA);
 
-		$collectA = [];
-		if (count($_orderA))
-			foreach ($_orderA as $cCtx){
-				if (!is_string($cCtx)) //type check
-					continue;
+		if (!count($_orderA))
+			return $ctxA;
 
-				$fA = array_filter($ctxA, function ($v) use ($cCtx) {return fnmatch($cCtx, $v);});
-				$collectA = array_merge($collectA, $fA);
-			}
-		else
-			$collectA = $ctxA;
-		
+
+		$collectA = [];
+		foreach ($_orderA as $cCtx){
+			if (!is_string($cCtx)) //type check
+				continue;
+
+			$fA = array_filter($ctxA, function ($v) use ($cCtx) {return fnmatch($cCtx, $v);});
+			$collectA = array_merge($collectA, $fA);
+		}
 
 		return array_values( array_unique($collectA) );
 	}
