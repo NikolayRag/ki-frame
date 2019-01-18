@@ -157,10 +157,6 @@ _newOrder
 	All matching contexts will be used if no order specified.
 */
 	static function render($_newOrder=False){
-		if (!is_array($_newOrder))
-			$_newOrder = [];
-
-
 		$matches = self::matchUrl();
 		if (!count($matches))
 			$matches = self::matchUrl(True);
@@ -169,6 +165,8 @@ _newOrder
 			KiHandler::setReturn(404);
 
 
+		if (!is_array($_newOrder))
+			$_newOrder = [];
 
 		$orderCtxA = self::contextGetOrder($_newOrder);
 		$runCtxA = self::orderRun($matches, $orderCtxA);
