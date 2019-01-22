@@ -20,7 +20,6 @@ class KiRoute {
 // =todo 136 (routing, context, bind) +0: move context and bind arrays to their classes
 	static $contextA=[];
 
-	private static $cContext;
 
 
 /*
@@ -161,25 +160,8 @@ _newOrder
 			$inlineCtxA = self::contextInline($matches);
 
 
-		foreach (array_merge($runCtxA, $inlineCtxA) as $cCtx){
-			self::$cContext = $cCtx;
-			self::$cContext->runCtx();
-			self::$cContext = Null;
-		}
-	}
-
-
-
-/*
-Provide current context variables, available only for bond code runtime.
-Variables are NOT safe, they could be modified while runtime, though their lifetime is limited to context execution.
-*/
-	static function contextData(){
-		$cVars = [];
-		if (self::$cContext)
-			$cVars = self::$cContext->varsA;
-
-		return new LooseObject($cVars);
+		foreach (array_merge($runCtxA, $inlineCtxA) as $cCtx)
+			$cCtx->run();
 	}
 
 

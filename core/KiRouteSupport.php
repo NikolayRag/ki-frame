@@ -11,7 +11,7 @@ class Ki_RouteCtx {
 /*
 Run prepared code and variables into KiHandler
 */
-	function runCtx(){
+	function run(){
 		$cContentA = [];
 
 		//run all code

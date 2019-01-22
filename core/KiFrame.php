@@ -147,15 +147,6 @@ _ctxOrder
 
 
 
-/*
-Access bond matched variables, shortcut to KiRoute::contextData().
-*/
-	static function rData(){
-		return KiRoute::contextData();
-	}
-
-
-
 //=================================================================//
 //============================= LOGON =============================//
 //=================================================================//
