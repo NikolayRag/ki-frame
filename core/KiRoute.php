@@ -172,11 +172,12 @@ _newOrder
 		$runCtxA = self::orderRun($matches, $orderCtxA);
 
 		//Trigger inlined code
+		$inlineCtxA = [];
 		if (!$_newOrder or array_search('*', $_newOrder)!==False)
-			$runCtxA = array_merge($runCtxA, self::contextInline($matches));
+			$inlineCtxA = self::contextInline($matches);
 
 
-		foreach ($runCtxA as $cCtx){
+		foreach (array_merge($runCtxA, $inlineCtxA) as $cCtx){
 			self::$cContext = $cCtx;
 			self::$cContext->runCtx();
 			self::$cContext = Null;
