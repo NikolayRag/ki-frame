@@ -74,6 +74,19 @@ class Ki_RouteBind {
 	var $varsA=[];
 
 
+
+	private static function addBind($_cBind, $_is404){
+		if ($_is404)
+			self::$bind404A[] = $_cBind;
+		else
+			self::$bindA[] = $_cBind;
+	}
+
+
+
+
+
+
 // =todo 135 (routing, context, bind) +0: make lazy-bond context at Ki_RouteBind creation
 	function __construct($_urlA, $_ctxA=[]){
 		if (!is_array($_urlA))
@@ -86,12 +99,6 @@ class Ki_RouteBind {
 		//detect 404 case
 		$is404 = ($_urlA[0]===404);
 		if ($is404)
-			self::$bind404A[] = $this;
-		else
-			self::$bindA[] = $this;
-
-
-		if ($is404)
 			array_shift($_urlA);
 
 		$this->urlA = $_urlA;
@@ -99,7 +106,7 @@ class Ki_RouteBind {
 		$this->return = 0;
 		$this->headersA = [];
 
-
+		self::addBind($this, $is404);
 	}
 
 
