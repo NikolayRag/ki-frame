@@ -117,9 +117,6 @@ $_headers
 			array_shift($_url);
 
 
-		if (!is_array($_ctx))
-			$_ctx = [$_ctx];
-
 		$cBind = new Ki_RouteBind($_url, $_ctx);
 
 

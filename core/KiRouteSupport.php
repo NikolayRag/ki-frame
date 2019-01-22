@@ -71,7 +71,11 @@ class Ki_RouteBind {
 	var $varsA=[];
 
 
+// =todo 135 (routing, context, bind) +0: make lazy-bond context at Ki_RouteBind creation
 	function __construct($_urlA, $_ctx=[]){
+		if (!is_array($_ctx))
+			$_ctx = [$_ctx];
+
 		$this->urlA = $_urlA;
 		$this->ctxA = $_ctx;
 		$this->return = 0;
