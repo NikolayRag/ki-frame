@@ -173,7 +173,7 @@ _newOrder
 
 		//Trigger inlined code
 		$inlineCtxA = [];
-		if (!$_newOrder or array_search('*', $_newOrder)!==False)
+		if (!$_newOrder or in_array('*', $_newOrder, True))
 			$inlineCtxA = self::contextInline($matches);
 
 
