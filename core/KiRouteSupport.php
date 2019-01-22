@@ -67,19 +67,39 @@ Solve registered code generators for specified context.
 Context bind class
 */
 class Ki_RouteBind {
+	static $bindA=[], $bind404A=[];
+
+
 	var $urlA=[], $ctxA=[], $return=0, $headersA;
 	var $varsA=[];
 
 
 // =todo 135 (routing, context, bind) +0: make lazy-bond context at Ki_RouteBind creation
-	function __construct($_urlA, $_ctx=[]){
-		if (!is_array($_ctx))
-			$_ctx = [$_ctx];
+	function __construct($_urlA, $_ctxA=[]){
+		if (!is_array($_urlA))
+			$_urlA = [$_urlA];
+
+		if (!is_array($_ctxA))
+			$_ctxA = [$_ctxA];
+
+
+		//detect 404 case
+		$is404 = ($_urlA[0]===404);
+		if ($is404)
+			self::$bind404A[] = $this;
+		else
+			self::$bindA[] = $this;
+
+
+		if ($is404)
+			array_shift($_urlA);
 
 		$this->urlA = $_urlA;
-		$this->ctxA = $_ctx;
+		$this->ctxA = $_ctxA;
 		$this->return = 0;
 		$this->headersA = [];
+
+
 	}
 
 

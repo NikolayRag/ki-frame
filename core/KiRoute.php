@@ -17,7 +17,8 @@ Virtually, there're following levels of complexity in managing content generatio
 
 
 class KiRoute {
-	private static $contextA=[], $bindA=[], $bind404A=[];
+// =todo 136 (routing, context, bind) +0: move context and bind arrays to their classes
+	static $contextA=[];
 
 	private static $cContext;
 
@@ -107,16 +108,8 @@ $_code
 $_headers
 	Default custom return headers array.
 */
+// -todo 134 (routing, binding) +0: move all bind-related to KiRoutingBind 
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
-		if (!is_array($_url))
-			$_url = [$_url];
-
-		//detect 404 case
-		$is404 = ($_url[0]===404);
-		if ($is404)
-			array_shift($_url);
-
-
 		$cBind = new Ki_RouteBind($_url, $_ctx);
 
 
@@ -125,12 +118,6 @@ $_headers
 		
 		foreach ($_headersA as $hName=>$hVal)
 			$cBind->headersA[$hName] = $hVal;
-
-
-		if ($is404)
-			self::$bind404A[] = $cBind;
-		else
-			self::$bindA[] = $cBind;
 	}
 
 
