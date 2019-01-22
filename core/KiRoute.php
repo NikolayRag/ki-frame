@@ -141,9 +141,9 @@ _newOrder
 	All matching contexts will be used if no order specified.
 */
 	static function render($_newOrder=False){
-		$matches = self::matchUrl();
+		$matches = self::matchUrl(Ki_RouteBind::$bindA);
 		if (!count($matches))
-			$matches = self::matchUrl(True);
+			$matches = self::matchUrl(Ki_RouteBind::$bind404A);
 
 		if (!count($matches))
 			KiHandler::setReturn(404);
@@ -232,12 +232,10 @@ Collect anonymous context objects.
 /*
 Detect all matching URL bindings.
 */
-	static private function matchUrl($_do404=False){
-		$bindA = $_do404? self::$bind404A : self::$bindA;
-
+	static private function matchUrl($_bindA){
 		//collect detected url's
 		$bondA = [];
-		foreach ($bindA as $cBind)
+		foreach ($_bindA as $cBind)
 			if ($cBind->match())
 				$bondA[] = $cBind;
 
