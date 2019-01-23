@@ -112,8 +112,12 @@ $_src
 	Function provided to context() return response data.
 	Anything other than string returned treated as error and ignored in output.
 */
-	static function rCode($_ctx, $_src){
-		return KiRouteCtx::add($_ctx, $_src);
+// =todo 137 (context) +0: allow to use unnamed contexts
+	static function rCode($_ctx, $_src=False){
+		if ($_src!==False)
+			return KiRouteCtx::add($_ctx, $_src);
+		else
+			return new KiRouteCtx($_ctx); //subst src
 	}
 
 

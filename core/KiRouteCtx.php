@@ -11,7 +11,6 @@ class KiRouteCtx {
 
 
 
-// =todo 137 (context) +0: allow to use unnamed contexts
 	static function add($_ctx, $_src){
 		if (!is_string($_ctx))
 			$_ctx = (string)$_ctx;
@@ -21,16 +20,20 @@ class KiRouteCtx {
 
 
 		if (!array_key_exists($_ctx, self::$contextA))
-			self::$contextA[$_ctx] = new self();
-		$cCtx = self::$contextA[$_ctx];
+			self::$contextA[$_ctx] = new self($_src);
 
 
-		foreach ($_src as $cSrc) {
-			if (array_search($cSrc, $cCtx->codeA) !== False)
-				continue;
+		return self::$contextA[$_ctx];
+	}
 
-			$cCtx->codeA[] = $cSrc;
-		}
+
+
+	function __construct($_src){
+		$this->codeA = [];
+
+		foreach ($_src as $cSrc)
+			if (!in_array($cSrc, $this->codeA))
+				$this->codeA[] = $cSrc;
 	}
 
 
