@@ -48,7 +48,7 @@ _newOrder
 		if (!is_array($_newOrder))
 			$_newOrder = [];
 
-		$orderCtxA = self::contextGetOrder($_newOrder);
+		$orderCtxA = KiRouteCtx::getOrder($_newOrder);
 		$runCtxA = self::orderRun($matches, $orderCtxA);
 
 		//Trigger inlined code
@@ -66,33 +66,6 @@ _newOrder
 /*
 	PRIVATE
 */
-
-
-
-/*
-Fetch ordered and filtered context.
-
-Array may be supplied to reorder output contexts.
-If specified, only listed in array will be run at all.
-*/
-	static private function contextGetOrder($_orderA){
-		$ctxA = array_keys(KiRouteCtx::$contextA);
-
-		if (!count($_orderA))
-			return $ctxA;
-
-
-		$collectA = [];
-		foreach ($_orderA as $cCtx){
-			if (!is_string($cCtx)) //type check
-				continue;
-
-			$fA = array_filter($ctxA, function ($v) use ($cCtx) {return fnmatch($cCtx, $v);});
-			$collectA = array_merge($collectA, $fA);
-		}
-
-		return array_values( array_unique($collectA) );
-	}
 
 
 
