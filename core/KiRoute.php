@@ -56,8 +56,8 @@ _newOrder
 			$inlineCtxA = self::contextInline($matches);
 
 
-		foreach (array_merge($runCtxA, $inlineCtxA) as $cCtx)
-			$cCtx->run();
+		foreach (array_merge($runCtxA, $inlineCtxA) as $cName=>$cCtx)
+			$cCtx->run($cName);
 	}
 
 

@@ -170,7 +170,10 @@ Notice its own errors would not be handled in any way.
 Add contents
 */
 	static function setContent($_ctx, $_value){
-		self::$contentA[$_ctx] = $_value;
+		if ($_ctx===False)
+			self::$contentA[] = $_value;
+		else
+			self::$contentA[$_ctx] = $_value;
 	}
 
 

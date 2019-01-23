@@ -5,7 +5,7 @@ Context object
 class Ki_RouteCtx {
 	static $contextA=[];
 
-	var $name='', $codeA=[];
+	var $codeA=[];
 	var $headersA=[], $return=0;
 	var $varsA=[];
 
@@ -29,7 +29,6 @@ class Ki_RouteCtx {
 			if (array_search($cSrc, $cCtx->codeA) !== False)
 				continue;
 
-			$cCtx->name = $_ctx;
 			$cCtx->codeA[] = $cSrc;
 		}
 	}
@@ -39,7 +38,7 @@ class Ki_RouteCtx {
 /*
 Run prepared code and variables into KiHandler
 */
-	function run(){
+	function run($_name=False){
 		$cContentA = [];
 
 		//run all code
@@ -49,7 +48,7 @@ Run prepared code and variables into KiHandler
 				$cContentA[] = $cCont;
 		}
 
-		KiHandler::setContent($this->name, implode('', $cContentA));
+		KiHandler::setContent($_name, implode('', $cContentA));
 
 		foreach ($this->headersA as $hName=>$hVal)
 			KiHandler::setHeader($hName, $hVal);
