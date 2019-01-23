@@ -113,7 +113,7 @@ $_src
 	Anything other than string returned treated as error and ignored in output.
 */
 	static function rCode($_ctx, $_src){
-		return Ki_RouteCtx::add($_ctx, $_src);
+		return KiRouteCtx::add($_ctx, $_src);
 	}
 
 
@@ -161,7 +161,7 @@ $_headersA
 	Default custom return headers array.
 */
 	static function rBind($_url, $_ctx, $_code=0, $_headersA=[]){
-		return new Ki_RouteBind($_url, $_ctx, $_code, $_headersA);
+		return new KiRouteBind($_url, $_ctx, $_code, $_headersA);
 	}
 
 

@@ -1,5 +1,6 @@
 <?
-include(__dir__ .'/KiRouteSupport.php');
+include(__dir__ .'/KiRouteCtx.php');
+include(__dir__ .'/KiRouteBind.php');
 
 
 
@@ -36,9 +37,9 @@ _newOrder
 	All matching contexts will be used if no order specified.
 */
 	static function render($_newOrder=False){
-		$matches = self::matchUrl(Ki_RouteBind::$bindA);
+		$matches = self::matchUrl(KiRouteBind::$bindA);
 		if (!count($matches))
-			$matches = self::matchUrl(Ki_RouteBind::$bind404A);
+			$matches = self::matchUrl(KiRouteBind::$bind404A);
 
 		if (!count($matches))
 			KiHandler::setReturn(404);
@@ -75,7 +76,7 @@ Array may be supplied to reorder output contexts.
 If specified, only listed in array will be run at all.
 */
 	static private function contextGetOrder($_orderA){
-		$ctxA = array_keys(Ki_RouteCtx::$contextA);
+		$ctxA = array_keys(KiRouteCtx::$contextA);
 
 		if (!count($_orderA))
 			return $ctxA;
@@ -138,7 +139,7 @@ Collect all URL contexts in specified order
 				array_push($fContextA, $cCtxName);
 
 				//update stored context object
-				$cCtx = Ki_RouteCtx::$contextA[$cCtxName];
+				$cCtx = KiRouteCtx::$contextA[$cCtxName];
 				$cCtx->headersA = array_merge($cBind->headersA, $cCtx->headersA);
 
 				if ($cBind->return)
@@ -154,7 +155,7 @@ Collect all URL contexts in specified order
  		//sort context with previously specified order
 		foreach ($_order as $cCtxName)
 			if (in_array($cCtxName, $fContextA))
-				array_push($outContextA, Ki_RouteCtx::$contextA[$cCtxName]);
+				array_push($outContextA, KiRouteCtx::$contextA[$cCtxName]);
 
 
 		return $outContextA;
