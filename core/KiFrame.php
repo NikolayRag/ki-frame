@@ -112,10 +112,49 @@ This is useful for light one-page setups.
 
 
 /*
-Add context to URL, shortcut for KiRoute::bind()
+Add context and headers to URL and set return code.
+Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
+All contexts for all matching URLs will be used without concurrency.
+
+If nothing is bound at all, the only implicit assignment is '/' URL to '' context (root to default).
+If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code. If '' url is bound, 404 return code must be then set explicitely.
+
+
+$_url
+	Match function, URL match regex, or static value.
+	Array accepted, where ALL elements must match.
+
+	If function supplied returns non-strict False, then there's no match. Any other return value triggers match.
+	If array is returned, it's passed as 'variables' argument to bond context functions, if any.
+	
+	String regexp passed for match URI, starting either with unescaped '/' or '?'. Unescaped '/' are also allowed anywhere in regex.
+	If started with '/', URL path is matched. Path string to match is everything after server name, starting with '/', and without arguments.
+	If started with '?', arguments are matched. Any successfull match counts. WRONG useage: matching several arguments at once will fail constantly, like '?a=1&b=1'. Use several matches instead: [.., '?a=1', '?b=1']. 
+	Named capture (?P<name>value) is allowed to scan variables. Captured value is passed then within named array into bond context functions, if any. Matching several different named variables within one binding will pass all of them as arguments. When regex wide mask matches several URL arguments, only first match defines variable=>value pair.
+	Tricky regex matches like "/(?!foo$).*" (all but '/foo') are fully allowed.
+
+	Variables matched are accessed at runtime by ::contextData()
+
+
+	If first (or only) value specified is 404, match is used in case of no 'normal' matches found.
+	Notice, that if there any wide mask bound match, like '.*' or True, it could become impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
+
+
+$_ctx
+	Context added to specified URL.
+	May be string or array of contexts.
+
+
+$_code
+	Default HTTP return code.
+	Return code have priority over any other defined one.
+
+
+$_headersA
+	Default custom return headers array.
 */
 	static function rBind($_url, $_ctx, $_code=0, $_headersA=[]){
-		return KiRoute::bind($_url, $_ctx, $_code, $_headersA);
+		return new Ki_RouteBind($_url, $_ctx, $_code, $_headersA);
 	}
 
 
