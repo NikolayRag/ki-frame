@@ -3,9 +3,10 @@
 Context object
 */
 class Ki_RouteCtx {
-	var $name='', $codeA=[], $headersA=[], $return=0;
 	static $contextA=[];
 
+	var $name='', $codeA=[];
+	var $headersA=[], $return=0;
 	var $varsA=[];
 
 
