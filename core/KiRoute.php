@@ -17,54 +17,6 @@ Virtually, there're following levels of complexity in managing content generatio
 
 
 class KiRoute {
-// =todo 136 (routing, context, bind) +0: move context and bind arrays to their classes
-	static $contextA=[];
-
-
-
-/*
-Assign context to some code-generating routines.
-Several routines may be assigned with same context, that will come out they result will be placed right one after another.
-Order for multiple same-context code is the same as they were declared.
-
-
-$_ctx
-	String for context to be named.
-
-
-$_src
-	Array or one of three: function, filename, string.
-
-	Function is called to generate content.
-	If existing .php filename is given instead of function, it's imported.
-	Otherwise, provided string is embedded as is.
-
-	Function provided to context() return response data.
-	Anything other than string returned treated as error and ignored in output.
-*/
-	static function context($_ctx, $_src){
-		if (!is_string($_ctx))
-			$_ctx = (string)$_ctx;
-
-		if (!is_array($_src))
-			$_src = [$_src];
-
-		if (!array_key_exists($_ctx, self::$contextA))
-			self::$contextA[$_ctx] = new Ki_RouteCtx();
-		$cCtx = self::$contextA[$_ctx];
-
-
-		foreach ($_src as $cSrc) {
-			if (array_search($cSrc, $cCtx->codeA) !== False)
-				continue;
-
-			$cCtx->name = $_ctx;
-			$cCtx->codeA[] = $cSrc;
-		}
-	}
-
-
-
 /*
 Finalize: actually run matching route collection.
 This is called once for entire http request.
@@ -123,7 +75,7 @@ Array may be supplied to reorder output contexts.
 If specified, only listed in array will be run at all.
 */
 	static private function contextGetOrder($_orderA){
-		$ctxA = array_keys(self::$contextA);
+		$ctxA = array_keys(Ki_RouteCtx::$contextA);
 
 		if (!count($_orderA))
 			return $ctxA;
@@ -186,7 +138,7 @@ Collect all URL contexts in specified order
 				array_push($fContextA, $cCtxName);
 
 				//update stored context object
-				$cCtx = self::$contextA[$cCtxName];
+				$cCtx = Ki_RouteCtx::$contextA[$cCtxName];
 				$cCtx->headersA = array_merge($cBind->headersA, $cCtx->headersA);
 
 				if ($cBind->return)
@@ -202,7 +154,7 @@ Collect all URL contexts in specified order
  		//sort context with previously specified order
 		foreach ($_order as $cCtxName)
 			if (in_array($cCtxName, $fContextA))
-				array_push($outContextA, self::$contextA[$cCtxName]);
+				array_push($outContextA, Ki_RouteCtx::$contextA[$cCtxName]);
 
 
 		return $outContextA;

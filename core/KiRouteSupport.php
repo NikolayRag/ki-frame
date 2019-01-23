@@ -4,7 +4,34 @@ Context object
 */
 class Ki_RouteCtx {
 	var $name='', $codeA=[], $headersA=[], $return=0;
+	static $contextA=[];
+
 	var $varsA=[];
+
+
+
+// =todo 137 (context) +0: allow to use unnamed contexts
+	static function add($_ctx, $_src){
+		if (!is_string($_ctx))
+			$_ctx = (string)$_ctx;
+
+		if (!is_array($_src))
+			$_src = [$_src];
+
+
+		if (!array_key_exists($_ctx, self::$contextA))
+			self::$contextA[$_ctx] = new self();
+		$cCtx = self::$contextA[$_ctx];
+
+
+		foreach ($_src as $cSrc) {
+			if (array_search($cSrc, $cCtx->codeA) !== False)
+				continue;
+
+			$cCtx->name = $_ctx;
+			$cCtx->codeA[] = $cSrc;
+		}
+	}
 
 
 

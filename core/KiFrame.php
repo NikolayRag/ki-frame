@@ -93,20 +93,27 @@ If ctx specified, only ctx context variables are returned.
 
 
 /*
-Register routing context code, shortcut for KiRoute::context()
+Assign named context to some code-generating routines.
+Several routines may be assigned with same context, that will come out they result will be placed right one after another.
+Order for multiple same-context code is the same as they were declared.
 
-Notice!
-If only one argument given, it will be $_src, not $_ctx.
-Context is assumed then to be ''.
-This is useful for light one-page setups.
+
+$_ctx
+	String for context to be named.
+
+
+$_src
+	Array or one of three: function, filename, string.
+
+	Function is called to generate content.
+	If existing .php filename is given instead of function, it's imported.
+	Otherwise, provided string is embedded as is.
+
+	Function provided to context() return response data.
+	Anything other than string returned treated as error and ignored in output.
 */
-	static function rCode($_ctx, $_src=false){
-		if (func_num_args()==1){
-			$_src= $_ctx;
-			$_ctx= '';
-		}
-
-		return KiRoute::context($_ctx, $_src);
+	static function rCode($_ctx, $_src){
+		return Ki_RouteCtx::add($_ctx, $_src);
 	}
 
 
