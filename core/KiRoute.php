@@ -37,9 +37,9 @@ _newOrder
 	All matching contexts will be used if no order specified.
 */
 	static function render($_newOrder=False){
-		$matches = self::matchUrl(KiRouteBind::$bindA);
+		$matches = KiRouteBind::matchUrl(True);
 		if (!count($matches))
-			$matches = self::matchUrl(KiRouteBind::$bind404A);
+			$matches = KiRouteBind::matchUrl(False);
 
 		if (!count($matches))
 			KiHandler::setReturn(404);
@@ -104,21 +104,6 @@ Collect anonymous context objects.
 
 
 		return $outContextA;
-	}
-
-
-
-/*
-Detect all matching URL bindings.
-*/
-	static private function matchUrl($_bindA){
-		//collect detected url's
-		$bondA = [];
-		foreach ($_bindA as $cBind)
-			if ($cBind->match())
-				$bondA[] = $cBind;
-
-		return $bondA;
 	}
 
 

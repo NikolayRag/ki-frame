@@ -20,6 +20,20 @@ class KiRouteBind {
 
 
 
+/*
+Detect all matching URL bindings.
+*/
+	static function matchUrl($_non404=True){
+		$cBindA = $_non404? self::$bindA : self::$bind404A;
+
+		//collect detected url's
+		$bondA = [];
+		foreach ($cBindA as $cBind)
+			if ($cBind->match())
+				$bondA[] = $cBind;
+
+		return $bondA;
+	}
 
 
 
