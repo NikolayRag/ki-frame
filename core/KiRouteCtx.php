@@ -6,8 +6,6 @@ class KiRouteCtx {
 	static $contextA=[];
 
 	var $codeA=[];
-	var $headersA=[], $return=0;
-	var $varsA=[];
 
 
 
@@ -68,23 +66,17 @@ If specified, only listed in array will be run at all.
 /*
 Run prepared code and variables into KiHandler
 */
-	function run($_name=False){
+	function run($_varsA, $_name=False){
 		$cContentA = [];
 
 		//run all code
 		foreach ($this->codeA as $cSrc) {
-			$cCont = $this->runContent($cSrc, $this->varsA);
+			$cCont = $this->runContent($cSrc, $_varsA);
 			if (is_string($cCont))
 				$cContentA[] = $cCont;
 		}
 
 		KiHandler::setContent($_name, implode('', $cContentA));
-
-		foreach ($this->headersA as $hName=>$hVal)
-			KiHandler::setHeader($hName, $hVal);
-
-		if ($this->return)
-			KiHandler::setReturn($this->return);
 	}
 
 

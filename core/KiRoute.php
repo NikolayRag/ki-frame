@@ -49,7 +49,7 @@ _newOrder
 			$_newOrder = [];
 
 		$orderCtxA = KiRouteCtx::getOrder($_newOrder);
-		$runCtxA = self::orderRun($matches, $orderCtxA);
+		$outRun = self::orderRun($matches, $orderCtxA);
 
 		//Trigger inlined code
 		$inlineCtxA = [];
@@ -57,8 +57,15 @@ _newOrder
 			$inlineCtxA = self::contextInline($matches);
 
 
-		foreach (array_merge($runCtxA, $inlineCtxA) as $cName=>$cCtx)
-			$cCtx->run($cName);
+		if ($outRun->return)
+			KiHandler::setReturn($outRun->return);
+
+		foreach ($outRun->headersA as $hName=>$hVal)
+			KiHandler::setHeader($hName, $hVal);
+
+		foreach (array_merge($outRun->ctxA, $inlineCtxA) as $cName=>$cCtx)
+			$cCtx->run($outRun->varsA, $cName);
+
 	}
 
 
@@ -88,6 +95,9 @@ Collect all URL contexts in specified order
 		$fContextA = [];
 		//filter contexts out
 
+		$outVarsA = [];
+		$outHeadersA = [];
+		$outReturn = 0;
 		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtxName) {
 				if (array_search($cCtxName, $_order) === False)
@@ -96,14 +106,13 @@ Collect all URL contexts in specified order
 
 				array_push($fContextA, $cCtxName);
 
-				//update stored context object
-				$cCtx = KiRouteCtx::$contextA[$cCtxName];
-				$cCtx->headersA = array_merge($cBind->headersA, $cCtx->headersA);
+
+				$outHeadersA = array_merge($cBind->headersA, $outHeadersA);
 
 				if ($cBind->return)
-					$cCtx->return = $cBind->return;
+					$outReturn = $cBind->return;
 
-				$cCtx->varsA = array_merge($cBind->varsA, $cCtx->varsA);
+				$outVarsA = array_merge($cBind->varsA, $outVarsA);
 			}
 		}
 
@@ -116,7 +125,12 @@ Collect all URL contexts in specified order
 				array_push($outContextA, KiRouteCtx::$contextA[$cCtxName]);
 
 
-		return $outContextA;
+		return (object)[
+			'ctxA' => $outContextA,
+			'varsA' => $outVarsA,
+			'headersA' => $outHeadersA,
+			'return' => $outReturn
+		];
 	}
 }
 ?>
