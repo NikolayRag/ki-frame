@@ -100,7 +100,7 @@ Collect all URL contexts in specified order
 		$outReturn = 0;
 		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtxName) {
-				if (array_search($cCtxName, $_order) === False)
+				if (!in_array($cCtxName, $_order))
 					continue;
 
 
