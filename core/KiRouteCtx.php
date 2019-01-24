@@ -26,6 +26,18 @@ class KiRouteCtx {
 
 
 
+	static function get($_namesA){
+		$outContextA = [];
+
+		foreach ($_namesA as $cName)
+			if (array_key_exists($cName, self::$contextA))
+				array_push($outContextA, self::$contextA[$cName]);
+
+		return $outContextA;
+	}
+
+
+
 	function __construct($_src){
 		$this->codeA = [];
 

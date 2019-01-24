@@ -63,7 +63,7 @@ _newOrder
 		foreach ($outRun->headersA as $hName=>$hVal)
 			KiHandler::setHeader($hName, $hVal);
 
-		foreach (array_merge($outRun->ctxA, $inlineCtxA) as $cName=>$cCtx)
+		foreach (array_merge(KiRouteCtx::get($outRun->ctxA), $inlineCtxA) as $cName=>$cCtx)
 			$cCtx->run($outRun->varsA, $cName);
 
 	}
@@ -117,16 +117,8 @@ Collect all URL contexts in specified order
 		}
 
 
-		$outContextA = [];
-
- 		//sort context with previously specified order
-		foreach ($_order as $cCtxName)
-			if (in_array($cCtxName, $fContextA))
-				array_push($outContextA, KiRouteCtx::$contextA[$cCtxName]);
-
-
 		return (object)[
-			'ctxA' => $outContextA,
+			'ctxA' => array_intersect($_order, $fContextA), //filter out unused
 			'varsA' => $outVarsA,
 			'headersA' => $outHeadersA,
 			'return' => $outReturn
