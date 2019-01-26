@@ -99,6 +99,11 @@ Detect all matching URL bindings.
 
 					}
 				}
+
+				foreach ($varsA as $key=>$val) //leave only named associations
+				    if (is_int($key)) 
+				        unset($varsA[$key]);
+
 			} else if (!!$cUrl){
 				$found = True;
 			}
@@ -111,10 +116,6 @@ Detect all matching URL bindings.
 
 
 		if (!$lost){
-			foreach ($varsA as $key=>$val)
-			    if (is_int($key)) 
-			        unset($varsA[$key]);
-
 			$this->varsA = $varsA;
 		}
 
