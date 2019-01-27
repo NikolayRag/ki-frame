@@ -3,6 +3,9 @@
 Context bind class
 */
 class KiRouteBind {
+	const UrlPath=2, UrlArgs=3, UrlFN=4;
+
+
 	static $bindA=[], $bind404A=[];
 
 
@@ -67,59 +70,86 @@ Detect all matching URL bindings.
 
 
 	function match(){
-		$lost = False;
 		$varsA = [];
 		foreach ($this->urlA as $cUrl) {
-			$found = False;
-			if (is_callable($cUrl)){ //function binding
-				$fRes = $cUrl();
-				if (($fRes !== False) && ($fRes !== Null) && ($fRes !== 0)){
-					$found = True;
+
+			switch (self::URLType($cUrl)){
+				case self::UrlFN: //return variables array
+					$fRes = $cUrl();
+					if (!$fRes)
+						return;
+
 					if (is_array($fRes))
 						$varsA = array_merge($varsA, $fRes);
-				}
-			} else if (is_string($cUrl) and ($cUrl[0]=='/' or $cUrl[0]=='?')){ //regex binding
-				if ($cUrl[0]=='/'){ //path
+
+					break;
+
+
+				case self::UrlPath: //return variables are regex matches
+// -todo 138 (check, bind) +1: check for exploit
 					$cRegex = str_replace('/', '\/', $cUrl);
 					$cRes = [];
 					
-					if (preg_match("/^$cRegex$/", KiUrl::path(True), $cRes)){
-						$found = True;
-						$varsA = array_merge($varsA, $cRes);
-					}
-				}
-				if ($cUrl[0]=='?'){ //arg
+					if (!preg_match("/^$cRegex$/", KiUrl::path(True), $cRes))
+						return;
+
+					$varsA = array_merge($varsA, self::cleanIdx($cRes));
+
+					break;
+
+
+				case self::UrlArgs:
 					foreach (KiUrl::args()->all() as $cName => $cVal) {
 						$cRes = [];
 						
-						if (preg_match("/^\\$cUrl$/", "?$cName=$cVal", $cRes)){
-							$found = True;
-							$varsA = array_merge($varsA, $cRes);
-						}
+						if (!preg_match("/^\\$cUrl$/", "?$cName=$cVal", $cRes))
+							return;
 
+						$varsA = array_merge($varsA, self::cleanIdx($cRes));
 					}
-				}
 
-				foreach ($varsA as $key=>$val) //leave only named associations
-				    if (is_int($key)) 
-				        unset($varsA[$key]);
+					break;
 
-			} else if (!!$cUrl){
-				$found = True;
+
+				case True:
+					break;
+
+
+				default:
+					return;
 			}
-
-
-			$lost = $lost || !$found;
-			if ($lost)
-				break;
 		}
 
 
-		if (!$lost){
-			$this->varsA = $varsA;
-		}
+		$this->varsA = $varsA;
 
-		return !$lost;
+		return True;
+	}
+
+
+
+	private static function URLType($_url){
+		if (is_callable($_url))
+			return self::UrlFN;
+
+		if (is_string($_url) and $_url[0]=='/')
+			return self::UrlPath;
+
+		if (is_string($_url) and $_url[0]=='?')
+			return self::UrlArgs;
+
+		if (!!$_url)
+			return True;
+	}
+
+
+
+	private static function cleanIdx($_varsA){
+		foreach ($_varsA as $key=>$val) //leave only named associations
+		    if (is_int($key)) 
+		        unset($_varsA[$key]);
+
+		return $_varsA;
 	}
 }
 
