@@ -114,10 +114,10 @@ $_src
 */
 // =todo 137 (context) +0: allow to use unnamed contexts
 	static function rCode($_ctx, $_src=False){
-		if ($_src!==False)
-			return KiRouteCtx::add($_ctx, $_src);
-		else
+		if ($_src===False)
 			return new KiRouteCtx($_ctx); //subst src
+
+		return KiRouteCtx::add($_ctx, $_src);
 	}
 
 

@@ -9,19 +9,21 @@ class KiRouteCtx {
 
 
 
+/*
+Add code to named context. 
+*/
 	static function add($_ctx, $_src){
 		if (!is_string($_ctx))
 			$_ctx = (string)$_ctx;
 
-		if (!is_array($_src))
-			$_src = [$_src];
-
 
 		if (!array_key_exists($_ctx, self::$contextA))
-			self::$contextA[$_ctx] = new self($_src);
+			self::$contextA[$_ctx] = new self();
 
+		$cCtx = self::$contextA[$_ctx];
+		$cCtx->bindCode($_src);
 
-		return self::$contextA[$_ctx];
+		return $cCtx;
 	}
 
 
@@ -38,8 +40,21 @@ class KiRouteCtx {
 
 
 
-	function __construct($_src){
+
+	function __construct($_src=False){
 		$this->codeA = [];
+
+		if ($_src)
+			$this->bindCode($_src);
+	}
+
+
+/*
+Bind provided code array.
+*/
+	function bindCode($_src){
+		if (!is_array($_src))
+			$_src = [$_src];
 
 		foreach ($_src as $cSrc)
 			if (!in_array($cSrc, $this->codeA))
