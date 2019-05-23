@@ -40,8 +40,7 @@ Detect all matching URL bindings.
 
 
 
-// =todo 108 (bind, context) +0: allow to bind context, function, file, or code inlined.
-	function __construct($_urlA, $_ctxA=[], $_code=0, $_headersA=[]){
+	function __construct($_urlA, $_ctxA=False, $_code=0, $_headersA=[]){
 		if (!is_array($_urlA))
 			$_urlA = [$_urlA];
 
@@ -69,6 +68,19 @@ Detect all matching URL bindings.
 
 
 
+/*
+Match all bond URL's arrays.
+URL's can be any of:
+ - match function, returning boolean or additional arguments array,
+ - '/'-started path regex string, allowing for named sub-regex match,
+ - '?'-started both GET and POST arguments regex string, allowing for named sub-regex match,
+ - or explicit boolean value
+
+Named arguments array is overrided is names repeat while bindings match. 
+
+
+Return bindings array.
+*/
 	function match(){
 		$varsA = [];
 		foreach ($this->urlA as $cUrl) {
