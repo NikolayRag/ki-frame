@@ -36,13 +36,16 @@ _newOrder
 
 	All matching contexts will be used if no order specified.
 */
-	static function render($_newOrder=False){
+	static function render($_newOrder=[], $_noneCode=404){
 		$matches = KiRouteBind::matchUrl(True);
 		if (!count($matches))
 			$matches = KiRouteBind::matchUrl(False);
 
-		if (!count($matches))
-			KiHandler::setReturn(404);
+		if (!count($matches)) {
+			KiHandler::setReturn($_noneCode);
+			return;
+		}
+
 
 
 		if (!is_array($_newOrder))
