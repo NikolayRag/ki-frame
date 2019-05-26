@@ -86,10 +86,10 @@ Return bindings array.
 */
 	function match(){
 		$varsA = [];
-		foreach ($this->urlA as $cUrl) {
 
+		foreach ($this->urlA as $cUrl) {
 			switch (self::URLType($cUrl)){
-				case self::UrlFN: //return variables array
+				case (self::UrlFN): //return variables array
 					$fRes = $cUrl();
 					if (!$fRes)
 						return;
@@ -103,26 +103,29 @@ Return bindings array.
 				case self::UrlPath: //return variables are regex matches
 // -todo 138 (check, bind) +1: check for exploit
 					$cRegex = str_replace('/', '\/', $cUrl);
+
 					$cRes = [];
-					
 					if (!preg_match("/^$cRegex$/", KiUrl::path(True), $cRes))
 						return;
-
 					$varsA = array_merge($varsA, self::cleanIdx($cRes));
 
 					break;
 
 
 				case self::UrlArgs:
+					$found = False;
+
 					foreach (KiUrl::args()->all() as $cName => $cVal) {
 						$cRes = [];
-						
 						if (!preg_match("/^\\$cUrl$/", "?$cName=$cVal", $cRes))
-							return;
-
+							continue;
 						$varsA = array_merge($varsA, self::cleanIdx($cRes));
+
+						$found = True;
 					}
 
+					if (!$found)
+						return;
 					break;
 
 
@@ -134,7 +137,6 @@ Return bindings array.
 					return;
 			}
 		}
-
 
 		$this->varsA = $varsA;
 
