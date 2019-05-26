@@ -3,7 +3,7 @@
 Context bind class
 */
 class KiRouteBind {
-	const UrlPath=2, UrlArgs=3, UrlFN=4;
+	const UrlTrue=1, UrlPath=2, UrlArgs=3, UrlFN=4;
 
 
 	static $bindA=[], $bind404A=[];
@@ -129,7 +129,7 @@ Return bindings array.
 					break;
 
 
-				case True:
+				case self::UrlTrue:
 					break;
 
 
@@ -156,7 +156,7 @@ Return bindings array.
 			return self::UrlArgs;
 
 		if (!!$_url)
-			return True;
+			return self::UrlTrue; //should be specified as constant to avoid switch() mismatch
 	}
 
 
