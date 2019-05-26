@@ -38,10 +38,10 @@ _newOrder
 */
 	static function render($_newOrder=[], $_noneCode=404){
 		$matches = KiRouteBind::matchUrl(True);
-		if (!count($matches))
+		if (!$matches)
 			$matches = KiRouteBind::matchUrl(False);
 
-		if (!count($matches)) {
+		if (!$matches) {
 			KiHandler::setReturn($_noneCode);
 			return;
 		}

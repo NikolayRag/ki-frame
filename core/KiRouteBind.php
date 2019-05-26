@@ -35,6 +35,9 @@ Detect all matching URL bindings.
 			if ($cBind->match())
 				$bondA[] = $cBind;
 
+		if (!count($bondA))
+			return;
+		
 		return $bondA;
 	}
 
