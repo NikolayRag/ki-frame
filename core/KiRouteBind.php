@@ -14,6 +14,9 @@ class KiRouteBind {
 
 
 
+/*
+Hold provided binding to normal or 404 array
+*/
 	private static function addBind($_cBind, $_is404){
 		if ($_is404)
 			self::$bind404A[] = $_cBind;
@@ -77,9 +80,9 @@ URL's can be any of:
  - match function, returning boolean or additional arguments array,
  - '/'-started path regex string, allowing for named sub-regex match,
  - '?'-started both GET and POST arguments regex string, allowing for named sub-regex match,
- - or explicit boolean value
+ - or implicit boolean value (cast to).
 
-Named arguments array is overrided is names repeat while bindings match. 
+Named arguments array is overrided if names repeat while bindings match. 
 
 
 Return bindings array.

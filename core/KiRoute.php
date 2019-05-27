@@ -25,18 +25,20 @@ This is called once for entire http request.
 _newOrder
 	Array of glob patterns may be used to specify contexts, which will go in order they matched.
 
-	Matched contexts are switched off further match.
-	That is, if there's ['c1', 'c2', 'd2'] contexts defined, ordering with ['*2', 'c?'] will result in ['c2', 'd2', 'c1'] since 'c2' is matched first.
+	Matched contexts are placed at first match order.
+	That is, if there's ['c1', 'c2', 'd2'] contexts defined, ordering with ['*2', 'c?'] will result in ['c2', 'd2', 'c1'] since 'c2' is matched already.
 
 	Using '*' anywhere on order, will place all remaining contexts without sorting in order they were defined.
 
-	If non-empty array is provided, any context which didnt match will be ignored.
-
-	If particular context don't match, it is ignored.
+	Any context which didn't match will be skipped.
 
 	All matching contexts will be used if no order specified.
+
+
+	All variables from matched binding are passed to all bond contexts.
 */
 	static function render($_newOrder=[], $_noneCode=404){
+//match normal, or 404, or set default code
 		$matches = KiRouteBind::matchUrl(True);
 		if (!$matches)
 			$matches = KiRouteBind::matchUrl(False);
@@ -50,6 +52,7 @@ _newOrder
 		$outRun = self::collect($matches, $_newOrder);
 
 
+//Set headers and code, trigger contexts code
 		if ($outRun->return)
 			KiHandler::setReturn($outRun->return);
 
@@ -68,9 +71,8 @@ _newOrder
 
 
 
-
 /*
-Collect all URL contexts in specified order
+Collect all bond contexts in specified order
 */
 	static private function collect($_bindA, $_newOrder){
 		$fContextA = [];

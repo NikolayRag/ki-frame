@@ -10,7 +10,6 @@ class KiRouteCtx {
 
 
 
-
 /*
 Add code to named context. 
 */
@@ -34,7 +33,7 @@ Add code to named context.
 Fetch named contexts array in glob-specified order.
 
 Glob patterns array may be supplied to filter and reorder output contexts.
-Explicitely specified context is returned only once, at first match.
+Particular context is returned only once, at first match.
 */
 	static function get($_orderA){
 		if (!is_array($_orderA))
@@ -67,12 +66,16 @@ Explicitely specified context is returned only once, at first match.
 	}
 
 
+	
+/*
+Create context and bind code array provided*/
 	function __construct($_src=False){
 		$this->codeA = [];
 
 		if ($_src)
 			$this->bindCode($_src);
 	}
+
 
 
 /*
@@ -108,7 +111,7 @@ Run prepared code and variables into KiHandler
 
 
 /*
-Solve registered code generators for specified context.
+Solve registered code generators.
 */
 	private function runContent($_src){
 		if (is_callable($_src)){

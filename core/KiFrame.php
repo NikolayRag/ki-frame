@@ -100,12 +100,14 @@ Order for multiple same-context code is the same as they were declared.
 
 $_ctx
 	String for context to be named.
+	Can be omited to make unnamed context object,
+	 used when explicitely bond.
 
 
 $_src
 	Array or one of three: function, filename, string.
 
-	Function is called to generate content.
+	Function is called to generate content, provided with matched bindings variables.
 	If existing .php filename is given instead of function, it's imported.
 	Otherwise, provided string is embedded as is.
 
