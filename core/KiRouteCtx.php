@@ -28,17 +28,41 @@ Add code to named context.
 
 
 
-	static function get($_namesA){
-		$outContextA = [];
+/*
+Fetch named contexts array in glob-specified order.
 
-		foreach ($_namesA as $cName)
-			if (array_key_exists($cName, self::$contextA))
-				array_push($outContextA, self::$contextA[$cName]);
+Glob patterns array may be supplied to filter and reorder output contexts.
+Explicitely specified context is returned only once, at first match.
+*/
+	static function get($_orderA){
+		if (!is_array($_orderA))
+			$_orderA = [];
 
-		return $outContextA;
+		if (!count($_orderA))
+			return array_merge([], self::$contextA);
+
+
+		$ctxA = array_keys(self::$contextA);
+
+		$unglobA = [];
+		foreach ($_orderA as $cCtx){
+			if (!is_string($cCtx)) //type check
+				continue;
+
+			$fA = array_filter($ctxA, function ($v) use ($cCtx) {
+				return fnmatch($cCtx, $v);
+			});
+			$unglobA = array_merge($unglobA, $fA);
+		}
+
+
+		$outCtxA = [];
+		foreach (array_values( array_unique($unglobA) ) as $cName)
+			$outCtxA[$cName] = self::$contextA[$cName];
+
+
+		return $outCtxA;
 	}
-
-
 
 
 	function __construct($_src=False){
@@ -59,33 +83,6 @@ Bind provided code array.
 		foreach ($_src as $cSrc)
 			if (!in_array($cSrc, $this->codeA))
 				$this->codeA[] = $cSrc;
-	}
-
-
-
-/*
-Fetch ordered and filtered context names.
-
-Array may be supplied to reorder output contexts.
-If specified, only listed in array will be run at all.
-*/
-	static function getOrder($_orderA){
-		$ctxA = array_keys(self::$contextA);
-
-		if (!count($_orderA))
-			return $ctxA;
-
-
-		$collectA = [];
-		foreach ($_orderA as $cCtx){
-			if (!is_string($cCtx)) //type check
-				continue;
-
-			$fA = array_filter($ctxA, function ($v) use ($cCtx) {return fnmatch($cCtx, $v);});
-			$collectA = array_merge($collectA, $fA);
-		}
-
-		return array_values( array_unique($collectA) );
 	}
 
 
