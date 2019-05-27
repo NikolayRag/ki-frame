@@ -6,6 +6,8 @@ class KiRouteCtx {
 	static $contextA=[];
 
 	var $codeA=[];
+	var $varsA=[];
+
 
 
 
@@ -90,12 +92,12 @@ Bind provided code array.
 /*
 Run prepared code and variables into KiHandler
 */
-	function run($_varsA, $_name=False){
+	function run($_name=False){
 		$cContentA = [];
 
 		//run all code
 		foreach ($this->codeA as $cSrc) {
-			$cCont = $this->runContent($cSrc, $_varsA);
+			$cCont = $this->runContent($cSrc);
 			if (is_string($cCont))
 				$cContentA[] = $cCont;
 		}
@@ -108,11 +110,11 @@ Run prepared code and variables into KiHandler
 /*
 Solve registered code generators for specified context.
 */
-	private function runContent($_src, $_vars){
+	private function runContent($_src){
 		if (is_callable($_src)){
 			ob_start(); //nest buffer
 
-			$res = call_user_func($_src, (object)$_vars);
+			$res = call_user_func($_src, (object)$this->varsA);
 
 			return ob_get_clean() . (string)$res;
 		}
