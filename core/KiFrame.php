@@ -53,8 +53,9 @@ class KiFrame {
 		include(__dir__ .'/KiAuth.php');
 
 //extentions
-		include(__dir__ .'/KiAgent.php');
-		include(__dir__ .'/KiDict.php');
+		include(__dir__ .'/ext/_email.php');
+		include(__dir__ .'/ext/KiAgent.php');
+		include(__dir__ .'/ext/KiDict.php');
 
 
 		self::$dictO = new KiDict();
