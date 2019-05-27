@@ -31,17 +31,6 @@ function first(){
 	return $cVal; //return last anyway
 }
 
-function redirect($url) {
-    header('Location: ' . $url);
-
-    $content = sprintf(
-        '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta http-equiv="refresh" content="1;url=%1$s" /><title>Redirecting...</title></head><body>Redirecting...</body></html>',
-        htmlspecialchars($url, ENT_QUOTES, 'UTF-8')
-    );
-
-    echo $content;
-}
-
 
 
 /*
@@ -66,13 +55,15 @@ function sendMail($_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_por
     $mail->Subject = $_subj;
     $mail->msgHTML($_body);
 
-    return $mail->send();
+    $mail->send();
+
+    return $mail->ErrorInfo;
 }
 
 
 
 function dump($_v){
-    echo str_replace(["\n"," "], ["<br>","&nbsp;"], print_r($_v, True));
+    echo str_replace(["\n"," ","\t"], ["<br>","&nbsp;","&nbsp;&nbsp;&nbsp;&nbsp;"], print_r($_v, True));
 }
 ?>
 

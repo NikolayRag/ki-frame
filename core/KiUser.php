@@ -1,63 +1,112 @@
 <?
 include(__dir__ .'/kiUserAccount.php');
+include(__dir__ .'/kiUserGroups.php');
 include(__dir__ .'/kiUserRights.php');
+
 
 
 /*
 User data holder
 */
 class KiUser {
-// -todo 70 (auth) +0: move custom fields (photo, name) to account
-	var $isSigned=false, $id=0, $name='', $email='', $photo='', $mask=0, $rights;
-	var $accountO;
+	private $id=0;
+	private $accountO, $rightsO, $groupsO;
 
 
 
-	function __construct(){
-		$this->accountO = new KiAccount();
+/*
+Initialize user.
+Account fields, groups assignment and rights are fetched and applied.
+*/
+	function __construct($_id=0, $_fields=[]){
+		$this->id = $_id;
+
+		$this->apply($_fields);
 	}
 
 
 
 /*
-Apply data from fetched uFlex user.
+Apply account data from named array.
 */
-	function apply($_userData){
-		$this->isSigned= true;
-		$this->id= $_userData->ID;
-		$this->email= $_userData->Email;
+	function apply($_fields){
+		$this->accountO = new KiAccount($this->id);
+		$this->groupsO = new KiGroups($this->id);
+		$this->rightsO = new KiRights($this);
 
-		($this->name= $_userData->displayName) || ($this->name= $_userData->Email);
-		$this->photo= $_userData->photoURL;
-		$this->mask= $_userData->mask;
-
-		$this->accountO->fetch($_userData->ID);
+		$this->accountO->set($_fields, False);
 	}
 
 
 
-	function reset(){
-		$this->isSigned= False;
+	function __get($_name){
+		switch ($_name){
+			case 'isSigned':
+				return $this->id && ($this->id == KF::user()->id);
 
-		$this->id= 0;
-		$this->email= '';
-
-		$this->name= '';
-		$this->photo= '';
-		$this->mask= 0;
+			case 'id':
+				return $this->id;
+		}
 	}
 
 
 
 // -todo 76 (clean, auth) +0: make account get/set reliable
-	function account($_field){
-		return $this->accountO->get($_field);
+	function account($_field=False, $_default=''){
+		return $this->accountO->get($_field, $_default);
+	}
+
+
+
+	function accountState(){
+		return $this->accountO->getState();
 	}
 
 
 
 	function accountSet($_field){
 		return $this->accountO->set($_field);
+	}
+
+
+
+	function groupGet($_idA=False){
+		return $this->groupsO->get($_idA);
+	}
+
+
+
+	function groupSet($_idA){
+		return $this->groupsO->set($_idA);
+	}
+
+
+
+	function groupDel($_idA){
+		return $this->groupsO->del($_idA);
+	}
+
+
+
+	function rights(){
+		return $this->rightsO;
+	}
+
+
+
+/*
+Copy user data to other user:
+group assignments are joined,
+account data is copied if not set.
+*/
+	function copy($_to){
+		$_to->groupSet( array_keys($this->groupGet()) );
+
+		//merge user accounts, target preferred
+		foreach ($this->account() as $aId=>$aVal) {
+			if ($_to->account($aId, False)===False)
+				$_to->accountSet([$aId=>$aVal]);
+		}
 	}
 }
 ?>

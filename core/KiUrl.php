@@ -9,7 +9,7 @@ class KiUrl {
 	const GET=1, POST=2, PUT=3, DELETE=4;
 
 	static private $isInited;
-	static private $vMethod, $vUri, $vPath, $vArgs, $vServer, $isHttps;
+	static private $vMethod, $vPath, $vArgs, $vServer, $isHttps;
 
 
 
@@ -40,26 +40,17 @@ asStr
 
 
 /*
-Get request string, always started with '/'.
-*/
-	static function url(){
-		self::init();
-
-		return self::$vUri;
-	}
-
-
-
-/*
 Get path array.
 */
 	static function path($_asStr=False){
 		self::init();
 
 		if ($_asStr)
-			return '/' . implode('/', self::$vPath);
+			return self::$vPath;
 
-		return self::$vPath;
+		return array_slice(
+			explode("/", self::$vPath), 1
+		);
 	}
 
 
@@ -117,17 +108,18 @@ Get HTTPS flag.
 		self::$vServer = $_SERVER['SERVER_NAME'];
 
 
+		$urlA = explode("?", preg_replace('[/+]', '/', "/${_SERVER["REQUEST_URI"]}"));
+		self::$vPath = $urlA[0];
+
+
 		self::$vArgs = new LooseObject();
 
 		foreach ($_POST as $pName=>$pVal)
 			self::$vArgs->$pName = $pVal;
 
-		self::$vUri = preg_replace('[/+]', '/', "/${_SERVER["REQUEST_URI"]}");
-		$uriA = explode("?", self::$vUri);
-
 		//Fill vArgs
-		if (isset($uriA[1]))
-		  foreach(explode("&",$uriA[1]) as $x){
+		if (isset($urlA[1]))
+		  foreach(explode("&",$urlA[1]) as $x){
 			$xSpl = explode("=",$x);
 			$get = isset($xSpl[1])? urldecode($xSpl[1]) :False;
 
@@ -136,12 +128,58 @@ Get HTTPS flag.
 			self::$vArgs->$xSpl[0] =
 				$get;
 		  }
+	}
 
 
-		self::$vPath = array_slice(
-			explode("/", $uriA[0]), 1
-		);
 
+/*
+Substitute current URL path and parameters with different values for use as "current" URI and arguments for all further KiUrl operations.
+New values for GET will later be returned by ->path(True) call, while both substituted values for GET and POST will form ->args() return.
+Notice: none of system variables are altered, like $_REQUEST, $_GET, $_SERVER["REQUEST_URI"] etc.
+
+
+$_newPath
+	New path string.
+
+
+$_newArgs
+	New arguments collection.
+	If value provided is True, all current arguments are reused. Every explicitely passed name=>value pair have higher priority. Use False named value to unset parameter.
+*/
+	static function alias($_newPath, $_newArgs=True){
+		if (!is_string($_newPath))
+			$_newPath = '/';
+
+		if ($_newPath[0]!='/')
+			$_newPath = "/$_newPath";
+			
+		self::$vPath = $_newPath;
+
+
+		//args
+
+		if (!is_array($_newArgs))
+			$_newArgs = [$_newArgs];
+
+
+		$newArgsA = [];
+		foreach ($_newArgs as $v)
+			if ($v===True){ //reuse all current
+				foreach (self::$vArgs->all() as $n=>$v)
+					$newArgsA[$n] = $v;
+
+				break;
+			}
+
+		foreach ($_newArgs as $n=>$v){
+			if ($v===False)
+				unset($newArgsA[$n]);
+
+			else if ($v!==True)
+				$newArgsA[$n] = $v;
+		}
+
+		self::$vArgs = new LooseObject($newArgsA);
 	}
 }
 

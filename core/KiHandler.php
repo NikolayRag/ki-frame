@@ -57,8 +57,8 @@ class KiHandler {
 		ob_start();
 
 		//Suppress showing all errors implicitely
-		ini_set("display_errors", "0");
-		error_reporting(0);
+//		ini_set("display_errors", "0");
+//		error_reporting(0);
 
 		set_error_handler('KiHandler::hError');
 		set_exception_handler('KiHandler::hException');
@@ -117,8 +117,8 @@ meta:
 
 		//allow final debug
 		if (self::$debug){
-			ini_set("display_errors", "1");
-			error_reporting(E_ALL);
+//			ini_set("display_errors", "1");
+//			error_reporting(E_ALL);
 
 			set_error_handler(Null);
 			set_exception_handler(Null);
@@ -170,7 +170,10 @@ Notice its own errors would not be handled in any way.
 Add contents
 */
 	static function setContent($_ctx, $_value){
-		self::$contentA[$_ctx] = $_value;
+		if ($_ctx===False)
+			self::$contentA[] = $_value;
+		else
+			self::$contentA[$_ctx] = $_value;
 	}
 
 

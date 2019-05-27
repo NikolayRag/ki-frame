@@ -12,14 +12,17 @@ All functions are divided by function groups, main of which are:
 
 
 There're 3 areas of actual code generation:
-1. Direct echo(), print_r(), and so on, used up from index.php root file. This output will be wiped out by default, till hDebug(?,True) is specified.
+1. Direct echo(), print_r(), and so on, used up from index.php root file. This output will be wiped out by default, till debug(?,True) is specified.
 2. Code, files and generator functions provided for routing with r*()
 3. Direct code generation and routing context redefinitions, run at custom error handlers, if any. This can override all previously generated code.
 */
 class KiFrame {
-	private static $sqlErrorTable = 'site_log_errors';
+	const ERROR_SQL_TABLE = 'site_log_errors';
+	const ERROR_FILE = '/../log/log.txt';
 
 	private static $isInited, $isEnded, $startTime;
+
+	private static $dictO;
 
 
 
@@ -31,29 +34,29 @@ class KiFrame {
 
 		self::$startTime= microtime(true);
 
-
+//initial handlers
 		include(__dir__ .'/KiHandler.php');
-
-		include(__dir__ .'/init_errorh.php');
+		include(__dir__ .'/KiError.php');
 		//general error callback (to file)
-		KiHandler::errCB(ErrCB\errCBFile(__dir__ .'/../log/log.txt' ));
+		KiHandler::errCB(KiError::errCBFile(__dir__ .self::ERROR_FILE));
 
-
+//support
 		include(__dir__ .'/support/general.php');
 		include(__dir__ .'/support/LooseObject.php');
-
-
 		include(__dir__ .'/KiConst.php');
-		include(__dir__ .'/KiRoute.php');
-
-
-		include(__dir__ .'/KiSql.php');
-		include(__dir__ .'/ki-dict.php');
-
 		include(__dir__ .'/KiUrl.php');
-		include(__dir__ .'/KiAgent.php');
+		include(__dir__ .'/KiSql.php');
+
+//core
+		include(__dir__ .'/KiRoute.php');
 		include(__dir__ .'/KiAuth.php');
 
+//extentions
+		include(__dir__ .'/KiAgent.php');
+		include(__dir__ .'/KiDict.php');
+
+
+		self::$dictO = new KiDict();
 
 		if (!isset($_SESSION) && !headers_sent())
 			session_start();
@@ -90,38 +93,81 @@ If ctx specified, only ctx context variables are returned.
 
 
 /*
-Register routing context code, shortcut for KiRoute::context()
+Assign named context to some code-generating routines.
+Several routines may be assigned with same context, that will come out they result will be placed right one after another.
+Order for multiple same-context code is the same as they were declared.
 
-Notice!
-If only one argument given, it will be $_src, not $_ctx.
-Context is assumed then to be ''.
-This is useful for light one-page setups.
+
+$_ctx
+	String for context to be named.
+	Can be omited to make unnamed context object,
+	 used when explicitely bond.
+
+
+$_src
+	Array or one of three: function, filename, string.
+
+	Function is called to generate content, provided with matched bindings variables.
+	If existing .php filename is given instead of function, it's imported.
+	Otherwise, provided string is embedded as is.
+
+	Function provided to context() return response data.
+	Anything other than string returned treated as error and ignored in output.
 */
-	static function rCode($_ctx, $_src=false){
-		if (func_num_args()==1){
-			$_src= $_ctx;
-			$_ctx= '';
-		}
+// =todo 137 (context) +0: allow to use unnamed contexts
+	static function rCode($_ctx, $_src=False){
+		if ($_src===False)
+			return new KiRouteCtx($_ctx); //subst src
 
-		return KiRoute::context($_ctx, $_src);
+		return KiRouteCtx::add($_ctx, $_src);
 	}
 
 
 
 /*
-Add context to URL, shortcut for KiRoute::bind()
+Add context and headers to URL and set return code.
+Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
+All contexts for all matching URLs will be used without concurrency.
+
+If nothing is bound at all, the only implicit assignment is '/' URL to '' context (root to default).
+If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code. If '' url is bound, 404 return code must be then set explicitely.
+
+
+$_url
+	Match function, URL match regex, or static value.
+	Array accepted, where ALL elements must match.
+
+	If function supplied returns non-strict False, then there's no match. Any other return value triggers match.
+	If array is returned, it's passed as 'variables' argument to bond context functions, if any.
+	
+	String regexp passed for match URI, starting either with unescaped '/' or '?'. Unescaped '/' are also allowed anywhere in regex.
+	If started with '/', URL path is matched. Path string to match is everything after server name, starting with '/', and without arguments.
+	If started with '?', arguments are matched. Any successfull match counts. WRONG useage: matching several arguments at once will fail constantly, like '?a=1&b=1'. Use several matches instead: [.., '?a=1', '?b=1']. 
+	Named capture (?P<name>value) is allowed to scan variables. Captured value is passed then within named array into bond context functions, if any. Matching several different named variables within one binding will pass all of them as arguments. When regex wide mask matches several URL arguments, only first match defines variable=>value pair.
+	Tricky regex matches like "/(?!foo$).*" (all but '/foo') are fully allowed.
+
+	Variables matched are accessed at runtime by ::contextData()
+
+
+	If first (or only) value specified is 404, match is used in case of no 'normal' matches found.
+	Notice, that if there any wide mask bound match, like '.*' or True, it could become impossible to catch 'not found' case at all. 'Not found' binding for this case can be matched by using patterns like "^(?!.foo$)".
+
+
+$_ctx
+	Context added to specified URL.
+	May be string or array of contexts.
+
+
+$_code
+	Default HTTP return code.
+	Return code have priority over any other defined one.
+
+
+$_headersA
+	Default custom return headers array.
 */
 	static function rBind($_url, $_ctx, $_code=0, $_headersA=[]){
-		return KiRoute::bind($_url, $_ctx, $_code, $_headersA);
-	}
-
-
-
-/*
-Order contexts, shortcut for KiRoute::order()
-*/
-	static function rOut($_ctxA=False){
-		return KiRoute::order($_ctxA);
+		return new KiRouteBind($_url, $_ctx, $_code, $_headersA);
 	}
 
 
@@ -138,14 +184,13 @@ _ctxOrder
 		self::$isEnded = True;
 
 
-// -todo 77 (clean, ux) +0: allow no-db case
 		$dbCfg= new LooseObject(KC::DBCFG());
 		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
 		//additional error callback (to DB table)
-		KiHandler::errCB(ErrCB\errCBDB(self::$sqlErrorTable));
+		KiHandler::errCB(KiError::errCBDB(self::ERROR_SQL_TABLE));
 
-// -todo 78 (clean, ux) +0: allow no-auth case
+// -todo 78 (clean, ux) +0: allow social-only and no-auth case
 		KiAuth::init(new LooseObject(KC::SOCIAL()));
 
 
@@ -155,12 +200,11 @@ _ctxOrder
 
 
 /*
-Access bond matched variables, shortcut to KiRoute::contextData().
+Get matched bindings variables at context runtime.
 */
-	static function rData(){
-		return KiRoute::contextData();
+	static function runtime(){
+		return KiRouteCtx::runtime();
 	}
-
 
 
 //=================================================================//
@@ -169,8 +213,20 @@ Access bond matched variables, shortcut to KiRoute::contextData().
 
 
 
+/*
+Current active user, logged or not.
+*/
 	static function user(){
 		return KiAuth::$user;
+	}
+
+
+
+/*
+Define named function for checking rights later.
+*/
+	static function right($_name, $_fn){
+		return KiRights::define($_name, $_fn);
 	}
 
 
@@ -190,15 +246,21 @@ Callback for social login. Shortcut for KiAuth socCB().
 	}
 /*
 Register new user with login/pass. Shortcut for KiAuth passRegister().
+
+$_bind
+	Set to bind logpass to current autosocial user.
 */
-	static function lReg($_email, $_pass){
-		return KiAuth::passRegister($_email, $_pass);
+	static function lReg($_email, $_pass, $_bind=False){
+		return KiAuth::passRegister($_email, $_pass, $_bind);
 	}
 /*
 Login user with login/pass. Shortcut for KiAuth passLogin().
+
+$_bind
+	Set to bind logpass to current autosocial user.
 */
-	static function lIn($_email, $_pass){
-		return KiAuth::passLogin($_email, $_pass);
+	static function lIn($_email, $_pass, $_bind=False){
+		return KiAuth::passLogin($_email, $_pass, $_bind);
 	}
 /*
 Log out logged use. Shortcut for KiAuth logout().
@@ -230,20 +292,8 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 
 
 
-	static function hErrCB($_CB){
-		KiHandler::errCB($_CB);
-	}
-	static function hHeader($_name, $_value){
-		KiHandler::setHeader($_name, $_value);
-	}
-	static function hReturn($_code){
-		KiHandler::setReturn($_code);
-	}
-	static function hDebug($_debug, $_clean){
+	static function debug($_debug, $_clean){
 		KiHandler::setDebug($_debug, $_clean);
-	}
-	static function hCountErrors($_countErrors=true, $_countXcption=true){
-		KiHandler::countErrors($_countErrors=true, $_countXcption=true);
 	}
 
 
@@ -289,6 +339,12 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 
 	static function uHttps(){
 		return KiUrl::https();
+	}
+
+
+
+	static function uAlias($_path,$_args=True){
+		return KiUrl::alias($_path,$_args);
 	}
 
 
@@ -352,6 +408,15 @@ Sent email.
 		$_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_port=465
 	){
 		sendMail($_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_port);
+	}
+
+
+
+/*
+Global dictionary shortcut.
+*/
+	static function dict(){
+		return self::$dictO;
 	}
 }
 
