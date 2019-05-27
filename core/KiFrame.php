@@ -75,7 +75,9 @@ class KiFrame {
 
 /*
 Return all constant.
-If ctx specified, only ctx context variables are returned.
+If _ctx specified, only _ctx context variables are returned.
+
+Constants are defined first by KC::<context>($variable) call.
 */
 	static function c($_ctx=false){
 		return KiConst::___dump($_ctx);
