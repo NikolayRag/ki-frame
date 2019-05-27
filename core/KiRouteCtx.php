@@ -4,9 +4,19 @@ Context object
 */
 class KiRouteCtx {
 	static $contextA=[];
+	static $cVarsA=[];
 
 	var $codeA=[];
 	var $varsA=[];
+
+
+
+/*
+Add code to named context. 
+*/
+	static function runtime(){
+		return self::$cVarsA;
+	}
 
 
 
@@ -126,6 +136,7 @@ Solve registered code generators.
 		if (is_file($_src)){
 			ob_start(); //nest buffer
 
+			self::$cVarsA = $this->varsA;
 			$res = include($_src);
 
 			return ob_get_clean();
