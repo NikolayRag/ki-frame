@@ -142,6 +142,7 @@ $_newPath
 	New path string.
 
 
+//  todo 163 (url) +0: provide alias() with '*' argument instead of True
 $_newArgs
 	New arguments collection.
 	If value provided is True, all current arguments are reused. Every explicitely passed name=>value pair have higher priority. Use False named value to unset parameter.

@@ -98,6 +98,8 @@ API cb for social logon.
 			'autoType' => KiAuthSoc::$type,
 			'autoSocialId' =>KiAuthSoc::$id
 		]);
+
+		//  todo 123 (feature, auth) +0: bind social to logged user
 	}
 
 

@@ -101,6 +101,9 @@ Collect all bond contexts in specified order
 		}
 
 
+//  todo 165 (context, bind, ux) -1: choose other inline context specifiers
+//		$doInline = (!$_newOrder) or in_array('*', $_newOrder, True);
+
 		return (object)[
 			'ctxA' => array_intersect_key($ctxOrderedA, $fContextA), //filter out unused
 			'headersA' => $outHeadersA,

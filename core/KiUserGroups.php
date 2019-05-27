@@ -2,7 +2,7 @@
 /*
 Manage abstract user groups.
 */
-// -todo 90 (groups) +0: split KiGroups to group-managing and user-managing
+// -todo 90 (groups) +0: split KiGroups user management interface to KiUser
 class KiGroups {
 	private static $DBA = [
 		'getGroups' => 'SELECT * FROM users_groups WHERE id_user=?',

@@ -1,4 +1,5 @@
 <?
+//  todo 126 (sql) +0: use ORM
 /*
 Root framework class.
 It is singletone, so all it's methods are static.
@@ -116,7 +117,6 @@ $_src
 	Function provided to context() return response data.
 	Anything other than string returned treated as error and ignored in output.
 */
-// =todo 137 (context) +0: allow to use unnamed contexts
 	static function code($_ctx, $_src=False){
 		if ($_src===False)
 			return new KiRouteCtx($_ctx); //subst src
@@ -171,6 +171,7 @@ $_headersA
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
 		return new KiRouteBind($_url, $_ctx, $_code, $_headersA);
 	}
+// =todo 108 (bind, context) +0: allow to use bond context name, context object or implicit context from supplied : function, file, or code.
 
 
 

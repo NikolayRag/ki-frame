@@ -104,7 +104,7 @@ Return bindings array.
 
 
 				case self::UrlPath: //return variables are regex matches
-// -todo 138 (check, bind) +1: check for exploit
+// -todo 138 (check, bind) +1: check for regex exploit
 					$cRegex = str_replace('/', '\/', $cUrl);
 
 					$cRes = [];
