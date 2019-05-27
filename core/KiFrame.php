@@ -51,8 +51,8 @@ class KiFrame {
 		include(__dir__ .'/KiAuth.php');
 
 //extentions
-		include(__dir__ .'/ext/KiAgent.php');
-		include(__dir__ .'/ext/KiDict.php');
+		foreach (glob(__dir__ .'/ext/*.php') as $fn)
+    		include $fn;
 
 
 
