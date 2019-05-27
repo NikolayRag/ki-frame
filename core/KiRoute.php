@@ -68,17 +68,6 @@ _newOrder
 
 
 
-/*
-Collect anonymous context objects.
-*/
-	static private function contextInline($_bindA){
-		$outContextA = [];
-
-
-		return $outContextA;
-	}
-
-
 
 /*
 Collect all URL contexts in specified order
