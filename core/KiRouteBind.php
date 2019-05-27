@@ -15,18 +15,6 @@ class KiRouteBind {
 
 
 /*
-Hold provided binding to normal or 404 array
-*/
-	private static function addBind($_cBind, $_is404){
-		if ($_is404)
-			self::$bind404A[] = $_cBind;
-		else
-			self::$bindA[] = $_cBind;
-	}
-
-
-
-/*
 Detect all matching URL bindings.
 */
 	static function matchUrl($_non404=True){
@@ -69,7 +57,19 @@ Detect all matching URL bindings.
 		$this->headersA = $_headersA;
 
 
-		self::addBind($this, $is404);
+		$this->addBind($is404);
+	}
+
+
+
+/*
+Hold provided binding to normal or 404 array
+*/
+	private function addBind($_is404){
+		if ($_is404)
+			self::$bind404A[] = $this;
+		else
+			self::$bindA[] = $this;
 	}
 
 
