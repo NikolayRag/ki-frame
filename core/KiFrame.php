@@ -337,39 +337,6 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 
 
 
-//=================================================================//
-//============================= AGENT =============================//
-//=================================================================//
-
-
-
-	static function aBrowser() {
-		return KiAgent::browser();
-	}
-
-
-
-	static function aKnown() {
-		return KiAgent::isKnown();
-	}
-
-
-
-	static function aDefault() {
-		return KiAgent::isDefault();
-	}
-
-
-
-	static function aBot() {
-		return KiAgent::isBot();
-	}
-
-
-
-
-
-
 //===================================================================//
 //============================= HANDLER =============================//
 //===================================================================//
