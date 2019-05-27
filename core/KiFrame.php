@@ -226,7 +226,10 @@ Current active user, logged or not.
 
 
 /*
-Define named function for checking rights later.
+Define named rights check function.
+
+Function is available later for any KiRights-><name>(),
+ notably at KiUser->rights()-><name>() call.
 */
 	static function right($_name, $_fn){
 		return KiRights::define($_name, $_fn);

@@ -13,7 +13,7 @@ class KiRights {
 
 
 	function __construct($_user=Null){
-		self::init();
+		self::___init();
 
 		$this->__this_user = $_user;
 	}
@@ -47,7 +47,7 @@ Right is checked then, running bond function, with user itsels as argument follo
 
 
 
-	static function init(){
+	static function ___init(){
 		if (self::$isInited)
 			return;
 		self::$isInited = True;
