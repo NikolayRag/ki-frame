@@ -77,7 +77,7 @@ class KiFrame {
 Return all constant.
 If ctx specified, only ctx context variables are returned.
 */
-	static function cDump($_ctx=false){
+	static function c($_ctx=false){
 		return KiConst::___dump($_ctx);
 	}
 
@@ -115,7 +115,7 @@ $_src
 	Anything other than string returned treated as error and ignored in output.
 */
 // =todo 137 (context) +0: allow to use unnamed contexts
-	static function rCode($_ctx, $_src=False){
+	static function code($_ctx, $_src=False){
 		if ($_src===False)
 			return new KiRouteCtx($_ctx); //subst src
 
@@ -166,7 +166,7 @@ $_code
 $_headersA
 	Default custom return headers array.
 */
-	static function rBind($_url, $_ctx, $_code=0, $_headersA=[]){
+	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
 		return new KiRouteBind($_url, $_ctx, $_code, $_headersA);
 	}
 
@@ -394,7 +394,7 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 /*
 Return seconds since very start.
 */
-	static function lifetime($_digits=3){
+	static function live($_digits=3){
 		$mult= pow(10, $_digits);
 		return round((microtime(true) -self::$startTime)*$mult)/$mult;
 	}
