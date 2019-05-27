@@ -1,5 +1,5 @@
 <?
-//  todo 126 (sql) +0: use ORM
+//  todo 126 (sql) -1: use ORM
 /*
 Root framework class.
 It is singletone, so all it's methods are static.
@@ -50,6 +50,7 @@ class KiFrame {
 		include(__dir__ .'/KiRoute.php');
 		include(__dir__ .'/KiAuth.php');
 
+
 //extentions
 		foreach (glob(__dir__ .'/ext/*.php') as $fn)
     		include $fn;
@@ -58,6 +59,8 @@ class KiFrame {
 
 		if (!isset($_SESSION) && !headers_sent())
 			session_start();
+
+// Finish flow by calling end()
 	}
 
 
@@ -168,12 +171,12 @@ $_headersA
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
 		return new KiRouteBind($_url, $_ctx, $_code, $_headersA);
 	}
-// =todo 108 (bind, context) +0: allow to use bond context name, context object or implicit context from supplied : function, file, or code.
+// =todo 108 (bind, context) +0: allow to use bond context name or context object
 
 
 
 /*
-Finalize definition and render routing, shortcut for KiRoute::render()
+Finalize definition and render matches.
 
 _ctxOrder
 	Optional context reorder.
