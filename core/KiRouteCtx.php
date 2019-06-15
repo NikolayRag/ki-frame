@@ -127,7 +127,7 @@ Solve registered code generators.
 		if (is_callable($_src)){
 			ob_start(); //nest buffer
 
-			$res = call_user_func($_src, (object)$this->varsA);
+			$res = call_user_func($_src, $this->varsA);
 
 			return ob_get_clean() . (string)$res;
 		}
