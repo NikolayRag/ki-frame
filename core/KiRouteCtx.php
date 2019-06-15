@@ -45,7 +45,7 @@ Fetch named contexts array in glob-specified order.
 Glob patterns array may be supplied to filter and reorder output contexts.
 Particular context is returned only once, at first match.
 */
-	static function get($_orderA){
+	static function getNamed($_orderA){
 		if (!is_array($_orderA))
 			$_orderA = [];
 

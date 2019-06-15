@@ -78,13 +78,13 @@ Collect all bond contexts in specified order
 		$fContextA = [];
 		//filter contexts out
 
-		$ctxOrderedA = KiRouteCtx::get($_newOrder);
+		$ctxNamedA = KiRouteCtx::getNamed($_newOrder);
 
 		$outHeadersA = [];
 		$outReturn = 0;
 		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtx) {
-				if (!in_array($cCtx, array_keys($ctxOrderedA)))
+				if (!in_array($cCtx, array_keys($ctxNamedA)))
 					continue;
 
 				$fContextA[$cCtx] = True;
@@ -96,7 +96,7 @@ Collect all bond contexts in specified order
 					$outReturn = $cBind->return;
 
 				foreach ($cBind->varsA as $n=>$v)
-					$ctxOrderedA[$cCtx]->varsA[$n] = $v;
+					$ctxNamedA[$cCtx]->varsA[$n] = $v;
 			}
 		}
 
@@ -105,7 +105,7 @@ Collect all bond contexts in specified order
 //		$doInline = (!$_newOrder) or in_array('*', $_newOrder, True);
 
 		return (object)[
-			'ctxA' => array_intersect_key($ctxOrderedA, $fContextA), //filter out unused
+			'ctxA' => array_intersect_key($ctxNamedA, $fContextA), //filter out unused
 			'headersA' => $outHeadersA,
 			'return' => $outReturn
 		];
