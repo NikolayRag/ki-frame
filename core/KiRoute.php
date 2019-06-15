@@ -38,6 +38,9 @@ _newOrder
 	All variables from matched binding are passed to all bond contexts.
 */
 	static function render($_newOrder=[], $_noneCode=404){
+		if (!is_array($_newOrder))
+			$_newOrder = [$_newOrder];
+
 //match normal, or 404, or set default code
 		$matches = KiRouteBind::matchUrl(True);
 		if (!$matches)
@@ -47,9 +50,9 @@ _newOrder
 			KiHandler::setReturn($_noneCode);
 			return;
 		}
-
-
-		$outRun = self::collect($matches, $_newOrder);
+		
+		$doInline = !$_newOrder or array_search('*', $_newOrder);
+		$outRun = self::collect($matches, $_newOrder, $doInline);
 
 
 //Set headers and code, trigger contexts code
@@ -74,7 +77,7 @@ _newOrder
 /*
 Collect all bond contexts in specified order
 */
-	static private function collect($_bindA, $_newOrder){
+	static private function collect($_bindA, $_newOrder, $_doInline){
 		$fContextA = [];
 		//filter contexts out
 
