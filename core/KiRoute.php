@@ -87,10 +87,19 @@ Collect all bond contexts in specified order
 		$outReturn = 0;
 		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtx) {
-				if (!in_array($cCtx, array_keys($ctxNamedA)))
-					continue;
+				$cCtxO = null;
 
-				$fContextA[$cCtx] = True;
+				switch (True) {
+					case (in_array($cCtx, array_keys($ctxNamedA))):
+						$fContextA[$cCtx] = True; //store names only names 
+						$cCtxO = $ctxNamedA[$cCtx];
+						
+						break;
+
+
+					default:
+						continue;
+				}
 
 
 				$outHeadersA = array_merge($cBind->headersA, $outHeadersA);
@@ -99,7 +108,7 @@ Collect all bond contexts in specified order
 					$outReturn = $cBind->return;
 
 				foreach ($cBind->varsA as $n=>$v)
-					$ctxNamedA[$cCtx]->varsA[$n] = $v;
+					$cCtxO->varsA[$n] = $v;
 			}
 		}
 
