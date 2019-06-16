@@ -129,7 +129,6 @@ $_src
 /*
 Add context and headers to URL and set return code.
 Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
-All contexts for all matching URLs will be used without concurrency.
 
 If nothing is bound at all, the only implicit assignment is '/' URL to '' context (root to default).
 If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code. If '' url is bound, 404 return code must be then set explicitely.
@@ -171,7 +170,6 @@ $_headersA
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
 		return new KiRouteBind($_url, $_ctx, $_code, $_headersA);
 	}
-// =todo 108 (bind, context) +0: allow to use bond context name or context object
 
 
 
@@ -184,7 +182,7 @@ _ctxOrder
 _doInline
 	Force On or Off inlined contexts.
 */
-	static function end($_ctxOrder=False, $_doInline=Null){
+	static function end($_ctxOrder=[], $_doInline=Null){
 		if (self::$isEnded)
 			return;
 		self::$isEnded = True;

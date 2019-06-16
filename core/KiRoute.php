@@ -134,8 +134,6 @@ $_doInline
 		}
 
 
-//  todo 165 (context, bind, ux) -1: choose other inline context specifiers
-//		$doInline = (!$_newOrder) or in_array('*', $_newOrder, True);
 		$filteredCtxA = array_intersect_key($ctxNamedA, $fContextA);
 		if ($_doInline)
 			foreach ($ctxInlineA as $cCtx){
