@@ -37,7 +37,7 @@ _newOrder
 
 	All variables from matched binding are passed to all bond contexts.
 */
-	static function render($_newOrder=[], $_noneCode=404){
+	static function render($_newOrder=[], $_doInline=Null, $_noneCode=404){
 		if (!is_array($_newOrder))
 			$_newOrder = [$_newOrder];
 
@@ -51,8 +51,9 @@ _newOrder
 			return;
 		}
 		
-		$doInline = !$_newOrder or array_search('*', $_newOrder);
-		$outRun = self::collect($matches, $_newOrder, $doInline);
+		if ($_doInline===Null)
+			$_doInline = !$_newOrder or array_search('*', $_newOrder);
+		$outRun = self::collect($matches, $_newOrder, $_doInline);
 
 
 //Set headers and code, trigger contexts code

@@ -181,7 +181,7 @@ Finalize definition and render matches.
 _ctxOrder
 	Optional context reorder.
 */
-	static function end($_ctxOrder=False){
+	static function end($_ctxOrder=False, $_doInline=Null){
 		if (self::$isEnded)
 			return;
 		self::$isEnded = True;
