@@ -82,6 +82,7 @@ Collect all bond contexts in specified order
 		$fContextA = [];
 		//filter contexts out
 
+		$ctxInlineA = [];
 		$ctxNamedA = KiRouteCtx::getNamed($_newOrder);
 
 		$outHeadersA = [];
@@ -91,6 +92,13 @@ Collect all bond contexts in specified order
 				$cCtxO = null;
 
 				switch (True) {
+					case ($cCtx instanceof KiRouteCtx):
+						$ctxInlineA[] = $cCtx;
+						$cCtxO = $cCtx;
+
+						break;
+
+
 					case (in_array($cCtx, array_keys($ctxNamedA))):
 						$fContextA[$cCtx] = True; //store names only names 
 						$cCtxO = $ctxNamedA[$cCtx];
@@ -116,9 +124,16 @@ Collect all bond contexts in specified order
 
 //  todo 165 (context, bind, ux) -1: choose other inline context specifiers
 //		$doInline = (!$_newOrder) or in_array('*', $_newOrder, True);
+		$filteredCtxA = array_intersect_key($ctxNamedA, $fContextA);
+		if ($_doInline)
+			foreach ($ctxInlineA as $cCtx){
+				if (!in_array($cCtx, $filteredCtxA))
+					$filteredCtxA[] = $cCtx;
+			}
+
 
 		return (object)[
-			'ctxA' => array_intersect_key($ctxNamedA, $fContextA), //filter out unused
+			'ctxA' => $filteredCtxA,
 			'headersA' => $outHeadersA,
 			'return' => $outReturn
 		];
