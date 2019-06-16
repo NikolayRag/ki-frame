@@ -197,7 +197,7 @@ _ctxOrder
 		KiAuth::init(new LooseObject(KC::SOCIAL()));
 
 
-		return KiRoute::render($_ctxOrder);
+		return KiRoute::render($_ctxOrder, $_doInline);
 	}
 
 
