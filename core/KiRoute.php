@@ -36,6 +36,14 @@ _newOrder
 
 
 	All variables from matched binding are passed to all bond contexts.
+
+_doInline
+	Add all inlined contexts, based on:
+		True, forced "on",
+		False, forced 'off',
+		None, switched by blank order or '*' specified anywhere.
+
+	Inlined contexts are used once, next to named ones.
 */
 	static function render($_newOrder=[], $_doInline=Null, $_noneCode=404){
 		if (!is_array($_newOrder))
@@ -76,7 +84,11 @@ _newOrder
 
 
 /*
-Collect all bond contexts in specified order
+Collect all bond contexts in specified order.
+
+$_doInline
+	Toggle to join all inlined context objects after all named.
+	Inlined contexts are included only once alongside with named.
 */
 	static private function collect($_bindA, $_newOrder, $_doInline){
 		$fContextA = [];

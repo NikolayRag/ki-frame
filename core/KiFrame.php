@@ -157,16 +157,16 @@ $_url
 
 $_ctx
 	Context added to specified URL.
-	May be string or array of contexts.
+	May be KiRouteCtx object, context name or array of either.
 
 
 $_code
-	Default HTTP return code.
-	Return code have priority over any other defined one.
+	HTTP return code, ignored if 0.
+	Return code from within last matching bind have priority, also over any explicitely defined ones.
 
 
 $_headersA
-	Default custom return headers array.
+	Output headers array.
 */
 	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
 		return new KiRouteBind($_url, $_ctx, $_code, $_headersA);
@@ -180,6 +180,9 @@ Finalize definition and render matches.
 
 _ctxOrder
 	Optional context reorder.
+
+_doInline
+	Force On or Off inlined contexts.
 */
 	static function end($_ctxOrder=False, $_doInline=Null){
 		if (self::$isEnded)
