@@ -1,4 +1,5 @@
 <?php
+// =todo 166 (auth, check) +0: check cases for logging while logged
 // =todo 65 (feature, auth) +0: append additional users to signed user
 include(__dir__ .'/KiUser.php');
 include(__dir__ .'/KiAuthPass.php');

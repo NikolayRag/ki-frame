@@ -187,7 +187,7 @@ _doInline
 			return;
 		self::$isEnded = True;
 
-
+//  todo 168 (db, feature) +0: add no-db case
 		$dbCfg= new LooseObject(KC::DBCFG());
 		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
