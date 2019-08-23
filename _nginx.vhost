@@ -1,9 +1,13 @@
+#
+# nginx minimal setup to route all 404 requests to /index.php
+#
+
 server {
 	listen *:80;
 
-	server_name redbones.ru *.redbones.ru;
+	server_name asd.asd *.asd.asd;
 
-	root /var/www/redbones.ru/web;
+	root /var/www/asd.asd/web;
 
 
 	location / {
