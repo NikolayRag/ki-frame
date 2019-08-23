@@ -1,3 +1,6 @@
 [submodule "_3rd/uFlex"]
 	path = _3rd/uFlex
 	url = https://github.com/ptejada/uFlex
+[submodule "_3rd/php-browser-detector"]
+	path = _3rd/php-browser-detector
+	url = https://github.com/sinergi/php-browser-detector
