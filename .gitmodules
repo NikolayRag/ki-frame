@@ -7,3 +7,6 @@
 [submodule "_3rd/php-social"]
 	path = _3rd/php-social
 	url = https://github.com/itlessons/php-social
+[submodule "_3rd/PHPMailer"]
+	path = _3rd/PHPMailer
+	url = https://github.com/PHPMailer/PHPMailer
