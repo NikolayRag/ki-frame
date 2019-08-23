@@ -4,3 +4,6 @@
 [submodule "_3rd/php-browser-detector"]
 	path = _3rd/php-browser-detector
 	url = https://github.com/sinergi/php-browser-detector
+[submodule "_3rd/php-social"]
+	path = _3rd/php-social
+	url = https://github.com/itlessons/php-social
