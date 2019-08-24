@@ -36,8 +36,19 @@ _newOrder
 
 
 	All variables from matched binding are passed to all bond contexts.
+
+_doInline
+	Add all inlined contexts, based on:
+		True, forced "on",
+		False, forced 'off',
+		None, switched by blank order or '*' specified anywhere.
+
+	Inlined contexts are used once, next to named ones.
 */
-	static function render($_newOrder=[], $_noneCode=404){
+	static function render($_newOrder=[], $_doInline=Null, $_noneCode=404){
+		if (!is_array($_newOrder))
+			$_newOrder = [$_newOrder];
+
 //match normal, or 404, or set default code
 		$matches = KiRouteBind::matchUrl(True);
 		if (!$matches)
@@ -47,9 +58,10 @@ _newOrder
 			KiHandler::setReturn($_noneCode);
 			return;
 		}
-
-
-		$outRun = self::collect($matches, $_newOrder);
+		
+		if ($_doInline===Null)
+			$_doInline = !$_newOrder or array_search('*', $_newOrder);
+		$outRun = self::collect($matches, $_newOrder, $_doInline);
 
 
 //Set headers and code, trigger contexts code
@@ -72,22 +84,43 @@ _newOrder
 
 
 /*
-Collect all bond contexts in specified order
+Collect all bond contexts in specified order.
+
+$_doInline
+	Toggle to join all inlined context objects after all named.
+	Inlined contexts are included only once alongside with named.
 */
-	static private function collect($_bindA, $_newOrder){
+	static private function collect($_bindA, $_newOrder, $_doInline){
 		$fContextA = [];
 		//filter contexts out
 
-		$ctxOrderedA = KiRouteCtx::get($_newOrder);
+		$ctxInlineA = [];
+		$ctxNamedA = KiRouteCtx::getNamed($_newOrder);
 
 		$outHeadersA = [];
 		$outReturn = 0;
 		foreach ($_bindA as $cBind){ //all actual bindings
 			foreach ($cBind->ctxA as $cCtx) {
-				if (!in_array($cCtx, array_keys($ctxOrderedA)))
-					continue;
+				$cCtxO = null;
 
-				$fContextA[$cCtx] = True;
+				switch (True) {
+					case ($cCtx instanceof KiRouteCtx):
+						$ctxInlineA[] = $cCtx;
+						$cCtxO = $cCtx;
+
+						break;
+
+
+					case (in_array($cCtx, array_keys($ctxNamedA))):
+						$fContextA[$cCtx] = True; //store names only names 
+						$cCtxO = $ctxNamedA[$cCtx];
+						
+						break;
+
+
+					default:
+						continue;
+				}
 
 
 				$outHeadersA = array_merge($cBind->headersA, $outHeadersA);
@@ -96,13 +129,21 @@ Collect all bond contexts in specified order
 					$outReturn = $cBind->return;
 
 				foreach ($cBind->varsA as $n=>$v)
-					$ctxOrderedA[$cCtx]->varsA[$n] = $v;
+					$cCtxO->varsA[$n] = $v;
 			}
 		}
 
 
+		$filteredCtxA = array_intersect_key($ctxNamedA, $fContextA);
+		if ($_doInline)
+			foreach ($ctxInlineA as $cCtx){
+				if (!in_array($cCtx, $filteredCtxA))
+					$filteredCtxA[] = $cCtx;
+			}
+
+
 		return (object)[
-			'ctxA' => array_intersect_key($ctxOrderedA, $fContextA), //filter out unused
+			'ctxA' => $filteredCtxA,
 			'headersA' => $outHeadersA,
 			'return' => $outReturn
 		];

@@ -1,0 +1,12 @@
+[submodule "_3rd/uFlex"]
+	path = _3rd/uFlex
+	url = https://github.com/ptejada/uFlex
+[submodule "_3rd/php-browser-detector"]
+	path = _3rd/php-browser-detector
+	url = https://github.com/sinergi/php-browser-detector
+[submodule "_3rd/php-social"]
+	path = _3rd/php-social
+	url = https://github.com/itlessons/php-social
+[submodule "_3rd/PHPMailer"]
+	path = _3rd/PHPMailer
+	url = https://github.com/PHPMailer/PHPMailer

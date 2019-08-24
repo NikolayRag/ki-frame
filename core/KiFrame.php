@@ -1,4 +1,5 @@
 <?
+//  todo 126 (sql) -1: use ORM
 /*
 Root framework class.
 It is singletone, so all it's methods are static.
@@ -21,8 +22,6 @@ class KiFrame {
 	const ERROR_FILE = '/../log/log.txt';
 
 	private static $isInited, $isEnded, $startTime;
-
-	private static $dictO;
 
 
 
@@ -51,15 +50,17 @@ class KiFrame {
 		include(__dir__ .'/KiRoute.php');
 		include(__dir__ .'/KiAuth.php');
 
+
 //extentions
-		include(__dir__ .'/KiAgent.php');
-		include(__dir__ .'/KiDict.php');
+		foreach (glob(__dir__ .'/ext/*.php') as $fn)
+    		include $fn;
 
 
-		self::$dictO = new KiDict();
 
 		if (!isset($_SESSION) && !headers_sent())
 			session_start();
+
+// Finish flow by calling end()
 	}
 
 
@@ -75,9 +76,11 @@ class KiFrame {
 
 /*
 Return all constant.
-If ctx specified, only ctx context variables are returned.
+If _ctx specified, only _ctx context variables are returned.
+
+Constants are defined first by KC::<context>($variable) call.
 */
-	static function cDump($_ctx=false){
+	static function c($_ctx=false){
 		return KiConst::___dump($_ctx);
 	}
 
@@ -114,8 +117,7 @@ $_src
 	Function provided to context() return response data.
 	Anything other than string returned treated as error and ignored in output.
 */
-// =todo 137 (context) +0: allow to use unnamed contexts
-	static function rCode($_ctx, $_src=False){
+	static function code($_ctx, $_src=False){
 		if ($_src===False)
 			return new KiRouteCtx($_ctx); //subst src
 
@@ -127,7 +129,6 @@ $_src
 /*
 Add context and headers to URL and set return code.
 Different contexts may be bond to one URL, as well as one context may be bond to number of URLs.
-All contexts for all matching URLs will be used without concurrency.
 
 If nothing is bound at all, the only implicit assignment is '/' URL to '' context (root to default).
 If nothing is bound to '' (404 case), it will implicitely be assigned to blank page with 404 return code. If '' url is bound, 404 return code must be then set explicitely.
@@ -155,35 +156,38 @@ $_url
 
 $_ctx
 	Context added to specified URL.
-	May be string or array of contexts.
+	May be KiRouteCtx object, context name or array of either.
 
 
 $_code
-	Default HTTP return code.
-	Return code have priority over any other defined one.
+	HTTP return code, ignored if 0.
+	Return code from within last matching bind have priority, also over any explicitely defined ones.
 
 
 $_headersA
-	Default custom return headers array.
+	Output headers array.
 */
-	static function rBind($_url, $_ctx, $_code=0, $_headersA=[]){
+	static function bind($_url, $_ctx, $_code=0, $_headersA=[]){
 		return new KiRouteBind($_url, $_ctx, $_code, $_headersA);
 	}
 
 
 
 /*
-Finalize definition and render routing, shortcut for KiRoute::render()
+Finalize definition and render matches.
 
 _ctxOrder
 	Optional context reorder.
+
+_doInline
+	Force On or Off inlined contexts.
 */
-	static function end($_ctxOrder=False){
+	static function end($_ctxOrder=[], $_doInline=Null){
 		if (self::$isEnded)
 			return;
 		self::$isEnded = True;
 
-
+//  todo 168 (db, feature) +0: add no-db case
 		$dbCfg= new LooseObject(KC::DBCFG());
 		KiSql::init($dbCfg->HOST, $dbCfg->NAME, $dbCfg->USER, $dbCfg->PASS);
 
@@ -194,7 +198,7 @@ _ctxOrder
 		KiAuth::init(new LooseObject(KC::SOCIAL()));
 
 
-		return KiRoute::render($_ctxOrder);
+		return KiRoute::render($_ctxOrder, $_doInline);
 	}
 
 
@@ -223,7 +227,10 @@ Current active user, logged or not.
 
 
 /*
-Define named function for checking rights later.
+Define named rights check function.
+
+Function is available later for any KiRights-><name>(),
+ notably at KiUser->rights()-><name>() call.
 */
 	static function right($_name, $_fn){
 		return KiRights::define($_name, $_fn);
@@ -286,21 +293,6 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 
 
 
-//===================================================================//
-//============================= HANDLER =============================//
-//===================================================================//
-
-
-
-	static function debug($_debug, $_clean){
-		KiHandler::setDebug($_debug, $_clean);
-	}
-
-
-
-
-
-
 //===============================================================//
 //============================= URL =============================//
 //===============================================================//
@@ -352,32 +344,14 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 
 
 
-//=================================================================//
-//============================= AGENT =============================//
-//=================================================================//
+//===================================================================//
+//============================= HANDLER =============================//
+//===================================================================//
 
 
 
-	static function aBrowser() {
-		return KiAgent::browser();
-	}
-
-
-
-	static function aKnown() {
-		return KiAgent::isKnown();
-	}
-
-
-
-	static function aDefault() {
-		return KiAgent::isDefault();
-	}
-
-
-
-	static function aBot() {
-		return KiAgent::isBot();
+	static function debug($_debug, $_clean){
+		KiHandler::setDebug($_debug, $_clean);
 	}
 
 
@@ -394,7 +368,7 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 /*
 Return seconds since very start.
 */
-	static function lifetime($_digits=3){
+	static function live($_digits=3){
 		$mult= pow(10, $_digits);
 		return round((microtime(true) -self::$startTime)*$mult)/$mult;
 	}
@@ -407,16 +381,27 @@ Sent email.
 	static function sendMail(
 		$_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_port=465
 	){
-		sendMail($_smtp, $_user, $_pass, $_email, $_from, $_subj, $_body, $_port);
-	}
+		require (__dir__ .'/../../_3rd/PHPMailer/PHPMailerAutoload.php');
 
+	    $mail = new PHPMailer;
+	    $mail->IsSMTP();
+	    $mail->CharSet = 'UTF-8';
 
+	    $mail->Host       = $_smtp;
+	    $mail->SMTPAuth   = true;
+	    $mail->SMTPSecure = "ssl";
+	    $mail->Port       = $_port;
+	    $mail->Username   = $_user;
+	    $mail->Password   = $_pass;
 
-/*
-Global dictionary shortcut.
-*/
-	static function dict(){
-		return self::$dictO;
+	    $mail->setFrom($_user, $_from);
+	    $mail->addAddress($_email);
+	    $mail->Subject = $_subj;
+	    $mail->msgHTML($_body);
+
+	    $mail->send();
+
+	    return $mail->ErrorInfo;
 	}
 }
 
