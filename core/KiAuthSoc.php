@@ -56,7 +56,7 @@ _settings:
 
 
 		self::$socIconsA = [
-			\Social\Type::VK=> 'https://vk.com/images/safari_152.png',
+			\Social\Type::VK=>	'',
 			\Social\Type::MR=>	'',
 			\Social\Type::FB=>	'',
 			\Social\Type::GITHUB=>	'',
