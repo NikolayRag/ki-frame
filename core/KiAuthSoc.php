@@ -13,6 +13,7 @@ class KiAuthSoc {
 		SessData='socAuth_data';
 
 
+	const UrlType = 'sociallogontype';
 	private static $cbName;
 
 	private static $isInited, $token, $factory, $typesA=[];
@@ -199,7 +200,7 @@ Fill authorisation URL's list for available services.
 Form auth URL for given type.
 */
 	static function socialURL($_type){
-		return (KiUrl::https()?'https':'http') .'://'. KiUrl::server() .'/'. self::$cbName ."?sociallogontype=$_type";
+		return (KiUrl::https()?'https':'http') .'://'. KiUrl::server() .'/'. self::$cbName ."?" .self::UrlType ."=$_type";
 	}
 
 
@@ -207,11 +208,16 @@ Form auth URL for given type.
 /*
 Callback function for social logons.
 */	
-	static function socCB($_type, $_args){
-	    $auth = self::$factory->createAuth($_type);
+	static function socCB($_args){
+		$socialType = getA($_args, self::UrlType);
+		if (!$socialType)
+			return;
+
+
+	    $auth = self::$factory->createAuth($socialType);
 	    self::$token = $auth->authenticate(
 	    	$_args,
-	    	self::socialURL($_type)
+	    	self::socialURL($socialType)
 	    );
 
 	    if (!self::$token) {
