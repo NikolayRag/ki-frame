@@ -123,42 +123,41 @@ Parse settings, excluding blank ones.
 
 		if ($_settings->VKID){
 		    $typesA[\Social\Type::VK] = [
-		        'app_id' => getA($_settings, 'VKID'),
-		        'secret_key' => getA($_settings, 'VKKEY'),
-		        'scope' => getA($_settings, 'VKSCOPE'),
-		        'icon' => getA($_settings, 'VKICON')
+		        'app_id' => $_settings->VKID,
+		        'secret_key' => $_settings->VKKEY,
+		        'scope' => $_settings->VKSCOPE,
+		        'icon' => $_settings->VKICON
 		    ];
 		}
 		if ($_settings->MRID){
 		    $typesA[\Social\Type::MR] = [
-		        'app_id' => getA($_settings, 'MRID'),
-		        'secret_key' => getA($_settings, 'MRKEY'),
-		        'scope' => getA($_settings, 'MRSCOPE'),
-		        'icon' => getA($_settings, 'MRICON')
+		        'app_id' => $_settings->MRID,
+		        'secret_key' => $_settings->MRKEY,
+		        'scope' => $_settings->MRSCOPE,
+		        'icon' => $_settings->MRICON
 		    ];
 		}
 		if ($_settings->FBID){
 		    $typesA[\Social\Type::FB] = [
-		        'app_id' => getA($_settings, 'FBID'),
-	        	'secret_key' => getA($_settings, 'FBKEY'),
-		        'scope' => getA($_settings, 'FBSCOPE'),
-		        'icon' => getA($_settings, 'FBICON')
+		        'app_id' => $_settings->FBID,
+	        	'secret_key' => $_settings->FBKEY,
+		        'scope' => $_settings->FBSCOPE,
+		        'icon' => $_settings->FBICON
 		    ];
 		}
 		if ($_settings->GITID){
 		    $typesA[\Social\Type::GITHUB] = [
-		        'app_id' => getA($_settings, 'GITID'),
-		        'secret_key' => getA($_settings, 'GITKEY'),
-		        'scope' => getA($_settings, 'GITSCOPE'),
-		        'icon' => getA($_settings, 'GITICON')
+		        'app_id' => $_settings->GITID,
+		        'secret_key' => $_settings->GITKEY,
+		        'scope' => $_settings->GITSCOPE,
+		        'icon' => $_settings->GITICON
 		    ];
 		}
 		if ($_settings->TWID){
 		    $typesA[\Social\Type::TWITTER] = [
-		        'app_id' => getA($_settings, 'TWID'),
-		        'secret_key' => getA($_settings, 'TWKEY'),
-		        'scope' => getA($_settings, 'GITSCOPE'),
-		        'icon' => getA($_settings, 'GITICON')
+		        'app_id' => $_settings->TWID,
+		        'secret_key' => $_settings->TWKEY,
+		        'icon' => $_settings->TWICON
 		    ];
 		}
 
