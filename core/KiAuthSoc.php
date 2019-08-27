@@ -13,8 +13,6 @@ class KiAuthSoc {
 		SessData='socAuth_data';
 
 
-	static $socIconsA;
-
 	private static $cbName;
 
 	private static $isInited, $token, $factory, $typesA=[];
@@ -54,14 +52,6 @@ _settings:
 		include(__dir__ . '/../_3rd/php-social/lib/Social/Type.php');
 		include(__dir__ . '/../_3rd/php-social/lib/Social/Factory.php');
 
-
-		self::$socIconsA = [
-			\Social\Type::VK=>	'',
-			\Social\Type::MR=>	'',
-			\Social\Type::FB=>	'',
-			\Social\Type::GITHUB=>	'',
-			\Social\Type::TWITTER=>	''
-		];
 
 		self::$cbName= $_settings->CB;
 
@@ -132,36 +122,42 @@ Parse settings, excluding blank ones.
 
 		if ($_settings->VKID){
 		    $typesA[\Social\Type::VK] = [
-		        'app_id' => $_settings->VKID,
-		        'secret_key' => $_settings->VKKEY,
-		        'scope' => $_settings->VKSCOPE
+		        'app_id' => getA($_settings, 'VKID'),
+		        'secret_key' => getA($_settings, 'VKKEY'),
+		        'scope' => getA($_settings, 'VKSCOPE'),
+		        'icon' => getA($_settings, 'VKICON')
 		    ];
 		}
 		if ($_settings->MRID){
 		    $typesA[\Social\Type::MR] = [
-		        'app_id' => $_settings->MRID,
-		        'secret_key' => $_settings->MRKEY,
-		        'scope' => $_settings->MRSCOPE
+		        'app_id' => getA($_settings, 'MRID'),
+		        'secret_key' => getA($_settings, 'MRKEY'),
+		        'scope' => getA($_settings, 'MRSCOPE'),
+		        'icon' => getA($_settings, 'MRICON')
 		    ];
 		}
 		if ($_settings->FBID){
 		    $typesA[\Social\Type::FB] = [
-		        'app_id' => $_settings->FBID,
-	        	'secret_key' => $_settings->FBKEY,
-		        'scope' => $_settings->FBSCOPE
+		        'app_id' => getA($_settings, 'FBID'),
+	        	'secret_key' => getA($_settings, 'FBKEY'),
+		        'scope' => getA($_settings, 'FBSCOPE'),
+		        'icon' => getA($_settings, 'FBICON')
 		    ];
 		}
 		if ($_settings->GITID){
 		    $typesA[\Social\Type::GITHUB] = [
-		        'app_id' => $_settings->GITID,
-		        'secret_key' => $_settings->GITKEY,
-		        'scope' => $_settings->GITSCOPE
+		        'app_id' => getA($_settings, 'GITID'),
+		        'secret_key' => getA($_settings, 'GITKEY'),
+		        'scope' => getA($_settings, 'GITSCOPE'),
+		        'icon' => getA($_settings, 'GITICON')
 		    ];
 		}
 		if ($_settings->TWID){
 		    $typesA[\Social\Type::TWITTER] = [
-		        'app_id' => $_settings->TWID,
-		        'secret_key' => $_settings->TWKEY
+		        'app_id' => getA($_settings, 'TWID'),
+		        'secret_key' => getA($_settings, 'TWKEY'),
+		        'scope' => getA($_settings, 'GITSCOPE'),
+		        'icon' => getA($_settings, 'GITICON')
 		    ];
 		}
 
@@ -190,7 +186,7 @@ Fill authorisation URL's list for available services.
 
 			$urlA[$type]= [
 				'url'=>	$url,
-				'icon'=>	self::$socIconsA[$type]
+				'icon'=>	$v['icon']
 			];
 		}
 
