@@ -199,7 +199,7 @@ Fill authorisation URL's list for available services.
 Form auth URL for given type.
 */
 	static function socialURL($_type){
-		return (KiUrl::https()?'https':'http') .'://'. KiUrl::server() .'/'. self::$cbName ."?type=$_type";
+		return (KiUrl::https()?'https':'http') .'://'. KiUrl::server() .'/'. self::$cbName ."?sociallogontype=$_type";
 	}
 
 

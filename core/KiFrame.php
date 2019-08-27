@@ -248,8 +248,8 @@ Get available social login URL's. Shortcut for KiAuth socUrlA().
 Callback for social login. Shortcut for KiAuth socCB().
 */
 	static function lSocCB(){
-		if (KiUrl::args()->type)
-			return KiAuth::socCB(KiUrl::args()->type, KiUrl::args()->all());
+		if (KiUrl::args()->sociallogontype)
+			return KiAuth::socCB(KiUrl::args()->sociallogontype, KiUrl::args()->all());
 	}
 /*
 Register new user with login/pass. Shortcut for KiAuth passRegister().
