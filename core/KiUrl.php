@@ -108,8 +108,8 @@ Get HTTPS flag.
 		self::$vServer = $_SERVER['SERVER_NAME'];
 
 
-		$urlA = explode("?", preg_replace('[/+]', '/', "/${_SERVER["REQUEST_URI"]}"));
-		self::$vPath = $urlA[0];
+		$urlA = explode("?", "/${_SERVER["REQUEST_URI"]}", 2);
+		self::$vPath = preg_replace('[/+]', '/', $urlA[0]);
 
 
 		self::$vArgs = new LooseObject();
