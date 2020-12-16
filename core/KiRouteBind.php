@@ -108,7 +108,7 @@ Return bindings array.
 					$cRegex = str_replace('/', '\/', $cUrl);
 
 					$cRes = [];
-					if (!preg_match("/^$cRegex$/", KiUrl::path(True), $cRes))
+					if (!preg_match("/^$cRegex\$/", KiUrl::path(True), $cRes))
 						return;
 					$varsA = array_merge($varsA, self::cleanIdx($cRes));
 
@@ -120,7 +120,7 @@ Return bindings array.
 
 					foreach (KiUrl::args()->all() as $cName => $cVal) {
 						$cRes = [];
-						if (!preg_match("/^\\$cUrl$/", "?$cName=$cVal", $cRes))
+						if (!preg_match("/^\\$cUrl\$/", "?$cName=$cVal", $cRes))
 							continue;
 						$varsA = array_merge($varsA, self::cleanIdx($cRes));
 
