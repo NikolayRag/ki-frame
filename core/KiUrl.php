@@ -120,13 +120,17 @@ Get HTTPS flag.
 		//Fill vArgs
 		if (isset($urlA[1]))
 		  foreach(explode("&",$urlA[1]) as $x){
-			$xSpl = explode("=",$x);
-			$get = isset($xSpl[1])? urldecode($xSpl[1]) :False;
+			$xSpl = explode("=",$x,2);
+
+			if (count($xSpl) == 1)	//
+				$xSpl = [Null, $xSpl[0]];
+
+			$xSpl[1] = urldecode($xSpl[1]);
 
 			$_REQUEST[$xSpl[0]] =
 			$_GET[$xSpl[0]] =
 			self::$vArgs->$xSpl[0] =
-				$get;
+				$xSpl[1];
 		  }
 	}
 
