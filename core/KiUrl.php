@@ -127,6 +127,9 @@ Get HTTPS flag.
 
 			$xSpl[1] = urldecode($xSpl[1]);
 
+			if ($xSpl[0]=="") 
+			  continue;
+
 			$_REQUEST[$xSpl[0]] =
 			$_GET[$xSpl[0]] =
 			self::$vArgs->$xSpl[0] =
