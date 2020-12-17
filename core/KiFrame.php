@@ -322,6 +322,12 @@ Set new password for registered email, using provided key. Shortcut for KiAuth p
 
 
 
+	static function uArgsQ(){
+		return KiUrl::argsQ();
+	}
+
+
+
 	static function uServer(){
 		return KiUrl::server();
 	}

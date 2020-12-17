@@ -9,7 +9,7 @@ class KiUrl {
 	const GET=1, POST=2, PUT=3, DELETE=4;
 
 	static private $isInited;
-	static private $vMethod, $vPath, $vArgs, $vServer, $isHttps;
+	static private $vMethod, $vPath, $vArgs, $vArgQ, $vServer, $isHttps;
 
 
 
@@ -67,7 +67,14 @@ Get variables array, including both GET and POST.
 		return self::$vArgs->$_arg;
 	}
 
+/*
+Get ordered liast of all GET arguments, both named or not
+*/
+	static function argsQ(){
+		self::init();
 
+		return self::$vArgQ;
+	}
 
 /*
 Get requested server name.
@@ -112,10 +119,14 @@ Get HTTPS flag.
 		self::$vPath = preg_replace('[/+]', '/', $urlA[0]);
 
 
+		self::$vArgQ = [];
 		self::$vArgs = new LooseObject();
 
-		foreach ($_POST as $pName=>$pVal)
+ 		foreach ($_POST as $pName=>$pVal){
+			self::$vArgQ[] = [$pName, $pVal];
 			self::$vArgs->$pName = $pVal;
+ 		}
+
 
 		//Fill vArgs
 		if (isset($urlA[1]))
@@ -126,6 +137,9 @@ Get HTTPS flag.
 				$xSpl = [Null, $xSpl[0]];
 
 			$xSpl[1] = urldecode($xSpl[1]);
+
+
+			self::$vArgQ[] = $xSpl;
 
 			if ($xSpl[0]=="") 
 			  continue;
