@@ -23,7 +23,7 @@ Add code to named context.
 /*
 Add code to named context. 
 */
-	static function add($_ctx, $_src){
+	static function add($_ctx, $_src, $_args){
 		if (!is_string($_ctx))
 			$_ctx = (string)$_ctx;
 
@@ -32,7 +32,7 @@ Add code to named context.
 			self::$contextA[$_ctx] = new self();
 
 		$cCtx = self::$contextA[$_ctx];
-		$cCtx->bindCode($_src);
+		$cCtx->bindCode($_src, $_args);
 
 		return $cCtx;
 	}
@@ -91,13 +91,13 @@ Create context and bind code array provided*/
 /*
 Bind provided code array.
 */
-	function bindCode($_src){
+	function bindCode($_src, $_args=[]){
 		if (!is_array($_src))
 			$_src = [$_src];
 
 		foreach ($_src as $cSrc)
 			if (!in_array($cSrc, $this->codeA))
-				$this->codeA[] = $cSrc;
+				$this->codeA[] = [$cSrc, $_args];
 	}
 
 
@@ -110,7 +110,7 @@ Run prepared code and variables into KiHandler
 
 		//run all code
 		foreach ($this->codeA as $cSrc) {
-			$cCont = $this->runContent($cSrc);
+			$cCont = $this->runContent($cSrc[0],$cSrc[1]);
 			if (is_string($cCont))
 				$cContentA[] = $cCont;
 		}
@@ -123,11 +123,11 @@ Run prepared code and variables into KiHandler
 /*
 Solve registered code generators.
 */
-	private function runContent($_src){
+	private function runContent($_src,$_args=[]){
 		if (is_callable($_src)){
 			ob_start(); //nest buffer
 
-			$res = call_user_func($_src, $this->varsA);
+			$res = call_user_func_array($_src, array_merge([$this->varsA], $_args));
 
 			return ob_get_clean() . (string)$res;
 		}

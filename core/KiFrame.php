@@ -116,12 +116,16 @@ $_src
 
 	Function provided to context() return response data.
 	Anything other than string returned treated as error and ignored in output.
+
+$_args
+	Optional array of arguments to pass to $_src function right next to
+	bond variables array, starting from 2nd argument
 */
-	static function code($_ctx, $_src=False){
+	static function code($_ctx, $_src=False, $_args=[]){
 		if ($_src===False)
 			return new KiRouteCtx($_ctx); //subst src
 
-		return KiRouteCtx::add($_ctx, $_src);
+		return KiRouteCtx::add($_ctx, $_src, $_args);
 	}
 
 
