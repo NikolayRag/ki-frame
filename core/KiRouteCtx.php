@@ -95,6 +95,9 @@ Bind provided code array.
 		if (!is_array($_src))
 			$_src = [$_src];
 
+		if (!is_array($_args))
+			$_args = [$_args];
+
 		foreach ($_src as $cSrc)
 			if (!in_array($cSrc, $this->codeA))
 				$this->codeA[] = [$cSrc, $_args];
