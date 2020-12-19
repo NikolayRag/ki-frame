@@ -139,7 +139,7 @@ Get HTTPS flag.
 			$xSpl[1] = urldecode($xSpl[1]);
 
 
-			self::$vArgQ[] = $xSpl;
+			self::$vArgQ[] = "${xSpl[0]}={$xSpl[1]}";
 
 			if ($xSpl[0]=="") 
 			  continue;
